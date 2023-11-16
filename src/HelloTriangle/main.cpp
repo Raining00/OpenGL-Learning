@@ -75,7 +75,7 @@ int main()
     fragment_shader += "/HelloTriangle/Triangle.frag";
     std::cout<<vertex_shader<<std::endl;
     std::cout<<fragment_shader<<std::endl;
-    Shader myShader(vertex_shader.c_str(), fragment_shader.c_str());
+    Renderer::Shader myShader(vertex_shader.c_str(), fragment_shader.c_str());
 
     // unsigned int VBO, VAO;
     GLuint VBO, VAO;

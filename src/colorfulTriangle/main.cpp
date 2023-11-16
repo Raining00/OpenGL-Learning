@@ -1,7 +1,8 @@
 #include "RenderDevice.h"
 #include "ColorfulPrint.h"
 #include "Config.h"
-#include "Shader.h"
+#include "ShaderManager.h"
+
 int main()
 {
     PRINT_INFO("Hello, colorful triangle!");
@@ -14,11 +15,13 @@ int main()
          0.5f, -0.5f, 0.0f, 0.0, 1.0, 0.0,// right
          0.0f,  0.5f, 0.0f, 0.0, 0.0, 1.0// top
     };
+    Renderer::ShaderManager::ptr shaderManager = Renderer::ShaderManager::getInstance();
     std::string vertexShaderPath(SHADER_PATH);
     vertexShaderPath += "/colorfulTriangle/colorfulTriangle.vert";
     std::string fragmentShaderPath(SHADER_PATH);
     fragmentShaderPath += "/colorfulTriangle/colorfulTriangle.frag";
-    Shader shader(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+    unsigned int TriangleShader = shaderManager->loadShader("TriangleShader", vertexShaderPath, fragmentShaderPath);
+
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -44,7 +47,7 @@ int main()
         glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        shader.use();
+        shaderManager->bindShader(TriangleShader);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);

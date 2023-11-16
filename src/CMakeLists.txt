@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.15)
 
 project(OpenglCudaExample)
 
-add_subdirectory(openglWindow)
-add_subdirectory(HelloTriangle)
-add_subdirectory(TestWindowClass)
-add_subdirectory(colorfulTriangle)
+file(GLOB children RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
+foreach(child ${children})
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${child})
+        add_subdirectory(${child})
+    endif()
+endforeach()

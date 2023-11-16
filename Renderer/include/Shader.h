@@ -7,11 +7,14 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-
+namespace Renderer{
 class Shader
 {
 public:
     Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
+    Shader(const std::string & vertexPath, const std::string & fragmentPath);
+    Shader(const std::string & vertexPath, const std::string & fragmentPath, const std::string & geometryPath);
     ~Shader();
 
     void use();
@@ -44,3 +47,6 @@ private:
     unsigned int ID;
     void checkCompileErrors(unsigned int shader, std::string type);
 };
+
+
+}
