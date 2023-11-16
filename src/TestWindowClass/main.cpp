@@ -15,7 +15,6 @@ int main()
         glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
         // clear the buffer
         glClear(GL_COLOR_BUFFER_BIT);
-
         {
             ImGui::Begin("TestWindowClass");
             ImGui::Text("Hello World!");

@@ -70,9 +70,9 @@ int main()
     }    
     
     std::string vertex_shader = SHADER_PATH;
-    vertex_shader += "/TriangleVertex.glsl";
+    vertex_shader += "/HelloTriangle/Triangle.vert";
     std::string fragment_shader = SHADER_PATH;
-    fragment_shader += "/TriangleFragment.glsl";
+    fragment_shader += "/HelloTriangle/Triangle.frag";
     std::cout<<vertex_shader<<std::endl;
     std::cout<<fragment_shader<<std::endl;
     Shader myShader(vertex_shader.c_str(), fragment_shader.c_str());
