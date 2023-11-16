@@ -1,0 +1,111 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(cuda_opengl)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(HOST_FLAGS "-O3")
+    if(CMAKE_BUILD_TYPE STREQUAL Debug)
+        set(HOST_FLAGS "-g")
+    endif()
+    set(HOST_FLAGS          "${HOST_FLAGS} -Wall -Wextra -Wfatal-errors -fexceptions -fPIC")
+elseif(MSVC)
+    set(HOST_FLAGS "-O2")
+    if(CMAKE_BUILD_TYPE STREQUAL Debug)
+        set(HOST_FLAGS "-DEBUG")
+    endif()
+    set(HOST_FLAGS "${HOST_FLAGS} -W4 -utf-8 -EHa")
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) # TODO(ZhuFei): will export APIs only in the future
+endif()
+set(CUDA_FLAGS          "${HOST_FLAGS} -forward-unknown-to-host-compiler --extended-lambda --relocatable-device-code=true -Xcompiler")
+set(CMAKE_C_FLAGS       "${HOST_FLAGS} ${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS     "${HOST_FLAGS} ${CMAKE_CXX_FLAGS}")
+
+# add extern libraries
+# GLFW
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL " " FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL " " FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL " " FORCE)
+set(GLFW_BUILD_INSTALL OFF CACHE BOOL " " FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL " " FORCE)
+set(GLFW_USE_CHDIR OFF CACHE BOOL " " FORCE)
+set(BUILD_SHARED_LIBS ON CACHE BOOL " " FORCE)
+
+add_subdirectory(extern/glfw)
+
+set_target_properties(glfw PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+mark_as_advanced(
+    GLFW_BUILD_DOCS GLFW_BUILD_EXAMPLES GLFW_BUILD_INSTALL GLFW_BUILD_TESTS
+    GLFW_DOCUMENT_INTERNALS GLFW_INSTALL GLFW_USE_CHDIR GLFW_USE_MENUBAR
+    GLFW_USE_OSMESA GLFW_VULKAN_STATIC GLFW_USE_RETINA GLFW_USE_MIR
+    BUILD_SHARED_LIBS USE_MSVC_RUNTIME_LIBRARY_DLL
+)
+
+list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/glfw/include" "extern/imgui")
+
+if (MSVC)
+    list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/gl3w")
+    list(APPEND GUI_SOURCES "extern/gl3w/GL/gl3w.c")
+    list(APPEND TARGET_LIBRARIES opengl32 $<TARGET_OBJECTS:glfw_objects>)
+else()
+    find_package(GLEW REQUIRED)
+    list(APPEND TARGET_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
+    list(APPEND TARGET_LIBRARIES GL ${GLEW_LIBRARIES} $<TARGET_OBJECTS:glfw_objects>)
+endif()
+
+# JsonCpp
+add_subdirectory(extern/jsoncpp)
+list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/jsoncpp/include")
+
+# OpenMP
+find_package(OpenMP)
+if (OPENMP_FOUND)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+# IMGUI
+# imgui
+list(APPEND IMGUI_SOURCES
+    extern/imgui/imgui.cpp
+    extern/imgui/backends/imgui_impl_glfw.cpp
+    extern/imgui/backends/imgui_impl_opengl3.cpp
+    extern/imgui/imgui_draw.cpp
+    extern/imgui/imgui_tables.cpp
+    extern/imgui/imgui_widgets.cpp
+)
+list(APPEND TARGET_INCLUDE_DIRECTORIES extern/)
+add_library(imgui STATIC ${IMGUI_SOURCES})
+target_include_directories(imgui PUBLIC extern/imgui extern/imgui/backends ${TARGET_INCLUDE_DIRECTORIES})
+
+# glad
+list(APPEND GLAD_SOURCES
+    extern/glad/src/glad.c
+)
+list(APPEND TARGET_INCLUDE_DIRECTORIES extern/glad/include)
+add_library(glad STATIC ${GLAD_SOURCES})
+target_include_directories(glad PUBLIC extern/glad/include)
+
+list(APPEND TARGET_INCLUDE_DIRECTORIES include)
+
+set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shader")
+set(ASSETS_PATH "${PROJECT_SOURCE_DIR}/assets")
+configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/include/Config.h)
+
+# Render base system
+list(APPEND TARGET_INCLUDE_DIRECTORIES Renderer/include)
+FILE(GLOB_RECURSE RENDER_SYS_SOURCE Renderer/src/*.cpp)
+add_library(Renderer ${RENDER_SYS_SOURCE})
+target_link_libraries(Renderer glfw imgui glad)
+target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
+
+# Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
+add_library(dependencies INTERFACE)
+target_link_libraries(dependencies INTERFACE glfw imgui jsoncpp glad Renderer)
+# Add include directories for the library target
+target_include_directories(dependencies INTERFACE ${TARGET_INCLUDE_DIRECTORIES})
+
+# Add src directory, which contains the source code of the project
+add_subdirectory(src)
