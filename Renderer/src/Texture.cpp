@@ -8,7 +8,6 @@
 
 namespace Renderer
 {
-
     Texture2D::Texture2D(unsigned char *images, int width, int height, int channels) : m_width(width), m_height(height), m_channels(channels)
     {
         glGenTextures(1, &m_id);
@@ -50,7 +49,7 @@ namespace Renderer
         glBindTexture(GL_TEXTURE_2D, m_id);
     }
 
-    void Texture2D::unBind()
+    void Texture2D::unbind()
     {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
@@ -112,7 +111,7 @@ namespace Renderer
         glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
     }
 
-    void TextureCube::unBind()
+    void TextureCube::unbind()
     {
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
@@ -170,5 +169,92 @@ namespace Renderer
         glDeleteTextures(1, &m_id);
     }
 
-    
+    TextureDepth::TextureDepth(int width, int height)
+        : m_width(width), m_height(height)
+    {
+        setupTexture("", "");
+    }
+
+    TextureDepth::~TextureDepth()
+    {
+        clearTexture();
+    }
+
+    void TextureDepth::bind(unsigned int slot)
+    {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+    }
+
+    void TextureDepth::unbind()
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void TextureDepth::setupTexture(const std::string &path, const std::string &pFix)
+    {
+        // generate depth buffer.
+        glGenTextures(1, &m_id);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                     m_width, m_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        GLfloat borderColor[] = {1.0, 1.0, 1.0, 1.0};
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void TextureDepth::clearTexture()
+    {
+        glDeleteTextures(1, &m_id);
+    }
+
+    TextureColor::TextureColor(int width, int height, bool hdr)
+        : m_width(width), m_height(height), m_hdr(hdr)
+    {
+        setupTexture("", "");
+    }
+
+    TextureColor::~TextureColor()
+    {
+        clearTexture();
+    }
+
+    void TextureColor::bind(unsigned int slot)
+    {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+    }
+
+    void TextureColor::unbind()
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void TextureColor::setupTexture(const std::string &path, const std::string &pFix)
+    {
+        // generate depth buffer.
+        glGenTextures(1, &m_id);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+        if (!m_hdr)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height,
+                         0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        else
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height,
+                         0, GL_RGB, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // here must be GL_NEAREST, otherwise there is a bug.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void TextureColor::clearTexture()
+    {
+        glDeleteTextures(1, &m_id);
+    }
 }
