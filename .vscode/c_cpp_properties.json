@@ -6,6 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/extern/glad/include",
                 "${workspaceFolder}/extern/glfw/include",
+                "${workspaceFolder}/Engine/cuda/**",
+                "${workspaceFolder}/Engine/Renderer/include/**",
                 "/usr/local/cuda-12.3/include"
             ],
             "defines": [],

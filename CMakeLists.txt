@@ -95,11 +95,14 @@ set(ASSETS_PATH "${PROJECT_SOURCE_DIR}/assets")
 configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/include/Config.h)
 
 # Render base system
-list(APPEND TARGET_INCLUDE_DIRECTORIES Renderer/include)
-FILE(GLOB_RECURSE RENDER_SYS_SOURCE Renderer/src/*.cpp)
+list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
+FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
 add_library(Renderer ${RENDER_SYS_SOURCE})
 target_link_libraries(Renderer glfw imgui glad)
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
+
+# cuda data structure
+list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)
