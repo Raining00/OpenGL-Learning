@@ -35,7 +35,7 @@ namespace Renderer
 
     Texture2D::Texture2D(const std::string &path, glm::vec4 bColor) : m_borderColor(bColor)
     {
-        setupTexture(path, "Texture2D");
+        setupTexture(path, "");
     }
 
     Texture2D::~Texture2D()
@@ -68,6 +68,8 @@ namespace Renderer
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &m_borderColor[0]);
         // load the image
         int width, height, channels;
+        // rotate the image
+        stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load((path + pFix).c_str(), &width, &height, &channels, 0);
         if (data)
         {

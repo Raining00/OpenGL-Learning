@@ -19,7 +19,7 @@ GLuint ShaderManager::loadShader(const std::string &shaderName, const std::strin
 {
     if (m_shaderMap.find(shaderName) != m_shaderMap.end())
         return m_shaderMap[shaderName];
-    
+
     std::shared_ptr<Shader> shader = std::make_shared<Shader>(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
     m_shaders.push_back(shader);
     m_shaderMap[shaderName] = m_shaders.size() - 1;
