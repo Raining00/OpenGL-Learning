@@ -1,10 +1,9 @@
-#include "RenderDevice.h"
 #include "ColorfulPrint.h"
-#include "TextureManager.h"
-#include "ShaderManager.h"
 #include "Config.h"
+#include "RenderDevice.h"
+#include "ShaderManager.h"
+#include "TextureManager.h"
 
-#include <filesystem>
 int main()
 {
     auto window = Renderer::RenderDevice::getInstance();
