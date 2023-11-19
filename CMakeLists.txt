@@ -23,6 +23,9 @@ set(CMAKE_C_FLAGS       "${HOST_FLAGS} ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS     "${HOST_FLAGS} ${CMAKE_CXX_FLAGS}")
 
 # add extern libraries
+# find opengl
+find_package(OpenGL REQUIRED)
+
 # GLFW
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL " " FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL " " FORCE)
@@ -44,6 +47,16 @@ mark_as_advanced(
 )
 
 list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/glfw/include" "extern/imgui")
+
+if (MSVC)
+    list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/gl3w")
+    list(APPEND GUI_SOURCES "extern/gl3w/GL/gl3w.c")
+    list(APPEND TARGET_LIBRARIES opengl32 $<TARGET_OBJECTS:glfw_objects>)
+else()
+    find_package(GLEW REQUIRED)
+    list(APPEND TARGET_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
+    list(APPEND TARGET_LIBRARIES GL ${GLEW_LIBRARIES} $<TARGET_OBJECTS:glfw_objects>)
+endif()
 
 # JsonCpp
 # 禁用 jsoncpp 的测试、示例等
@@ -95,7 +108,7 @@ configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/incl
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
 FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
 add_library(Renderer ${RENDER_SYS_SOURCE})
-target_link_libraries(Renderer PUBLIC glfw imgui glad)
+target_link_libraries(Renderer PUBLIC glfw imgui glad GLEW::GLEW ${OPENGL_LIBRARIES})
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
 
 # cuda data structure
@@ -103,9 +116,9 @@ list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)
-target_link_libraries(dependencies INTERFACE jsoncpp Renderer glfw imgui glad)
+target_link_libraries(dependencies INTERFACE jsoncpp Renderer glfw imgui glad GLEW::GLEW ${OPENGL_LIBRARIES})
 # Add include directories for the library target
-target_include_directories(dependencies INTERFACE ${TARGET_INCLUDE_DIRECTORIES})
+target_include_directories(dependencies INTERFACE ${TARGET_INCLUDE_DIRECTORIES} ${OPENGL_INCLUDE_DIR})
 
 # Add src directory, which contains the source code of the project
 add_subdirectory(src)

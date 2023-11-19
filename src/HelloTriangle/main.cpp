@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "imgui/imgui.h"
@@ -61,13 +62,15 @@ int main()
      0.5f, -0.5f, 0.0f,
      0.0f,  0.5f, 0.0f
     };
-    // glad: load all OpenGL function pointers
+
+    // glew: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK)
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cout<<"Failed to initialize GLEW"<<std::endl;
         return -1;
-    }    
+    }
     
     std::string vertex_shader = SHADER_PATH;
     vertex_shader += "/HelloTriangle/Triangle.vert";

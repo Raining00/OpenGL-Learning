@@ -36,8 +36,8 @@ bool RenderDevice::initialize(const std::string& title, const int& width, const 
         PRINT_ERROR("Failed to initialize GLFW");
         return false;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -57,9 +57,10 @@ bool RenderDevice::initialize(const std::string& title, const int& width, const 
     glfwSetInputMode(m_windowHandler, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // load OpenGL context
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK)
     {
-        PRINT_ERROR("Failed to initialize GLAD");
+        PRINT_ERROR("Failed to initialize GLEW");
         return false;
     }
 

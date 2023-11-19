@@ -7,3 +7,6 @@
 [submodule "extern/jsoncpp"]
 	path = extern/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "extern/glew"]
+	path = extern/glew
+	url = https://github.com/nigels-com/glew.git
