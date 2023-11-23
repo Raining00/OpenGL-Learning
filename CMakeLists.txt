@@ -55,7 +55,7 @@ if (MSVC)
 else()
     find_package(GLEW REQUIRED)
     list(APPEND TARGET_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
-    list(APPEND TARGET_LIBRARIES GL ${GLEW_LIBRARIES} $<TARGET_OBJECTS:glfw_objects>)
+    list(APPEND TARGET_LIBRARIES GL ${GLEW_LIBRARIES})
 endif()
 
 # JsonCpp
@@ -90,6 +90,10 @@ list(APPEND TARGET_INCLUDE_DIRECTORIES extern/)
 add_library(imgui STATIC ${IMGUI_SOURCES})
 target_include_directories(imgui PRIVATE extern/imgui extern/imgui/backends ${TARGET_INCLUDE_DIRECTORIES})
 
+# GLM
+list(APPEND TARGET_INCLUDE_DIRECTORIES extern/glm)
+add_subdirectory(extern/glm)
+
 list(APPEND TARGET_INCLUDE_DIRECTORIES include)
 
 set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shader")
@@ -100,15 +104,17 @@ configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/incl
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
 FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
 add_library(Renderer ${RENDER_SYS_SOURCE})
-target_link_libraries(Renderer PUBLIC glfw imgui GLEW::GLEW ${OPENGL_LIBRARIES})
+target_link_libraries(Renderer PUBLIC glfw imgui GLEW::GLEW ${OPENGL_LIBRARIES} glm::glm)
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
 
 # cuda data structure
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
 
+list(APPEND TARGET_LIBRARIES jsoncpp Renderer glfw imgui GLEW::GLEW  glm::glm ${OPENGL_LIBRARIES})
+
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)
-target_link_libraries(dependencies INTERFACE jsoncpp Renderer glfw imgui GLEW::GLEW ${OPENGL_LIBRARIES})
+target_link_libraries(dependencies INTERFACE ${TARGET_LIBRARIES})
 # Add include directories for the library target
 target_include_directories(dependencies INTERFACE ${TARGET_INCLUDE_DIRECTORIES} ${OPENGL_INCLUDE_DIR})
 
