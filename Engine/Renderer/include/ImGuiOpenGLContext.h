@@ -3,7 +3,11 @@
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
+#ifdef _WIN32
+#include "GL/gl3w.h"
+#elif defined(__linux__)
 #include <GL/glew.h>
+#endif
 #include <GLFW/glfw3.h>
 #include <memory>
 

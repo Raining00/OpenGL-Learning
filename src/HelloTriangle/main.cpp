@@ -3,7 +3,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#ifdef _WIN32
+#include "GL/gl3w.h"
+#elif defined(__linux__)
 #include <GL/glew.h>
+#endif
 #include <GLFW/glfw3.h>
 
 #include "imgui/imgui.h"

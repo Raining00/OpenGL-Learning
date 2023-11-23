@@ -1,7 +1,10 @@
 #include "Texture.h"
 #include <vector>
-
+#ifdef _WIN32
+#include "GL/gl3w.h"
+#elif defined(__linux__)
 #include <GL/glew.h>
+#endif
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "ColorfulPrint.h"

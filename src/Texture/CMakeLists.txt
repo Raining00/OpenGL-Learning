@@ -25,5 +25,6 @@ if(MSVC)
     endforeach()
 endif()
 
+# opengl
 target_link_libraries(${TARGET_NAME} dependencies)
 target_include_directories(${TARGET_NAME} PUBLIC ${TARGET_INCLUDE_DIRECTORIES})

@@ -90,14 +90,6 @@ list(APPEND TARGET_INCLUDE_DIRECTORIES extern/)
 add_library(imgui STATIC ${IMGUI_SOURCES})
 target_include_directories(imgui PRIVATE extern/imgui extern/imgui/backends ${TARGET_INCLUDE_DIRECTORIES})
 
-# glad
-list(APPEND GLAD_SOURCES
-    extern/glad/src/glad.c
-)
-list(APPEND TARGET_INCLUDE_DIRECTORIES extern/glad/include)
-add_library(glad STATIC ${GLAD_SOURCES})
-target_include_directories(glad PUBLIC extern/glad/include)
-
 list(APPEND TARGET_INCLUDE_DIRECTORIES include)
 
 set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shader")
@@ -108,7 +100,7 @@ configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/incl
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
 FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
 add_library(Renderer ${RENDER_SYS_SOURCE})
-target_link_libraries(Renderer PUBLIC glfw imgui glad GLEW::GLEW ${OPENGL_LIBRARIES})
+target_link_libraries(Renderer PUBLIC glfw imgui GLEW::GLEW ${OPENGL_LIBRARIES})
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
 
 # cuda data structure
@@ -116,7 +108,7 @@ list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)
-target_link_libraries(dependencies INTERFACE jsoncpp Renderer glfw imgui glad GLEW::GLEW ${OPENGL_LIBRARIES})
+target_link_libraries(dependencies INTERFACE jsoncpp Renderer glfw imgui GLEW::GLEW ${OPENGL_LIBRARIES})
 # Add include directories for the library target
 target_include_directories(dependencies INTERFACE ${TARGET_INCLUDE_DIRECTORIES} ${OPENGL_INCLUDE_DIR})
 

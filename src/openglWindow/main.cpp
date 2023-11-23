@@ -1,4 +1,8 @@
-#include <glad/glad.h>
+#ifdef _WIN32
+#include "GL/gl3w.h"
+#elif defined(__linux__)
+#include <GL/glew.h>
+#endif
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
@@ -54,13 +58,14 @@ int main()
     ImGui_ImplOpenGL3_Init("#version 420");
 
     glm::vec3 backColor(0.2f, 0.3f, 0.3f);
-    // glad: load all OpenGL function pointers
+    // glew: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK)
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
-    }    
+    }
 
     // render loop
     // -----------

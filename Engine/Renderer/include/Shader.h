@@ -4,8 +4,11 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+#ifdef _WIN32
+#include "GL/gl3w.h"
+#elif defined(__linux__)
 #include <GL/glew.h>
+#endif
 #include <glm/glm.hpp>
 namespace Renderer{
 class Shader
