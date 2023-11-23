@@ -26,7 +26,10 @@ namespace Renderer
         if (channels == 1)
             format = GL_RED;
         else if (channels == 3)
+        {
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             format = GL_RGB;
+        }
         else if (channels == 4)
             format = GL_RGBA;
         else
