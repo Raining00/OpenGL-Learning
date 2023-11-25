@@ -9,7 +9,7 @@
 
 int main()
 {
-    PRINT_INFO("Start Transformations");
+    PRINT_INFO("Start CoordinateSystems Example");
     auto window = Renderer::RenderDevice::getInstance();
     window->initialize("Transformations", 1920, 1080);
     Renderer::TextureManager::ptr TexMgr = Renderer::TextureManager::getInstance();
@@ -28,7 +28,7 @@ int main()
         1, 2, 3  // 第二个三角形
     };
 
-    GLuint shader1 = ShaderMgr->loadShader("texture", SHADER_PATH "/CoordinateSystems/transformations.vs", SHADER_PATH "/CoordinateSystems/transformations.fs");
+    GLuint shader1 = ShaderMgr->loadShader("texture", SHADER_PATH "/CoordinateSystems/CoordinateSystems.vs", SHADER_PATH "/CoordinateSystems/CoordinateSystems.fs");
 
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -73,10 +73,15 @@ int main()
 
         // bind texture
         ShaderMgr->bindShader(shader1);
-        glm::mat4 trans(1.0);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        ShaderMgr->getShader(shader1)->setMat4("transform", glm::value_ptr(trans));
+        glm::mat4 model(1.0);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 view(1.0);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        glm::mat4 projection(1.0);
+        projection = glm::perspective(glm::radians(45.0f), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.1f, 100.0f);
+        ShaderMgr->getShader(shader1)->setMat4("model", model);
+        ShaderMgr->getShader(shader1)->setMat4("view", view);
+        ShaderMgr->getShader(shader1)->setMat4("projection", projection);        
 
         TexMgr->bindTexture(tex1, 0);
         TexMgr->bindTexture(tex2, 1);
