@@ -240,12 +240,12 @@ void RenderDevice::keyCallback(GLFWwindow * window, int key, int scancode, int a
 
 void RenderDevice::framebufferSizeCallback(GLFWwindow * window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    getSingleton()->getRenderSystem()->resize(width, height);
 }
 
 void RenderDevice::scrollCallback(GLFWwindow * window, double xoffset, double yoffset)
 {
-    //TODO: add scroll callback
+    getSingleton()->getRenderSystem()->getCamera()->onWheelMove(yoffset);
 }
 
 void RenderDevice::processInput()
