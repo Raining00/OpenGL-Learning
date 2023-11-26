@@ -99,8 +99,8 @@ int main()
         
         // imgui
         {
-            ImGui::Begin("Transformations");
-            ImGui::Text("Transformation Example");
+            ImGui::Begin("CoordinateSystems Example");
+            ImGui::Text("CoordinateSystems Example");
             ImGui::ColorEdit3("backgroundColor", (float*)&backgroundColor);
             ImGui::SliderFloat3("scale", (float*)&scale, 0.0f, 2.0f);
             ImGui::SliderFloat("mixValue", &mixValue, 0.0f, 1.0f);
