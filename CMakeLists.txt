@@ -49,13 +49,14 @@ mark_as_advanced(
 list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/glfw/include" "extern/imgui")
 
 if (MSVC)
-    list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/gl3w")
-    list(APPEND GUI_SOURCES "extern/gl3w/GL/gl3w.c")
-    list(APPEND TARGET_LIBRARIES opengl32 $<TARGET_OBJECTS:glfw_objects>)
+    list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/glad")
+    list(APPEND TARGET_LIBRARIES opengl32 glad)
+    add_subdirectory(extern/glad)
 else()
     find_package(GLEW REQUIRED)
     list(APPEND TARGET_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
     list(APPEND TARGET_LIBRARIES GL ${GLEW_LIBRARIES})
+    list(APPEND TARGET_LIBRARIES GLEW::GLEW)
 endif()
 
 # JsonCpp
@@ -104,13 +105,13 @@ configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/incl
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
 FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
 add_library(Renderer ${RENDER_SYS_SOURCE})
-target_link_libraries(Renderer PUBLIC glfw imgui GLEW::GLEW ${OPENGL_LIBRARIES} glm::glm)
+target_link_libraries(Renderer PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
 
 # cuda data structure
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
 
-list(APPEND TARGET_LIBRARIES jsoncpp Renderer glfw imgui GLEW::GLEW  glm::glm ${OPENGL_LIBRARIES})
+list(APPEND TARGET_LIBRARIES jsoncpp Renderer glfw imgui glm::glm ${OPENGL_LIBRARIES})
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)

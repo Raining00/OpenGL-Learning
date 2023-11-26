@@ -4,7 +4,7 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #ifdef _WIN32
-#include "GL/gl3w.h"
+#include "glad/glad.h"
 #elif defined(__linux__)
 #include <GL/glew.h>
 #endif
