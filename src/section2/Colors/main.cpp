@@ -95,8 +95,9 @@ int main(int argc, char **argv)
         -0.5f, 0.5f, -0.5f, 0.0f, 1.0f};
     GLuint shader1 = ShaderMgr->loadShader("texture", SHADER_PATH "/Colors/Colors.vs", SHADER_PATH "/Colors/Colors.fs");
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, lightVAO;
     glGenVertexArrays(1, &VAO);
+    glGenVertexArrays(1, &lightVAO);
     glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
@@ -106,11 +107,16 @@ int main(int argc, char **argv)
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+
+    glBindVertexArray(lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+        						  (void *)0);
+    glEnableVertexAttribArray(0);
+    GLuint shader2 = ShaderMgr->loadShader("light", SHADER_PATH "/Colors/Colors.vs", SHADER_PATH "/Colors/Light.fs");
 
     glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
     glm::vec3 backgroundColor(0.2f, 0.3f, 0.3f);
     // we can use some set functions in renderSystem class to control render state. such like:
     renderSystem->setCullFace(false, GL_BACK); // here we disable cull face or we won't see the triangle in opengl render window
@@ -120,27 +126,43 @@ int main(int argc, char **argv)
 
         renderSystem->setClearColor(glm::vec4(backgroundColor, 1.0f));
         renderSystem->render();
-        // bind texture
-        ShaderMgr->bindShader(shader1);
-        glm::mat4 model(1.0);
-        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
         // get camera view matrix and projection matrix
         glm::mat4 view = camera->getViewMatrix();
         glm::mat4 projection = camera->getProjectionMatrix();
+
+        ShaderMgr->bindShader(shader1);
+        glm::mat4 model(1.0);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
         ShaderMgr->getShader(shader1)->setMat4("model", model);
         ShaderMgr->getShader(shader1)->setMat4("view", view);
         ShaderMgr->getShader(shader1)->setMat4("projection", projection);
-        ShaderMgr->getShader(shader1)->setVec3("toyColor", toyColor);
+        ShaderMgr->getShader(shader1)->setVec3("toyColor", toyColor * lightColor);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+        
+        // draw light
+        ShaderMgr->bindShader(shader2);
+        model = glm::translate(glm::mat4(1.0), glm::vec3(1.2f, 1.0f, 2.0f));
+        model = glm::scale(model, glm::vec3(0.2f));
+        ShaderMgr->getShader(shader2)->setMat4("model", model);
+        ShaderMgr->getShader(shader2)->setMat4("view", view);
+        ShaderMgr->getShader(shader2)->setMat4("projection", projection);
+        ShaderMgr->getShader(shader2)->setVec3("lightColor", lightColor);
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
         ShaderMgr->unbindShader();
-        glBindVertexArray(0);
+
         // imgui
         {
             ImGui::Begin("Colors Example");
             ImGui::Text("Colors Example");
             ImGui::ColorEdit3("backgroundColor", (float *)&backgroundColor);
             ImGui::ColorEdit3("toyColor", (float *)&toyColor);
+            ImGui::ColorEdit3("lightColor", (float *)&lightColor);
             ImGui::End();
         }
         window->endFrame();
