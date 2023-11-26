@@ -1,7 +1,7 @@
 #include "Texture.h"
 #include <vector>
 #ifdef _WIN32
-#include "GL/gl3w.h"
+#include "glad/glad.h"
 #elif defined(__linux__)
 #include <GL/glew.h>
 #endif

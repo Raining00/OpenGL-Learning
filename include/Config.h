@@ -1,4 +1,4 @@
 #pragma once
 
-#define SHADER_PATH "/home/cuda-opengl/shader"
-#define ASSETS_PATH "/home/cuda-opengl/assets"
+#define SHADER_PATH "O:/ComputerGraphics/code/cuda-opengl-framework/shader"
+#define ASSETS_PATH "O:/ComputerGraphics/code/cuda-opengl-framework/assets"

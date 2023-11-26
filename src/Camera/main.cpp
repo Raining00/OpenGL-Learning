@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     Renderer::TextureManager::ptr TexMgr = renderSystem->getTextureManager();
     Renderer::ShaderManager::ptr ShaderMgr = renderSystem->getShaderManager();
     // prcess args
-    std::string camera_type = "fps";
+    std::string camera_type = "tps";
     if (argc > 1)
         camera_type = argv[1];
     Renderer::Camera3D::ptr camera;
