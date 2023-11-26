@@ -16,7 +16,7 @@ include_directories(${CUDA_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} ${CUDA_LIBRARIES})
 
 if(MSVC)
-    foreach(dep Renderer glfw)
+    foreach(dep glfw)
         add_custom_command(TARGET ${TARGET_NAME}
                            POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E copy_if_different 

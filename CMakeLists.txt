@@ -102,7 +102,7 @@ configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/incl
 # Render base system
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
 FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
-add_library(Renderer ${RENDER_SYS_SOURCE})
+add_library(Renderer STATIC ${RENDER_SYS_SOURCE})
 target_link_libraries(Renderer PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
 
