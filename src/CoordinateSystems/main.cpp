@@ -3,7 +3,7 @@
 #include "ShaderManager.h"
 #include "ColorfulPrint.h"
 #include "Config.h"
-
+#include "TPSCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
@@ -12,8 +12,18 @@ int main()
     PRINT_INFO("Start CoordinateSystems Example");
     auto window = Renderer::RenderDevice::getInstance();
     window->initialize("Transformations", 1920, 1080);
-    Renderer::TextureManager::ptr TexMgr = Renderer::TextureManager::getInstance();
-    Renderer::ShaderManager::ptr ShaderMgr = Renderer::ShaderManager::getInstance();
+    Renderer::RenderSystem::ptr renderSystem = window->getRenderSystem();
+    Renderer::TextureManager::ptr TexMgr = renderSystem->getTextureManager();
+    Renderer::ShaderManager::ptr ShaderMgr = renderSystem->getShaderManager();
+
+    Renderer::Camera3D::ptr camera = renderSystem->createTPSCamera(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0));
+    camera->setPerspective(45.0f, static_cast<float>(window->getWindowWidth()) / window->getWindowHeight(), 0.1f, 100.0f);
+    // Renderer::TPSCamera *tpsCamera = reinterpret_cast<Renderer::TPSCamera*>(camera.get());
+    // tpsCamera->setPitch(15.0f);
+    // tpsCamera->setDistance(3.0f);
+    // tpsCamera->setDistanceLimit(0.01f, 1000.0f);
+    // tpsCamera->setWheelSensitivity(5.0f);
+    // tpsCamera->setMouseSensitivity(0.3f);
 
     float vertices[] = {
         //      ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
@@ -63,14 +73,11 @@ int main()
     ShaderMgr->getShader(shader1)->setInt("texture1", 0);
     ShaderMgr->getShader(shader1)->setInt("texture2", 1);
     ShaderMgr->unbindShader();
-
     while(window->run())
     {
         window->beginFrame();
-        
-        glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
+        glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // bind texture
         ShaderMgr->bindShader(shader1);
         glm::mat4 model(1.0);
@@ -105,6 +112,5 @@ int main()
     glDeleteBuffers(1, &EBO);
     glDeleteVertexArrays(1, &VAO);
     window->shutdown();
-
     return 0;
 }

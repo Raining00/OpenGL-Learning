@@ -1,0 +1,69 @@
+#pragma once
+
+#include "ShaderManager.h"
+#include "TextureManager.h"
+#include "Camera3D.h"
+
+namespace Renderer
+{
+    struct RenderState
+    {
+    public:
+        GLenum m_depthFunc;
+        GLenum m_polygonMode;
+        GLenum m_cullFaceMode;
+        glm::vec4 m_clearColor;
+        GLbitfield m_clearMask;
+        bool m_depthTest, m_cullFace;
+
+        RenderState():
+            m_depthFunc(GL_LESS),
+            m_polygonMode(GL_FILL),
+            m_cullFaceMode(GL_BACK),
+            m_clearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+            m_clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
+            m_depthTest(true),
+            m_cullFace(true)
+        {}
+    };
+
+    class RenderSystem
+    {
+        public:
+            typedef std::shared_ptr<RenderSystem> ptr;
+
+            RenderSystem() = default;
+            ~RenderSystem() = default;
+
+            void resize(int width, int height);
+            void initialize(int width, int height);
+            void createShadowDepthMap(int width, int height);
+            void createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far);
+            Camera3D::ptr createTPSCamera(glm::vec3 pos, glm::vec3 target);
+            Camera3D::ptr createFPSCamera(glm::vec3 pos, glm::vec3 target);
+
+            Camera3D::ptr getCamera() { return m_camera; }
+            ShaderManager::ptr getShaderManager() { return m_shaderManager; }
+            TextureManager::ptr getTextureManager() { return m_textureManager; }
+
+            // settters
+            void setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+            void setPolygonMode(GLenum mode);
+            void setClearMask(GLbitfield mask);
+            void setClearColor(glm::vec4 color);
+            void setCullFace(bool enable, GLenum face);
+            void setDepthTest(bool enable, GLenum func);
+
+            void render();
+        private:
+            bool m_glowBlurEnable;
+            int m_width, m_height;
+            RenderState m_renderState;
+            
+            Camera3D::ptr m_camera;
+            Camera3D::ptr m_lightCamera;
+            ShaderManager::ptr m_shaderManager;
+            TextureManager::ptr m_textureManager;
+    };
+
+}

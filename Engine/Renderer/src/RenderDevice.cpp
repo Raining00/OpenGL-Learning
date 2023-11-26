@@ -85,6 +85,10 @@ bool RenderDevice::initialize(const std::string& title, const int& width, const 
     glfwSetFramebufferSizeCallback(m_windowHandler, framebufferSizeCallback);
     glfwSetScrollCallback(m_windowHandler, scrollCallback);
 
+    // render system
+    m_renderSystem = std::make_shared<RenderSystem>();
+    m_renderSystem->initialize(m_width, m_height);
+
     glEnable(GL_MULTISAMPLE);
 
     return true;
@@ -251,28 +255,28 @@ void RenderDevice::processInput()
         glfwSetWindowShouldClose(m_windowHandler, true);
 
     // TODO: add camera control.
-    // std::shared_ptr<RenderDevice> device = getSingleton();
+    std::shared_ptr<RenderDevice> device = getSingleton();
 
-    // // key pressed action.
-    // if (m_keyPressed[GLFW_KEY_W])
-    //     device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'W');
-    // if (m_keyPressed[GLFW_KEY_A])
-    //     device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'A');
-    // if (m_keyPressed[GLFW_KEY_S])
-    //     device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'S');
-    // if (m_keyPressed[GLFW_KEY_D])
-    //     device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'D');
-    // if (m_keyPressed[GLFW_KEY_Q])
-    //     device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'Q');
-    // if (m_keyPressed[GLFW_KEY_E])
-    //     device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'E');
+    // key pressed action.
+    if (m_keyPressed[GLFW_KEY_W])
+        device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'W');
+    if (m_keyPressed[GLFW_KEY_A])
+        device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'A');
+    if (m_keyPressed[GLFW_KEY_S])
+        device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'S');
+    if (m_keyPressed[GLFW_KEY_D])
+        device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'D');
+    if (m_keyPressed[GLFW_KEY_Q])
+        device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'Q');
+    if (m_keyPressed[GLFW_KEY_E])
+        device->getRenderSystem()->getCamera()->onKeyPress(m_deltaTime, 'E');
 
-    // // mouse action.
-    // if (m_buttonPressed[GLFW_MOUSE_BUTTON_LEFT])
-    //     device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "LEFT");
-    // else if (m_buttonPressed[GLFW_MOUSE_BUTTON_RIGHT])
-    //     device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "RIGHT");
-    // m_deltaCurPos = glm::vec2(0.0f);
+    // mouse action.
+    if (m_buttonPressed[GLFW_MOUSE_BUTTON_LEFT])
+        device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "LEFT");
+    else if (m_buttonPressed[GLFW_MOUSE_BUTTON_RIGHT])
+        device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "RIGHT");
+    m_deltaCurPos = glm::vec2(0.0f);
 }
 
 } // namespace Render

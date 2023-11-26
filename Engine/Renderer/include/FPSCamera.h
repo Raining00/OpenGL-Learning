@@ -14,7 +14,7 @@ namespace Renderer
         FPSCamera(glm::vec3 pos);
         virtual ~FPSCamera() = default;
 
-        virtual glm::vec3 getPosition() const { return m_translation; }
+        virtual glm::vec3 getPosition() { return m_translation; }
         virtual glm::mat4 getViewMatrix() override;
         virtual glm::mat4 getInvViewMatrix() override;
 

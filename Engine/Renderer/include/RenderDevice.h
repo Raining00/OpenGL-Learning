@@ -3,6 +3,7 @@
 #include <string>
 #include "ImGuiOpenGLContext.h"
 #include "glm/glm.hpp"
+#include "RenderSystem.h"
 #include "Singleton.h"
 
 namespace Renderer
@@ -30,6 +31,7 @@ public:
 
     int getWindowWidth() const { return m_width; }
     int getWindowHeight() const { return m_height; }
+    RenderSystem::ptr getRenderSystem() const { return m_renderSystem; }
 
 protected:
     void initializeDebugContex();
@@ -49,7 +51,8 @@ private:
     bool m_debugMode;
     int m_width, m_height;
     GLFWwindow* m_windowHandler;
-    std::shared_ptr<ImGui::ImGuiOpenGLContext> m_ImGuiContext;
+    ImGui::ImGuiOpenGLContext::ptr m_ImGuiContext;
+    RenderSystem::ptr m_renderSystem;
 };
 
 

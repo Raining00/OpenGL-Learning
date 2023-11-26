@@ -15,6 +15,7 @@ namespace ImGui {
 	class ImGuiOpenGLContext
 	{
 	public:
+		typedef std::shared_ptr<ImGuiOpenGLContext> ptr;
 		ImGuiOpenGLContext(GLFWwindow* window);
 
 		~ImGuiOpenGLContext();
