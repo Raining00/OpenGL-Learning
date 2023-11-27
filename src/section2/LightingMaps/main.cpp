@@ -10,13 +10,14 @@
 
 int main(int argc, char **argv)
 {
-    PRINT_INFO("Start Materials Example");
+    PRINT_INFO("Start LightingMaps Example");
     auto window = Renderer::RenderDevice::getInstance();
-    window->initialize("Materials", 1920, 1080);
+    window->initialize("LightingMaps", 1920, 1080);
     // render system
     Renderer::RenderSystem::ptr renderSystem = window->getRenderSystem();
     // the render state is managed by render system
     Renderer::ShaderManager::ptr ShaderMgr = renderSystem->getShaderManager();
+    Renderer::TextureManager::ptr TextureMgr = renderSystem->getTextureManager();
     // prcess args
     std::string camera_type = "tps";
     if (argc > 1)
@@ -51,50 +52,56 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     float vertices[] = {
+        // positions          // normals           // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
     };
-    GLuint shader1 = ShaderMgr->loadShader("cube", SHADER_PATH "/Materials/Materials.vs", SHADER_PATH "/Materials/Materials.fs");
+    GLuint shader1 = ShaderMgr->loadShader("cube", SHADER_PATH "/LightingMaps/LightingMaps.vs", SHADER_PATH "/LightingMaps/LightingMaps.fs");
+    ShaderMgr->bindShader(shader1);
+    ShaderMgr->getShader(shader1)->setInt("material.diffuse",  0);
+    ShaderMgr->getShader(shader1)->setInt("material.specular", 1);
+    ShaderMgr->getShader(shader1)->setInt("material.emission", 2);
+    ShaderMgr->unbindShader();
 
     unsigned int VBO, VAO, lightVAO;
     glGenVertexArrays(1, &VAO);
@@ -106,30 +113,39 @@ int main(int argc, char **argv)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
     // normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    //texture attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                         (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(lightVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void *)0);
     glEnableVertexAttribArray(0);
     GLuint shader2 = ShaderMgr->loadShader("light", SHADER_PATH "/Colors/Colors.vs", SHADER_PATH "/Colors/Light.fs");
 
-    glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+    // load ambient/diffuse texture
+    GLuint ambientMap = TextureMgr->loadTexture2D("ambientMap", ASSETS_PATH "/texture/109447235_p0.jpg");
+    // load specular texture
+    GLuint specularMap = TextureMgr->loadTexture2D("specularMap", ASSETS_PATH "/texture/93447255_p0.png");
+    // load emission texture
+    GLuint emissionMap = TextureMgr->loadTexture2D("emissionMap", ASSETS_PATH "/texture/matrix.jpg");
+
     glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
     glm::vec3 backgroundColor(0.2f, 0.3f, 0.3f);
     
     glm::vec3 lightPos(0.2f, 1.0f, 0.5f);
 
-    glm::vec3 materialAmbient(1.0f, 0.5f, 0.31f);
-    glm::vec3 materialDiffuse(1.0f, 0.5f, 0.31f);
     glm::vec3 materialSpecular(0.5f, 0.5f, 0.5f);
-    float materialShininess = 32.0f;
+    float materialShininess = 64.0f;
+    float emissionStrength = 0.5f;
 
     glm::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
     glm::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
@@ -155,20 +171,22 @@ int main(int argc, char **argv)
         ShaderMgr->getShader(shader1)->setMat4("view", view);
         ShaderMgr->getShader(shader1)->setMat4("projection", projection);
         // phong lighting model
-        ShaderMgr->getShader(shader1)->setVec3("toyColor", toyColor);
         ShaderMgr->getShader(shader1)->setVec3("lightColor", lightColor);
         ShaderMgr->getShader(shader1)->setVec3("light.position", lightPos);
         ShaderMgr->getShader(shader1)->setVec3("viewPos", camera->getPosition());
 
-        ShaderMgr->getShader(shader1)->setVec3("material.ambient", materialAmbient);
-        ShaderMgr->getShader(shader1)->setVec3("material.diffuse", materialDiffuse);
+        // material
+        TextureMgr->bindTexture(ambientMap, 0);
+        TextureMgr->bindTexture(specularMap, 1);
+        TextureMgr->bindTexture(emissionMap, 2);
         ShaderMgr->getShader(shader1)->setVec3("material.specular", materialSpecular);
         ShaderMgr->getShader(shader1)->setFloat("material.shininess", materialShininess);
+        ShaderMgr->getShader(shader1)->setFloat("emissionStrength", emissionStrength);
+        ShaderMgr->getShader(shader1)->setFloat("emissionTime", (double)glfwGetTime());
         // light
         ShaderMgr->getShader(shader1)->setVec3("light.ambient", lightAmbient);
         ShaderMgr->getShader(shader1)->setVec3("light.diffuse", lightDiffuse);
         ShaderMgr->getShader(shader1)->setVec3("light.specular", lightDiffuse);
-
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -186,13 +204,13 @@ int main(int argc, char **argv)
 
         // imgui
         {
-            ImGui::Begin("Materials Example");
-            ImGui::Text("Materials Example");
+            ImGui::Begin("LightingMaps Example");
+            ImGui::Text("LightingMaps Example");
             ImGui::ColorEdit3("backgroundColor", (float *)&backgroundColor);
-            ImGui::ColorEdit3("toyColor", (float *)&toyColor);
             ImGui::ColorEdit3("lightColor", (float *)&lightColor);
             ImGui::DragFloat3("lightPos", (float *)&lightPos, 0.01f);
             ImGui::DragFloat("materialShininess", &materialShininess, 0.1f);
+            ImGui::DragFloat("emissionStrength", &emissionStrength, 0.1f);
             ImGui::Text("Camera Type: %s", camera_type.c_str());
             ImGui::End();
         }
@@ -203,10 +221,6 @@ int main(int argc, char **argv)
             ImGui::ColorEdit3("light.ambient", (float *)&lightAmbient);
             ImGui::ColorEdit3("light.diffuse", (float *)&lightDiffuse);
             ImGui::ColorEdit3("light.specular", (float *)&lightSpecular);
-            ImGui::Text("material");
-            ImGui::ColorEdit3("material.ambient", (float *)&materialAmbient);
-            ImGui::ColorEdit3("material.diffuse", (float *)&materialDiffuse);
-            ImGui::ColorEdit3("material.specular", (float *)&materialSpecular);
             ImGui::End();
         }
         window->endFrame();
