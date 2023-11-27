@@ -11,7 +11,7 @@ int main()
 {
     PRINT_INFO("Start CoordinateSystems Example");
     auto window = Renderer::RenderDevice::getInstance();
-    window->initialize("Transformations", 1920, 1080);
+    window->initialize("CoordinateSystems", 1920, 1080);
     Renderer::RenderSystem::ptr renderSystem = window->getRenderSystem();
     Renderer::TextureManager::ptr TexMgr = renderSystem->getTextureManager();
     Renderer::ShaderManager::ptr ShaderMgr = renderSystem->getShaderManager();

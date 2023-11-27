@@ -20,9 +20,9 @@
 
 int main(int argc, char **argv)
 {
-    PRINT_INFO("Start CoordinateSystems Example");
+    PRINT_INFO("Start Camera Example");
     auto window = Renderer::RenderDevice::getInstance();
-    window->initialize("Transformations", 1920, 1080);
+    window->initialize("Camera", 1920, 1080);
     // render system
     Renderer::RenderSystem::ptr renderSystem = window->getRenderSystem();
     // the render state is managed by render system
