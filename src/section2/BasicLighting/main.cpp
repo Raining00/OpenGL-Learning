@@ -52,7 +52,6 @@ int main(int argc, char **argv)
     }
 
     float vertices[] = {
-        // vertex           // normal
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -93,7 +92,8 @@ int main(int argc, char **argv)
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f};
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    };
     GLuint shader1 = ShaderMgr->loadShader("cube", SHADER_PATH "/PhongLightingModel/PhongLighting.vs", SHADER_PATH "/PhongLightingModel/PhongLighting.fs");
 
     unsigned int VBO, VAO, lightVAO;
@@ -111,6 +111,7 @@ int main(int argc, char **argv)
     // normal attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
                           (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(lightVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
