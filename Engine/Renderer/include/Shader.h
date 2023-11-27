@@ -10,10 +10,12 @@
 #include <GL/glew.h>
 #endif
 #include <glm/glm.hpp>
+#include <memory>
 namespace Renderer{
 class Shader
 {
 public:
+    typedef std::shared_ptr<Shader> ptr;
     Shader(const char* vertexPath, const char* fragmentPath);
     Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
     Shader(const std::string & vertexPath, const std::string & fragmentPath);
