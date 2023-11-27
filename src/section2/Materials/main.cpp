@@ -10,9 +10,9 @@
 
 int main(int argc, char **argv)
 {
-    PRINT_INFO("Start BasiLighting Example");
+    PRINT_INFO("Start Materials Example");
     auto window = Renderer::RenderDevice::getInstance();
-    window->initialize("BasiLighting", 1920, 1080);
+    window->initialize("Materials", 1920, 1080);
     // render system
     Renderer::RenderSystem::ptr renderSystem = window->getRenderSystem();
     // the render state is managed by render system
@@ -175,8 +175,8 @@ int main(int argc, char **argv)
 
         // imgui
         {
-            ImGui::Begin("BasiLighting Example");
-            ImGui::Text("BasiLighting Example");
+            ImGui::Begin("Materials Example");
+            ImGui::Text("Materials Example");
             ImGui::ColorEdit3("backgroundColor", (float *)&backgroundColor);
             ImGui::ColorEdit3("toyColor", (float *)&toyColor);
             ImGui::ColorEdit3("lightColor", (float *)&lightColor);
