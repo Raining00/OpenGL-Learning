@@ -86,7 +86,7 @@ public:
     unsigned int CreateSpotLight(const std::string& name, const glm::vec3& position=glm::vec3(0.0, 0.0,0.0), const glm::vec3& direction=glm::vec3(0.0, 0.0, -1.0), 
                     const glm::vec3& ambient = glm::vec3(0.1), const glm::vec3& diffuse=glm::vec3(0.8), 
                     const glm::vec3& specular=glm::vec3(1.0), float constant=1.0, float linear=0.09, float quadratic=0.032, 
-                    float cutOff=glm::radians(12.5f), float outerCutOff=glm::radians(17.5f));
+                    float cutOff=glm::cos(glm::radians(12.5f)), float outerCutOff= glm::cos(glm::radians(17.5f)));
 
     /**
      * @brief Get the Light object

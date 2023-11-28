@@ -10,9 +10,9 @@
 
 int main(int argc, char **argv)
 {
-    PRINT_INFO("Start LightingMaps Example");
+    PRINT_INFO("Start LightCasters Example");
     auto window = Renderer::RenderDevice::getInstance();
-    window->initialize("LightingMaps", 1920, 1080);
+    window->initialize("LightCasters", 1920, 1080);
     // render system
     Renderer::RenderSystem::ptr renderSystem = window->getRenderSystem();
     // the render state is managed by render system
@@ -209,8 +209,8 @@ int main(int argc, char **argv)
         ShaderMgr->unbindShader();
         // imgui
         {
-            ImGui::Begin("LightingMaps Example");
-            ImGui::Text("LightingMaps Example");
+            ImGui::Begin("LightCasters Example");
+            ImGui::Text("LightCasters Example");
             ImGui::ColorEdit3("backgroundColor", (float *)&backgroundColor);
             ImGui::DragFloat("materialShininess", &materialShininess, 1.0f);
             ImGui::Text("Camera Type: %s", camera_type.c_str());
