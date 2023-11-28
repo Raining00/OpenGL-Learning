@@ -8,6 +8,6 @@ foreach(child ${children})
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${child})
         add_subdirectory(${child})
          
-        set_property(TARGET ${child} PROPERTY FOLDER "HelloOpenGL")
+        set_property(TARGET ${child} PROPERTY FOLDER "example/HelloOpenGL")
     endif()
 endforeach()

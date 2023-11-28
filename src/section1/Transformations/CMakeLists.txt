@@ -9,11 +9,8 @@ FILE(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/*.cpp)
 add_executable(${TARGET_NAME} main.cpp)
 
 enable_language(CUDA)
-find_package(CUDA REQUIRED)
-# set CUDA_NVCC_FLAGS
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode arch=compute_86,code=sm_86;-std=c++17;)
-include_directories(${CUDA_INCLUDE_DIRS})
-target_link_libraries(${TARGET_NAME} ${CUDA_LIBRARIES})
+target_compile_options(${TARGET_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
+                       --generate-code arch=compute_86,code=[sm_86,compute_86] -std=c++17>)
 
 if(MSVC)
     foreach(dep glfw)

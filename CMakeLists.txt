@@ -50,6 +50,7 @@ if (MSVC)
     list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/glad")
     list(APPEND TARGET_LIBRARIES opengl32 glad)
     add_subdirectory(extern/glad)
+    set_property(TARGET glad PROPERTY FOLDER "extern/Renderer")
 else()
     find_package(GLEW REQUIRED)
     list(APPEND TARGET_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
@@ -67,6 +68,11 @@ set(JSONCPP_WITH_EXAMPLE OFF CACHE BOOL "" FORCE)
 mark_as_advanced(JSONCPP_WITH_TESTS JSONCPP_WITH_POST_BUILD_UNITTEST JSONCPP_WITH_PKGCONFIG_SUPPORT JSONCPP_WITH_CMAKE_PACKAGE JSONCPP_WITH_EXAMPLE)
 add_subdirectory(extern/jsoncpp)
 list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/jsoncpp/include")
+set_property(TARGET jsoncpp_lib PROPERTY FOLDER "extern/JsonCpp")
+set_property(TARGET jsoncpp_static PROPERTY FOLDER "extern/sonCpp")
+set_property(TARGET jsoncpp_object PROPERTY FOLDER "extern/JsonCpp")
+
+
 
 # OpenMP
 find_package(OpenMP)
@@ -88,10 +94,13 @@ list(APPEND IMGUI_SOURCES
 list(APPEND TARGET_INCLUDE_DIRECTORIES extern/)
 add_library(imgui STATIC ${IMGUI_SOURCES})
 target_include_directories(imgui PRIVATE extern/imgui extern/imgui/backends ${TARGET_INCLUDE_DIRECTORIES})
+set_property(TARGET imgui PROPERTY FOLDER "extern/Renderer")
 
 # GLM
 list(APPEND TARGET_INCLUDE_DIRECTORIES extern/glm)
 add_subdirectory(extern/glm)
+set_property(TARGET glm_static PROPERTY FOLDER "extern/Renderer")
+set_property(TARGET glm_shared PROPERTY FOLDER "extern/Renderer")
 
 list(APPEND TARGET_INCLUDE_DIRECTORIES include)
 
@@ -114,10 +123,10 @@ FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
 add_library(Renderer STATIC ${RENDER_SYS_SOURCE})
 target_link_libraries(Renderer PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
 target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
+set_property(TARGET Renderer PROPERTY FOLDER "extern/Renderer")
 
 # cuda data structure
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
-
 list(APPEND TARGET_LIBRARIES jsoncpp Renderer glfw imgui glm::glm ${OPENGL_LIBRARIES})
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
