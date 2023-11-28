@@ -9,13 +9,23 @@ namespace Renderer
         m_specular = spec;
     }
 
-    void DirectionalLight::setLightUniforms(Shader::ptr shader, Camera3D::ptr camera)
+    void DirectionalLight::setLightUniforms(Shader::ptr shader, Camera3D::ptr camera, const std::string &lightName, const bool &ifArray, const unsigned int &slot)
     {
         shader->setVec3("cameraPos", camera->getPosition());
-        shader->setVec3("dirLight.direction", m_direction);
-        shader->setVec3("dirLight.ambient", m_ambient);
-        shader->setVec3("dirLight.diffuse", m_diffuse);
-        shader->setVec3("dirLight.specular", m_specular);
+        if (ifArray)
+        {
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].direction", m_direction);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].ambient", m_ambient);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].diffuse", m_diffuse);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].specular", m_specular);
+        }
+        else
+        {
+            shader->setVec3(lightName + ".direction", m_direction);
+            shader->setVec3(lightName + ".ambient", m_ambient);
+            shader->setVec3(lightName + ".diffuse", m_diffuse);
+            shader->setVec3(lightName + ".specular", m_specular);
+        }
     }
 
     void DirectionalLight::setLightDirection(glm::vec3 dir)
@@ -28,16 +38,29 @@ namespace Renderer
         return m_direction;
     }
 
-    void PointLight::setLightUniforms(Shader::ptr shader, Camera3D::ptr camera)
+    void PointLight::setLightUniforms(Shader::ptr shader, Camera3D::ptr camera, const std::string &lightName, const bool &ifArray, const unsigned int &slot)
     {
         shader->setVec3("cameraPos", camera->getPosition());
-        shader->setVec3("pointLight.position", m_position);
-        shader->setVec3("pointLight.ambient", m_ambient);
-        shader->setVec3("pointLight.diffuse", m_diffuse);
-        shader->setVec3("pointLight.specular", m_specular);
-        shader->setFloat("pointLight.constant", m_constant);
-        shader->setFloat("pointLight.linear", m_linear);
-        shader->setFloat("pointLight.quadratic", m_quadratic);
+        if(ifArray)
+        {
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].position", m_position);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].ambient", m_ambient);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].diffuse", m_diffuse);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].specular", m_specular);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].constant", m_constant);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].linear", m_linear);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].quadratic", m_quadratic);
+        }
+        else
+        {
+            shader->setVec3(lightName + ".position", m_position);
+            shader->setVec3(lightName + ".ambient", m_ambient);
+            shader->setVec3(lightName + ".diffuse", m_diffuse);
+            shader->setVec3(lightName + ".specular", m_specular);
+            shader->setFloat(lightName + ".constant", m_constant);
+            shader->setFloat(lightName + ".linear", m_linear);
+            shader->setFloat(lightName + ".quadratic", m_quadratic);
+        }
     }
 
     void PointLight::setLightPosition(glm::vec3 pos)
@@ -52,19 +75,35 @@ namespace Renderer
         m_quadratic = quadratic;
     }
 
-    void SpotLight::setLightUniforms(Shader::ptr shader, Camera3D::ptr camera)
+    void SpotLight::setLightUniforms(Shader::ptr shader, Camera3D::ptr camera, const std::string &lightName, const bool &ifArray, const unsigned int &slot)
     {
         shader->setVec3("cameraPos", camera->getPosition());
-        shader->setVec3("spotLight.position", m_position);
-        shader->setVec3("spotLight.direction", m_direction);
-        shader->setVec3("spotLight.ambient", m_ambient);
-        shader->setVec3("spotLight.diffuse", m_diffuse);
-        shader->setVec3("spotLight.specular", m_specular);
-        shader->setFloat("spotLight.constant", m_constant);
-        shader->setFloat("spotLight.linear", m_linear);
-        shader->setFloat("spotLight.quadratic", m_quadratic);
-        shader->setFloat("spotLight.innerCutOff", m_innerCutOff);
-        shader->setFloat("spotLight.outerCutOff", m_outerCutOff);
+        if(ifArray)
+        {
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].position", m_position);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].direction", m_direction);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].ambient", m_ambient);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].diffuse", m_diffuse);
+            shader->setVec3(lightName + "[" + std::to_string(slot) + "].specular", m_specular);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].constant", m_constant);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].linear", m_linear);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].quadratic", m_quadratic);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].innerCutOff", m_innerCutOff);
+            shader->setFloat(lightName + "[" + std::to_string(slot) + "].outerCutOff", m_outerCutOff);
+        }
+        else
+        {
+            shader->setVec3(lightName + ".position", m_position);
+            shader->setVec3(lightName + ".direction", m_direction);
+            shader->setVec3(lightName + ".ambient", m_ambient);
+            shader->setVec3(lightName + ".diffuse", m_diffuse);
+            shader->setVec3(lightName + ".specular", m_specular);
+            shader->setFloat(lightName + ".constant", m_constant);
+            shader->setFloat(lightName + ".linear", m_linear);
+            shader->setFloat(lightName + ".quadratic", m_quadratic);
+            shader->setFloat(lightName + ".innerCutOff", m_innerCutOff);
+            shader->setFloat(lightName + ".outerCutOff", m_outerCutOff);
+        }
     }
 
     void SpotLight::setLightPosition(glm::vec3 pos)

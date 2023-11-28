@@ -171,7 +171,7 @@ int main(int argc, char **argv)
         // light
         spotLight->setLightDirection(camera->getFront());
         spotLight->setLightPosition(camera->getPosition());
-        spotLight->setLightUniforms(ShaderMgr->getShader(shader1), camera);
+        spotLight->setLightUniforms(ShaderMgr->getShader(shader1), camera, "spotLight");
         // LightMgr->setLightUniform(spotlight, ShaderMgr->getShader(shader1), camera);
         // camera
         ShaderMgr->getShader(shader1)->setMat4("view", view);

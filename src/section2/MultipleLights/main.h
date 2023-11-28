@@ -16,51 +16,56 @@ public:
     virtual void Init() override
     {
         float vertices[] = {
-        // positions          // normals           // texture coords
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            // positions          // normals           // texture coords
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 
-        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
         spotLight = m_lightManager->CreateSpotLight("spotLight");
-        cubeShader = m_shaderManager->loadShader("cubeShader", SHADER_PATH "/MultipleLights/MultipleLights.vs", SHADER_PATH"/MultipleLights/MultipleLights.fs");
-        lightShader = m_shaderManager->loadShader("lightShader", SHADER_PATH "/Colors/Colors.vs", SHADER_PATH"/Colors/Light.fs");
+        directionalLight = m_lightManager->CreateDirectionalLight("directionalLight", lightDirection, glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f));
+        for(int i = 0; i< 4; i++)
+        {
+            pointLight[i] = m_lightManager->CreatePointLight("pointLight" + std::to_string(i), pointLightPositions[i], glm::vec3(0.2f), glm::vec3(1.0f), glm::vec3(1.0f), 1.0f, 0.09f, 0.032f);
+        }
+        cubeShader = m_shaderManager->loadShader("cubeShader", SHADER_PATH "/MultipleLights/MultipleLights.vs", SHADER_PATH "/MultipleLights/MultipleLights.fs");
+        lightShader = m_shaderManager->loadShader("lightShader", SHADER_PATH "/Colors/Colors.vs", SHADER_PATH "/Colors/Light.fs");
         m_shaderManager->bindShader(cubeShader);
         m_shaderManager->getShader(cubeShader)->setInt("material.diffuse", 0);
         m_shaderManager->getShader(cubeShader)->setInt("material.specular", 1);
@@ -97,7 +102,7 @@ public:
         // load specular texture
         specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH "/texture/93447255_p0.png");
         m_renderSystem->setCullFace(false, GL_BACK);
-        spotLightPtr = reinterpret_cast<Renderer::SpotLight*>(m_lightManager->getLight(spotLight).get());
+        spotLightPtr = reinterpret_cast<Renderer::SpotLight *>(m_lightManager->getLight(spotLight).get());
     }
 
     virtual void Render()
@@ -112,9 +117,18 @@ public:
         glm::mat4 projection = m_camera->getProjectionMatrix();
         // model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         m_shaderManager->bindShader(cubeShader);
+        Renderer::DirectionalLight *directionalLightPtr = reinterpret_cast<Renderer::DirectionalLight *>(m_lightManager->getLight(directionalLight).get());
+        directionalLightPtr->setLightDirection(lightDirection);
         spotLightPtr->setLightDirection(m_camera->getFront());
         spotLightPtr->setLightPosition(m_camera->getPosition());
-        m_lightManager->setLightUniform(spotLight, m_shaderManager->getShader(cubeShader), m_camera);
+        // directional light
+        m_lightManager->setLightUniform(directionalLight, m_shaderManager->getShader(cubeShader), m_camera, "dirLight");
+        // point light
+        for(int i = 0; i< 4; i++)
+        {
+            m_lightManager->setLightUniform(pointLight[i], m_shaderManager->getShader(cubeShader), m_camera, "pointLights", true, i);
+        }
+        m_lightManager->setLightUniform(spotLight, m_shaderManager->getShader(cubeShader), m_camera, "spotLight");
         m_shaderManager->getShader(cubeShader)->setMat4("view", view);
         m_shaderManager->getShader(cubeShader)->setMat4("projection", projection);
         // material
@@ -138,10 +152,16 @@ public:
         glm::mat4 model = glm::mat4(1.0);
         model = glm::translate(model, pointLightPosition);
         model = glm::scale(model, glm::vec3(0.2f));
-        m_shaderManager->getShader(lightShader)->setMat4("model", model);
         m_shaderManager->getShader(lightShader)->setVec3("lightColor", glm::vec3(1.0f));
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for(int i = 0; i< 4; i++)
+        {
+            model = glm::mat4(1.0);
+            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::scale(model, glm::vec3(0.2f));
+            m_shaderManager->getShader(lightShader)->setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         m_shaderManager->unbindShader();
         DrawImGui();
 
@@ -180,12 +200,12 @@ public:
     }
 
 private:
-    GLuint VAO, VBO, lightVAO;      // vertex array object, vertex buffer object
-    GLuint diffuseMap, specularMap; // texture
-    GLuint cubeShader, lightShader; // shader
-    GLuint pointLight, spotLight, directionalLight; // light
+    GLuint VAO, VBO, lightVAO;                      // vertex array object, vertex buffer object
+    GLuint diffuseMap, specularMap;                 // texture
+    GLuint cubeShader, lightShader;                 // shader
+    GLuint pointLight[4], spotLight, directionalLight; // light
     float materialShininess{64.0f};
-    Renderer::SpotLight* spotLightPtr;
+    Renderer::SpotLight *spotLightPtr;
     glm::vec3 pointLightPosition{glm::vec3(1.2f, 1.0f, 2.0f)};
     glm::vec3 lightDirection{glm::vec3(-0.2f, -1.0f, -0.3f)};
     glm::vec3 cubePositions[10]{
@@ -199,4 +219,9 @@ private:
         glm::vec3(1.5f, 2.0f, -2.5f),
         glm::vec3(1.5f, 0.2f, -1.5f),
         glm::vec3(-1.3f, 1.0f, -1.5f)};
+    glm::vec3 pointLightPositions[4]{
+        glm::vec3(0.7f, 0.2f, 2.0f),
+        glm::vec3(2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f, 2.0f, -12.0f),
+        glm::vec3(0.0f, 0.0f, -3.0f)};
 };

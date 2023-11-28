@@ -91,19 +91,19 @@ unsigned int LightManager::getLightIndex(const std::string& name)
         return -1;
 }
 
-void LightManager::setLightUniform(const std::string& name, Shader::ptr shader, Camera3D::ptr camera)
+void LightManager::setLightUniform(const std::string& name, Shader::ptr shader, Camera3D::ptr camera, const std::string &lightName, const bool &ifArray, const unsigned int &slot)
 {
     if (m_lightMap.find(name) != m_lightMap.end())
     {
-        m_lights[m_lightMap[name]]->setLightUniforms(shader, camera);
+        m_lights[m_lightMap[name]]->setLightUniforms(shader, camera, lightName, ifArray, slot);
     }
 }
 
-void LightManager::setLightUniform(unsigned int id, Shader::ptr shader, Camera3D::ptr camera)
+void LightManager::setLightUniform(unsigned int id, Shader::ptr shader, Camera3D::ptr camera, const std::string &lightName, const bool &ifArray, const unsigned int &slot)
 {
     if (id < m_lights.size())
     {
-        m_lights[id]->setLightUniforms(shader, camera);
+        m_lights[id]->setLightUniforms(shader, camera, lightName, ifArray, slot);
     }
 }
 
