@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(LightCasters)
+project(LightingMaps)
 
-set(TARGET_NAME LightCasters)
+set(TARGET_NAME LightingMaps)
 FILE(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/*.cpp)
 
 #enable cuda
