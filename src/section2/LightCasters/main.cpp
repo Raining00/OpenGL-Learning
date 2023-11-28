@@ -7,7 +7,6 @@
 #include "FPSCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "Light.h"
 
 int main(int argc, char **argv)
 {
@@ -19,15 +18,13 @@ int main(int argc, char **argv)
     // the render state is managed by render system
     Renderer::ShaderManager::ptr ShaderMgr = renderSystem->getShaderManager();
     Renderer::TextureManager::ptr TextureMgr = renderSystem->getTextureManager();
-    Renderer::DirectionalLight::ptr dirLight = std::make_shared<Renderer::DirectionalLight>();
-    dirLight->setLightColor(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
-    dirLight->setLightDirection(glm::vec3(-0.2f, -1.0f, -0.3f));
-    // point light
-    Renderer::PointLight::ptr pointLight = std::make_shared<Renderer::PointLight>();
-    pointLight->setLightColor(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
-    // spot light
-    Renderer::SpotLight::ptr spotLight = std::make_shared<Renderer::SpotLight>();
-    spotLight->setLightColor(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
+    Renderer::LightManager::ptr LightMgr = renderSystem->getLightManager();
+    // unsigned int dirlight = LightMgr->CreateDirectionalLight("dirLight", glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f));
+    // unsigned int pointlight = LightMgr->CreatePointLight("pointLight", glm::vec3(0.2f, 2.7f, 0.2f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f), 1.0f, 0.09f, 0.032f);
+    unsigned int spotlight = LightMgr->CreateSpotLight("spotLight");
+    // Renderer::SpotLight::ptr spotlight = std::make_shared<Renderer::SpotLight>();
+    // spotlight->setLightColor(glm::vec3(0.2f), glm::vec3(0.8f), glm::vec3(1.0f));
+
     // prcess args
     std::string camera_type = "tps";
     if (argc > 1)
@@ -162,6 +159,7 @@ int main(int argc, char **argv)
     float materialShininess = 64.0f;
     // we can use some set functions in renderSystem class to control render state. such like:
     renderSystem->setCullFace(false, GL_BACK); // here we disable cull face or we won't see the triangle in opengl render window
+    auto spotLight = reinterpret_cast<Renderer::SpotLight *>(LightMgr->getLight(spotlight).get());
     while (window->run())
     {
         window->beginFrame();
@@ -178,6 +176,7 @@ int main(int argc, char **argv)
         spotLight->setLightDirection(camera->getFront());
         spotLight->setLightPosition(camera->getPosition());
         spotLight->setLightUniforms(ShaderMgr->getShader(shader1), camera);
+        // LightMgr->setLightUniform(spotlight, ShaderMgr->getShader(shader1), camera);
         // camera
         ShaderMgr->getShader(shader1)->setMat4("view", view);
         ShaderMgr->getShader(shader1)->setMat4("projection", projection);
@@ -204,7 +203,7 @@ int main(int argc, char **argv)
         model = glm::translate(model, pointLightPosition);
         model = glm::scale(model, glm::vec3(0.2f));
         ShaderMgr->getShader(lightCube)->setMat4("model", model);
-        ShaderMgr->getShader(lightCube)->setVec3("lightColor", pointLight->getSpecular());
+        ShaderMgr->getShader(lightCube)->setVec3("lightColor", glm::vec3(1.0f));
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         ShaderMgr->unbindShader();
@@ -223,9 +222,7 @@ int main(int argc, char **argv)
             ImGui::Text("light");
             ImGui::DragFloat3("lightDirection", (float *)&lightDirection, 0.1f);
             ImGui::Text("Point Light:");
-            ImGui::DragFloat3("pointLightPosition", (float *)&pointLightPosition, 0.1f);            
-            ImGui::DragFloat("pointLightLinear", pointLight->getLinearPtr(), 0.001f, 0.0f, 1.0f);
-            ImGui::DragFloat("pointLightQuadratic", pointLight->getQuadraticPtr(), 0.0001f, 0.0f, 1.0f);
+            ImGui::DragFloat3("pointLightPosition", (float *)&pointLightPosition, 0.1f);
             ImGui::Text("Spot Light:");
             ImGui::DragFloat("spotLightLinear", spotLight->getLinearPtr(), 0.001f, 0.0f, 1.0f);
             ImGui::DragFloat("spotLightQuadratic", spotLight->getQuadraticPtr(), 0.0001f, 0.0f, 1.0f);

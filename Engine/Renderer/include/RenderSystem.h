@@ -2,6 +2,7 @@
 
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "LightManager.h"
 #include "Camera3D.h"
 
 namespace Renderer
@@ -45,6 +46,7 @@ namespace Renderer
             Camera3D::ptr getCamera() { return m_camera; }
             ShaderManager::ptr getShaderManager() { return m_shaderManager; }
             TextureManager::ptr getTextureManager() { return m_textureManager; }
+            LightManager::ptr getLightManager() { return m_lightManager; }
 
             // settters
             void setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
@@ -64,6 +66,7 @@ namespace Renderer
             Camera3D::ptr m_lightCamera;
             ShaderManager::ptr m_shaderManager;
             TextureManager::ptr m_textureManager;
+            LightManager::ptr m_lightManager;
     };
 
 }

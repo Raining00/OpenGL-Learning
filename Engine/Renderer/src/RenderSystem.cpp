@@ -20,6 +20,8 @@ void RenderSystem::initialize(int width, int height)
     resize(m_width, m_height);
     m_shaderManager = ShaderManager::getInstance();
     m_textureManager = TextureManager::getInstance();
+    m_lightManager = LightManager::getInstance();
+
 }
 
 Camera3D::ptr RenderSystem::createFPSCamera(glm::vec3 pos, glm::vec3 target)
