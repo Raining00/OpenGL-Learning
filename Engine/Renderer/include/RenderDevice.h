@@ -12,6 +12,7 @@ namespace Renderer
 class RenderDevice: public Singleton<RenderDevice>
 {
 public:
+    typedef std::shared_ptr<RenderDevice> ptr;
     static glm::vec2 m_cursorPos;
     static glm::vec2 m_deltaCurPos;
     static bool m_keyPressed[1024];

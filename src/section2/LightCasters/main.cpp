@@ -19,12 +19,9 @@ int main(int argc, char **argv)
     Renderer::ShaderManager::ptr ShaderMgr = renderSystem->getShaderManager();
     Renderer::TextureManager::ptr TextureMgr = renderSystem->getTextureManager();
     Renderer::LightManager::ptr LightMgr = renderSystem->getLightManager();
-    // unsigned int dirlight = LightMgr->CreateDirectionalLight("dirLight", glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f));
-    // unsigned int pointlight = LightMgr->CreatePointLight("pointLight", glm::vec3(0.2f, 2.7f, 0.2f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f), 1.0f, 0.09f, 0.032f);
+    unsigned int dirlight = LightMgr->CreateDirectionalLight("dirLight", glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f));
+    unsigned int pointlight = LightMgr->CreatePointLight("pointLight", glm::vec3(0.2f, 2.7f, 0.2f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f), 1.0f, 0.09f, 0.032f);
     unsigned int spotlight = LightMgr->CreateSpotLight("spotLight");
-    // Renderer::SpotLight::ptr spotlight = std::make_shared<Renderer::SpotLight>();
-    // spotlight->setLightColor(glm::vec3(0.2f), glm::vec3(0.8f), glm::vec3(1.0f));
-
     // prcess args
     std::string camera_type = "tps";
     if (argc > 1)
@@ -155,7 +152,6 @@ int main(int argc, char **argv)
     glm::vec3 lightDirection(-0.2f, -1.0f, -0.3f);
     glm::vec3 pointLightPosition(0.2f, 2.7f, 0.2f);
 
-    glm::vec3 materialSpecular(0.5f, 0.5f, 0.5f);
     float materialShininess = 64.0f;
     // we can use some set functions in renderSystem class to control render state. such like:
     renderSystem->setCullFace(false, GL_BACK); // here we disable cull face or we won't see the triangle in opengl render window
