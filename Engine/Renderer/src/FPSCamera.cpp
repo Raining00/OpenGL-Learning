@@ -14,7 +14,6 @@ namespace Renderer
     {
         if (m_dirty)
         {
-            m_dirty = false;
             m_viewMatrix = glm::mat4(1.0);
 
             m_viewMatrix = glm::translate(glm::mat4_cast(glm::inverse(m_rotation)), -m_translation);
@@ -39,22 +38,22 @@ namespace Renderer
         switch (key)
         {
         case 'W':
-            this->translate(this->Forward() * deltaTime * m_moveSpeed);
+            this->translate(this->getFront() * deltaTime * m_moveSpeed);
             break;
         case 'S':
-            this->translate(-this->Forward() * deltaTime * m_moveSpeed);
+            this->translate(-this->getFront() * deltaTime * m_moveSpeed);
             break;
         case 'A':
-            this->translate(-this->Right() * deltaTime * m_moveSpeed);
+            this->translate(-this->getRight() * deltaTime * m_moveSpeed);
             break;
         case 'D':
-            this->translate(this->Right() * deltaTime * m_moveSpeed);
+            this->translate(this->getRight() * deltaTime * m_moveSpeed);
             break;
         case 'Q':
-            this->translate(this->Up() * deltaTime * m_moveSpeed);
+            this->translate(this->getUp() * deltaTime * m_moveSpeed);
             break;
         case 'E':
-            this->translate(-this->Up() * deltaTime * m_moveSpeed);
+            this->translate(-this->getUp() * deltaTime * m_moveSpeed);
             break;
         default:
             break;
@@ -69,7 +68,7 @@ namespace Renderer
     void FPSCamera::onMouseMove(double deltaX, double deltaY, std::string button)
     {
         this->rotate(LocalUp, -deltaX * m_mouseSensitivity);
-        this->rotate(Right(), deltaY * m_mouseSensitivity);
+        this->rotate(getRight(), deltaY * m_mouseSensitivity);
     }
 
     void FPSCamera::lookAt(glm::vec3 dir, glm::vec3 up)
@@ -102,17 +101,17 @@ namespace Renderer
         m_dirty = true;
     }
 
-    glm::vec3 FPSCamera::Forward() const
+    glm::vec3 FPSCamera::getFront() const
     {
         return m_rotation * LocalForward;
     }
 
-    glm::vec3 FPSCamera::Up() const
+    glm::vec3 FPSCamera::getUp() const
     {
         return m_rotation * LocalUp;
     }
 
-    glm::vec3 FPSCamera::Right() const
+    glm::vec3 FPSCamera::getRight() const
     {
         return m_rotation * LocalRight;
     }

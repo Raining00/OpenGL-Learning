@@ -83,4 +83,18 @@ namespace Renderer
 		}
 	}
 
+	glm::vec3 TPSCamera::getFront() const
+	{
+		return glm::normalize(m_target.translation() - m_cameraPos);
+	}
+
+	glm::vec3 TPSCamera::getRight() const
+	{
+		return glm::normalize(glm::cross(getFront(), LocalUp));
+	}
+
+	glm::vec3 TPSCamera::getUp() const
+	{
+		return glm::normalize(glm::cross(getRight(), getFront()));
+	}
 }

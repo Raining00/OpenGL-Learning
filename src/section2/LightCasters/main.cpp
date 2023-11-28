@@ -22,6 +22,12 @@ int main(int argc, char **argv)
     Renderer::DirectionalLight::ptr dirLight = std::make_shared<Renderer::DirectionalLight>();
     dirLight->setLightColor(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
     dirLight->setLightDirection(glm::vec3(-0.2f, -1.0f, -0.3f));
+    // point light
+    Renderer::PointLight::ptr pointLight = std::make_shared<Renderer::PointLight>();
+    pointLight->setLightColor(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
+    // spot light
+    Renderer::SpotLight::ptr spotLight = std::make_shared<Renderer::SpotLight>();
+    spotLight->setLightColor(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
     // prcess args
     std::string camera_type = "tps";
     if (argc > 1)
@@ -56,50 +62,49 @@ int main(int argc, char **argv)
         return -1;
     }
 
-     float vertices[] = {
+    float vertices[] = {
         // positions          // normals           // texture coords
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
-    };
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
     glm::vec3 cubePositions[] = {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(2.0f, 5.0f, -15.0f),
@@ -112,15 +117,16 @@ int main(int argc, char **argv)
         glm::vec3(1.5f, 0.2f, -1.5f),
         glm::vec3(-1.3f, 1.0f, -1.5f)};
     GLuint shader1 = ShaderMgr->loadShader("cube", SHADER_PATH "/LightCasters/LightCasters.vs", SHADER_PATH "/LightCasters/LightCasters.fs");
+    GLuint lightCube = ShaderMgr->loadShader("lightCube", SHADER_PATH "/Colors/Colors.vs", SHADER_PATH "/Colors/Light.fs");
     ShaderMgr->bindShader(shader1);
-    ShaderMgr->getShader(shader1)->setInt("material.diffuse",  0);
+    ShaderMgr->getShader(shader1)->setInt("material.diffuse", 0);
     ShaderMgr->getShader(shader1)->setInt("material.specular", 1);
     ShaderMgr->unbindShader();
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, lightVAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-
+    glGenVertexArrays(1, &lightVAO);
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -132,22 +138,28 @@ int main(int argc, char **argv)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    //texture attribute
+    // texture attribute
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                         (void *)(6 * sizeof(float)));
+                          (void *)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+
+    glBindVertexArray(lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
     // load ambient/diffuse texture
     GLuint ambientMap = TextureMgr->loadTexture2D("ambientMap", ASSETS_PATH "/texture/109447235_p0.jpg");
     // load specular texture
     GLuint specularMap = TextureMgr->loadTexture2D("specularMap", ASSETS_PATH "/texture/93447255_p0.png");
 
-    glm::vec3 backgroundColor(0.2f, 0.3f, 0.3f);
+    glm::vec3 backgroundColor(0.0, 0.0, 0.0);
     glm::vec3 lightDirection(-0.2f, -1.0f, -0.3f);
-    
+    glm::vec3 pointLightPosition(0.2f, 2.7f, 0.2f);
+
     glm::vec3 materialSpecular(0.5f, 0.5f, 0.5f);
     float materialShininess = 64.0f;
-
     // we can use some set functions in renderSystem class to control render state. such like:
     renderSystem->setCullFace(false, GL_BACK); // here we disable cull face or we won't see the triangle in opengl render window
     while (window->run())
@@ -163,8 +175,9 @@ int main(int argc, char **argv)
         // model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         ShaderMgr->bindShader(shader1);
         // light
-        dirLight->setLightDirection(lightDirection);
-        dirLight->setLightUniforms(ShaderMgr->getShader(shader1), camera);
+        spotLight->setLightDirection(camera->getFront());
+        spotLight->setLightPosition(camera->getPosition());
+        spotLight->setLightUniforms(ShaderMgr->getShader(shader1), camera);
         // camera
         ShaderMgr->getShader(shader1)->setMat4("view", view);
         ShaderMgr->getShader(shader1)->setMat4("projection", projection);
@@ -174,7 +187,7 @@ int main(int argc, char **argv)
         ShaderMgr->getShader(shader1)->setFloat("material.shininess", materialShininess);
 
         glBindVertexArray(VAO);
-        for(int i =0; i<10; i++)
+        for (int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0);
             model = glm::translate(model, cubePositions[i]);
@@ -183,6 +196,18 @@ int main(int argc, char **argv)
             ShaderMgr->getShader(shader1)->setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        ShaderMgr->bindShader(lightCube);
+        ShaderMgr->getShader(lightCube)->setMat4("view", view);
+        ShaderMgr->getShader(lightCube)->setMat4("projection", projection);
+        glm::mat4 model = glm::mat4(1.0);
+        model = glm::translate(model, pointLightPosition);
+        model = glm::scale(model, glm::vec3(0.2f));
+        ShaderMgr->getShader(lightCube)->setMat4("model", model);
+        ShaderMgr->getShader(lightCube)->setVec3("lightColor", pointLight->getSpecular());
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        ShaderMgr->unbindShader();
         // imgui
         {
             ImGui::Begin("LightingMaps Example");
@@ -197,6 +222,14 @@ int main(int argc, char **argv)
             ImGui::Begin("light and material");
             ImGui::Text("light");
             ImGui::DragFloat3("lightDirection", (float *)&lightDirection, 0.1f);
+            ImGui::Text("Point Light:");
+            ImGui::DragFloat3("pointLightPosition", (float *)&pointLightPosition, 0.1f);            
+            ImGui::DragFloat("pointLightLinear", pointLight->getLinearPtr(), 0.001f, 0.0f, 1.0f);
+            ImGui::DragFloat("pointLightQuadratic", pointLight->getQuadraticPtr(), 0.0001f, 0.0f, 1.0f);
+            ImGui::Text("Spot Light:");
+            ImGui::DragFloat("spotLightLinear", spotLight->getLinearPtr(), 0.001f, 0.0f, 1.0f);
+            ImGui::DragFloat("spotLightQuadratic", spotLight->getQuadraticPtr(), 0.0001f, 0.0f, 1.0f);
+            ImGui::DragFloat("spotLightInnerCutoff", spotLight->getInnerCutoffPtr(), 0.1f, glm::radians(0.0f), glm::radians(90.0f));
             ImGui::End();
         }
         window->endFrame();

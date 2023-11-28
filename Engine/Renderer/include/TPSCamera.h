@@ -33,6 +33,9 @@ namespace Renderer
         virtual void onWheelMove(double delta) override;
         virtual void onMouseMove(double deltaX, double deltaY, std::string button) override;
 
+        glm::vec3 getFront() const override;
+        glm::vec3 getRight() const override;
+        glm::vec3 getUp() const override;
     private:
         mutable bool m_dirty; // should update or not
         glm::vec3 m_cameraPos;

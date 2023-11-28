@@ -35,9 +35,9 @@ namespace Renderer
         void setRotation(const glm::quat& r);
 
         // query for camera's axis
-        glm::vec3 Forward() const;
-        glm::vec3 Up() const;
-        glm::vec3 Right() const;
+        glm::vec3 getFront() const override;
+        glm::vec3 getUp() const override;
+        glm::vec3 getRight() const override;
     private:
         mutable bool m_dirty; // should update or not
         glm::vec3 m_translation;

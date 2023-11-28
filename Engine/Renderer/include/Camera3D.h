@@ -41,6 +41,9 @@ namespace Renderer
         virtual void onWheelMove(double delta) = 0;
         virtual void onMouseMove(double deltaX, double deltaY, std::string button) = 0;
 
+        virtual glm::vec3  getFront() const = 0;
+        virtual glm::vec3  getRight() const = 0;
+        virtual glm::vec3  getUp() const = 0;
     protected:
         glm::mat4 m_viewMatrix{glm::mat4(1.0f)};
         glm::mat4 m_projectionMatrix{glm::mat4(1.0f)};
