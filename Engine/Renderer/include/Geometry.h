@@ -16,7 +16,7 @@ namespace Renderer
     class Plane : public Mesh
     {
     public:
-        Plane(float width, float height);
+        Plane(float width, float height, float scale=1.0f);
 
         virtual ~Plane() = default;
     };
@@ -24,7 +24,7 @@ namespace Renderer
     class Cube : public Mesh
     {
     public:
-        Cube(float width, float height, float depth);
+        Cube(float width, float height, float depth, float scale = 1.0);
 
         virtual ~Cube() = default;
     };

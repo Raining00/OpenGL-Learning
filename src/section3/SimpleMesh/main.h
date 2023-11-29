@@ -3,39 +3,66 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-class MultipleLights : public Renderer::WindowApp
+class SimpleMesh : public Renderer::WindowApp
 {
 public:
-    MultipleLights(int width = 1920, int height = 1080, const std::string &title = "MultipleLights", const std::string &cameraType = "tps")
+    SimpleMesh(int width = 1920, int height = 1080, const std::string &title = "SimpleMesh", const std::string &cameraType = "tps")
         : WindowApp(width, height, title, cameraType)
     {
     }
 
-    ~MultipleLights() = default;
+    ~SimpleMesh() = default;
 
     virtual void Init() override
     {
         //shaders
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
         // texture
-        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/93447255_p0.png");
+        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
         unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg");
-        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0));
-        m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(1.0f));
-        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, 600.0f, -600.0f, 600.0f, 1.0f, 500.0f);
+        float scale = 50.f;
+        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
+        unsigned int cudaMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
+        unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
+        
+        m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), glm::vec3(0.5), glm::vec3(0.6f), glm::vec3(0.6));
+        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
+            -600.0f, +600.0f, 1.0f, 500.0f);
 
+        // add drawable
         m_renderSystem->UseDrawableList(true);
-        Renderer::SimpleDrawable* contianer[1];
+        Renderer::SimpleDrawable* contianer[3];
+        // floor plan
         contianer[0] = new Renderer::SimpleDrawable(phoneShader);
         contianer[0]->addMesh(planeMesh);
         contianer[0]->addTexture(diffuseMap);
         contianer[0]->setReceiveShadow(false);
         contianer[0]->setProduceShadow(false);
-        // set as floor.
-        contianer[0]->getTransformation()->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+        contianer[0]->getTransformation()->setScale(glm::vec3(scale));
         contianer[0]->getTransformation()->setTranslation(glm::vec3(0.0f, -0.5f, 0.0f));
-        contianer[0]->getTransformation()->setRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+        contianer[0]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[0]);
+        // cube
+        contianer[1] = new Renderer::SimpleDrawable(phoneShader);
+        contianer[1]->addMesh(cudaMesh);
+        contianer[1]->addTexture(specularMap);
+        contianer[1]->setReceiveShadow(true);
+        contianer[1]->setProduceShadow(true);
+        contianer[1]->getTransformation()->setScale(glm::vec3(1.0f));
+        contianer[1]->getTransformation()->setTranslation(glm::vec3(0.0f, 0.f, 0.0f));
+        contianer[1]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
+        m_renderSystem->addDrawable(contianer[1]);
+        // sphere
+        contianer[2] = new Renderer::SimpleDrawable(phoneShader);
+        contianer[2]->addMesh(sphereMesh);
+        contianer[2]->addTexture(specularMap);
+        contianer[2]->setReceiveShadow(true);
+        contianer[2]->setProduceShadow(true);
+        contianer[2]->getTransformation()->setScale(glm::vec3(1.0f));
+        contianer[2]->getTransformation()->setTranslation(glm::vec3(3.0f, 0.5f, 0.0f));
+        contianer[2]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
+        m_renderSystem->addDrawable(contianer[2]);
+        //m_renderSystem->setCullFace(false, GL_BACK);
     }
 
     virtual void Render() override

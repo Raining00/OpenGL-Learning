@@ -68,11 +68,10 @@ set(JSONCPP_WITH_EXAMPLE OFF CACHE BOOL "" FORCE)
 mark_as_advanced(JSONCPP_WITH_TESTS JSONCPP_WITH_POST_BUILD_UNITTEST JSONCPP_WITH_PKGCONFIG_SUPPORT JSONCPP_WITH_CMAKE_PACKAGE JSONCPP_WITH_EXAMPLE)
 add_subdirectory(extern/jsoncpp)
 list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/jsoncpp/include")
+list(APPEND TARGET_LIBRARIES jsoncpp_lib jsoncpp_static jsoncpp_object)
 set_property(TARGET jsoncpp_lib PROPERTY FOLDER "extern/JsonCpp")
-set_property(TARGET jsoncpp_static PROPERTY FOLDER "extern/sonCpp")
+set_property(TARGET jsoncpp_static PROPERTY FOLDER "extern/JsonCpp")
 set_property(TARGET jsoncpp_object PROPERTY FOLDER "extern/JsonCpp")
-
-
 
 # OpenMP
 find_package(OpenMP)
@@ -127,7 +126,7 @@ set_property(TARGET Renderer PROPERTY FOLDER "extern/Renderer")
 
 # cuda data structure
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
-list(APPEND TARGET_LIBRARIES jsoncpp Renderer glfw imgui glm::glm ${OPENGL_LIBRARIES})
+list(APPEND TARGET_LIBRARIES Renderer glfw imgui glm::glm ${OPENGL_LIBRARIES})
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)

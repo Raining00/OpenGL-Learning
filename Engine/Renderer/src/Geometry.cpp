@@ -30,7 +30,7 @@ namespace Renderer
         this->setupMesh(vertices, indices);
     }
 
-    Cube::Cube(float width, float height, float depth)
+    Cube::Cube(float width, float height, float depth, float scale)
     {
         float halfWidth = width / 2.0f;
         float halfHeight = height / 2.0f;
@@ -67,6 +67,12 @@ namespace Renderer
                 Vertex(-halfWidth, -halfHeight, -halfDepth, 0.f, -1.f, 0.f, 0.f, 0.f, 0.0, 1.0, 0.0),
                 Vertex(+halfWidth, -halfHeight, -halfDepth, 0.f, -1.f, 0.f, 1.f, 0.f, 0.0, 0.0, 1.0),
                 Vertex(+halfWidth, -halfHeight, +halfDepth, 0.f, -1.f, 0.f, 1.f, 1.f, 1.0, 0.0, 1.0)};
+
+        for (auto& vertex: vertices)
+        {
+            vertex.texCoords *= scale;
+            vertex.position *= scale;
+        }
 
         std::vector<unsigned int> indices =
             {
@@ -143,7 +149,7 @@ namespace Renderer
         setupMesh(vertices, indices);
     }
 
-    Plane::Plane(float width, float height)
+    Plane::Plane(float width, float height, float scale)
     {
         float half_width = width / 2.0f;
         float half_height = height / 2.0f;
@@ -151,8 +157,7 @@ namespace Renderer
         std::vector<unsigned int> indices;
         Vertex current;
         current.normal = glm::vec3(0.0f, 1.0f, 0.0f);
-        float texcoordScale = width / 8.0f;
-        texcoordScale = 1.0f;
+        float texcoordScale = 1.0 * scale;
         // v0
         current.position = glm::vec3(-half_width, 0.0f, -half_height);
         current.texCoords = glm::vec2(0.0f, texcoordScale);

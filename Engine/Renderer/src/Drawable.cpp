@@ -33,8 +33,8 @@ namespace Renderer
         shader->use();
         shader->setInt("image", 0);
         shader->setBool("receiveShadow", m_receiveShadow);
-        shader->setMat4("view", glm::mat4(glm::mat3(camera->getViewMatrix())));
-        shader->setMat4("projection", camera->getProjectionMatrix());
+        shader->setMat4("viewMatrix", glm::mat4(glm::mat3(camera->getViewMatrix())));
+        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }
@@ -61,15 +61,15 @@ namespace Renderer
         // light space matrix.
         if (lightCamera != nullptr)
             shader->setMat4("lightSpaceMatrix",
-                            lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+                lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         else
             shader->setMat4("lightSpaceMatrix", glm::mat4(1.0f));
         // object matrix.
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
-        shader->setMat4("model", m_transformation.getWorldMatrix());
-        shader->setMat4("view", camera->getViewMatrix());
-        shader->setMat4("projection", camera->getProjectionMatrix());
+        shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+        shader->setMat4("viewMatrix", camera->getViewMatrix());
+        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
@@ -82,14 +82,14 @@ namespace Renderer
         shader->use();
         shader->setBool("instance", false);
         shader->setMat4("lightSpaceMatrix",
-                        lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
-        shader->setMat4("model", m_transformation.getWorldMatrix());
+            lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+        shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }
 
     void ContainerDrawable::render(Camera3D::ptr camera, Light::ptr sunLight,
-                                   Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
+        Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
     {
         if (!m_visible)
             return;
@@ -110,15 +110,15 @@ namespace Renderer
         // light space matrix.
         if (lightCamera != nullptr)
             shader->setMat4("lightSpaceMatrix",
-                            lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+                lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         else
             shader->setMat4("lightSpaceMatrix", glm::mat4(1.0f));
         // object matrix.
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
-        shader->setMat4("model", m_transformation.getWorldMatrix());
-        shader->setMat4("view", camera->getViewMatrix());
-        shader->setMat4("projection", camera->getProjectionMatrix());
+        shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+        shader->setMat4("viewMatrix", camera->getViewMatrix());
+        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
@@ -132,8 +132,8 @@ namespace Renderer
         shader->use();
         shader->setBool("instance", false);
         shader->setMat4("lightSpaceMatrix",
-                        lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
-        shader->setMat4("model", m_transformation.getWorldMatrix());
+            lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+        shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }

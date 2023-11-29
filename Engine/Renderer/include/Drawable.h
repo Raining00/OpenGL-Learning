@@ -22,9 +22,9 @@ namespace Renderer
         virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) = 0;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) = 0;
 
-        virtual void getAABB(glm::vec3 &min, glm::vec3 &max) {}
+        virtual void getAABB(glm::vec3& min, glm::vec3& max) {}
 
-        virtual void setInstance(const bool &instance, const int &instanceNum = 0)
+        virtual void setInstance(const bool& instance, const int& instanceNum = 0)
         {
             m_instance = instance;
             m_instanceNum = instanceNum;
@@ -39,17 +39,17 @@ namespace Renderer
         void addTexture(unsigned int texIndex) { m_texIndex.push_back(texIndex); }
         void addMesh(unsigned int meshIndex) { m_meshIndex.push_back(meshIndex); }
 
-        Transform3D *getTransformation() { return &m_transformation; }
+        Transform3D* getTransformation() { return &m_transformation; }
 
     protected:
         void renderImp();
 
     protected:
-        bool m_instance{false};
-        bool m_receiveShadow{true};
-        bool m_produceShadow{true};
-        bool m_visible{true};
-        int m_instanceNum{0};
+        bool m_instance{ false };
+        bool m_receiveShadow{ true };
+        bool m_produceShadow{ true };
+        bool m_visible{ true };
+        int m_instanceNum{ 0 };
         Transform3D m_transformation;
 
         unsigned int m_shaderIndex;
@@ -65,7 +65,7 @@ namespace Renderer
         DrawableList() = default;
         virtual ~DrawableList() = default;
 
-        unsigned int addDrawable(Drawable *drawable)
+        unsigned int addDrawable(Drawable* drawable)
         {
             m_drawableList.push_back(Drawable::ptr(drawable));
             return m_drawableList.size() - 1;
@@ -79,7 +79,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override
         {
-            for (auto &drawable : m_drawableList)
+            for (auto& drawable : m_drawableList)
             {
                 drawable->render(camera, sunLight, lightCamera, shader);
             }
@@ -87,7 +87,7 @@ namespace Renderer
 
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override
         {
-            for (auto &drawable : m_drawableList)
+            for (auto& drawable : m_drawableList)
             {
                 drawable->renderDepth(shader, lightCamera);
             }

@@ -8,15 +8,15 @@ out vec3 Normal;
 out vec2 TexCoords;
 
 uniform bool instance;
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectMatrix;
 uniform mat3 normalMatrix;
 
 void main()
 {
-    FragPos = vec3(model * vec4(aPos, 1.0));
+    FragPos = vec3(modelMatrix * vec4(aPos, 1.0));
     Normal = normalMatrix * aNormal; 
     TexCoords = aTexCoords;
-    gl_Position = projection * view * vec4(FragPos, 1.0);
+    gl_Position = projectMatrix * viewMatrix * vec4(FragPos, 1.0);
 }

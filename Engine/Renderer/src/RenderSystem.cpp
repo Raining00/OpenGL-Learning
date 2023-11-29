@@ -23,7 +23,7 @@ namespace Renderer
         m_textureManager = TextureManager::getInstance();
         m_lightManager = LightManager::getInstance();
         m_meshManager = MeshManager::getInstance();
-        DrawableList::ptr m_drawableList = std::make_shared<DrawableList>();
+        m_drawableList = std::make_shared<DrawableList>();
     }
 
     Camera3D::ptr RenderSystem::createFPSCamera(glm::vec3 pos, glm::vec3 target)
@@ -50,7 +50,7 @@ namespace Renderer
         }
         const float length = 200;
         glm::vec3 pos = length * m_sunLight->getDirection();
-        if (m_lightCamera = nullptr)
+        if (m_lightCamera == nullptr)
         {
             FPSCamera *_cam = new FPSCamera(pos);
             m_lightCamera = std::shared_ptr<Camera3D>(_cam);
