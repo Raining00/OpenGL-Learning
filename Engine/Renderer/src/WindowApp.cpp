@@ -13,6 +13,7 @@ namespace Renderer
         m_shaderManager = m_renderSystem->getShaderManager();
         m_textureManager = m_renderSystem->getTextureManager();
         m_lightManager = m_renderSystem->getLightManager();
+        m_meshManager = m_renderSystem->getMeshManager();
 
         if (cameraType == "tps")
         {

@@ -74,6 +74,15 @@
         "__nullptr": "cpp",
         "filesystem": "cpp",
         "*.ipp": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "any": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp",
+        "regex": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }
