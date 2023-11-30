@@ -75,7 +75,7 @@ namespace Renderer
         // load the image
         int width, height, channels;
         // rotate the image
-        stbi_set_flip_vertically_on_load(true);
+        // stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load((path + pFix).c_str(), &width, &height, &channels, 0);
         if (data)
         {

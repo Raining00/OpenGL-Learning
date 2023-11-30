@@ -2,7 +2,7 @@
 #include "WindowApp.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-
+#include "StaticModelDrawable.h"
 class SimpleMesh : public Renderer::WindowApp
 {
 public:
@@ -49,7 +49,7 @@ public:
         contianer[1]->setReceiveShadow(true);
         contianer[1]->setProduceShadow(true);
         contianer[1]->getTransformation()->setScale(glm::vec3(1.0f));
-        contianer[1]->getTransformation()->setTranslation(glm::vec3(0.0f, 0.f, 0.0f));
+        contianer[1]->getTransformation()->setTranslation(glm::vec3(-1.0f, 0.f, 0.0f));
         contianer[1]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[1]);
         // sphere
@@ -62,6 +62,11 @@ public:
         contianer[2]->getTransformation()->setTranslation(glm::vec3(3.0f, 0.5f, 0.0f));
         contianer[2]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[2]);
+
+        Renderer::StaticModelDrawable* model = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina.obj");
+        model->getTransformation()->setScale(glm::vec3(1.0f));
+        model->getTransformation()->setTranslation(glm::vec3(0.0f, -0.5f, 0.0f));        
+        m_renderSystem->addDrawable(model);
         //m_renderSystem->setCullFace(false, GL_BACK);
     }
 
@@ -69,6 +74,7 @@ public:
     {
        m_renderDevice->beginFrame();
        m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
+    //    m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
        m_renderSystem->render();
        DrawImGui();
        m_renderDevice->endFrame();
@@ -81,6 +87,15 @@ public:
             ImGui::Begin("SimpleMesh Example");
             ImGui::Text("SimpleMesh Example");
             ImGui::ColorEdit3("backgroundColor", (float *)&m_BackColor);
+            ImGui::Text("SunLight");
+            ImGui::SliderFloat3("sunLightDir", (float *)&sunLightDir, -1.0f, 1.0f);
+            ImGui::ColorEdit3("sunLightColor", (float *)&sunLightColor);
+            ImGui::Text("Ambient");
+            ImGui::SliderFloat("ambientColor", (float *)&ambientCoef, 0.0f, 1.0f);
+            ImGui::Text("Diffuse");
+            ImGui::SliderFloat("diffuseColor", (float *)&diffuseCoef, 0.0, 1.0f);
+            ImGui::Text("Specular");
+            ImGui::SliderFloat("specularColor", (float *)&specularCoef, 0.0, 1.0f);
             ImGui::End();
         }
     }
@@ -90,4 +105,9 @@ public:
     }
 
 private:
+    glm::vec3 sunLightDir{glm::vec3(0.072f, 0.42f, 1.0f)};
+    glm::vec3 sunLightColor{glm::vec3(0.5)};
+    float ambientCoef{0.5f};
+    float diffuseCoef{0.6f};
+    float specularCoef{0.6f};
 };

@@ -4,17 +4,17 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/extern/glad/include",
+                "${workspaceFolder}/extern/glad/",
                 "${workspaceFolder}/extern/glfw/include",
                 "${workspaceFolder}/Engine/cuda/**",
-                "${workspaceFolder}/Engine/Renderer/include/**",
-                "/usr/local/cuda-12.3/include"
+                "/usr/local/cuda-12.3/include",
+                "${workspaceFolder}/Engine/Renderer/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "${default}",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

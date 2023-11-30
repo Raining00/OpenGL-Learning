@@ -90,6 +90,12 @@ namespace Renderer
     void RenderSystem::setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
     {
         // TODO: IMPLEMENT DIRECTIONAL LIGHT
+        if(m_sunLight != nullptr)
+        {
+            m_sunLight->setLightDirection(direction);
+            m_sunLight->setLightColor(ambient, diffuse, specular);
+            return;
+        }
         DirectionalLight *light = new DirectionalLight();
         light->setLightDirection(direction);
         light->setLightColor(ambient, diffuse, specular);
