@@ -22,7 +22,7 @@ namespace Renderer
         virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) = 0;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) = 0;
 
-        virtual void getAABB(glm::vec3& min, glm::vec3& max) {}
+        virtual void getAABB(glm::vec3& min, glm::vec3& max) { min = glm::vec3(0.0f); max = glm::vec3(0.0f);}
 
         virtual void setInstance(const bool& instance, const int& instanceNum = 0)
         {
