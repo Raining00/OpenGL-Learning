@@ -5,7 +5,7 @@
 #### Linux(Ubuntu)
 
 ```shell
-apt-get install build-essential libglew-dev cmake libopenexr-dev
+apt-get install build-essential libglew-dev cmake libopenexr-dev libassimp-dev
 ```
 
 make sure you have CUDA installed.
@@ -39,6 +39,20 @@ If compilation fails inexplicably or takes much long time, you might be running 
 Make sure you have visual studio and CUDA installed.
 
 Installing git from [**here**](https://git-scm.com/downloads) and cmake from [**here**](https://cmake.org/download/).
+
+I recommend you to install [**vcpkg**](https://github.com/microsoft/vcpkg.git). Please refer to the instructions on the vcpkg homepage for installation and configuration, and make sure you have integrated vcpkg in visual studio.
+
+```shell
+.\vcpkg.exe integrate install
+```
+
+Use vcpkg to install the assimp library:
+
+```
+.\vcpkg.exe install assimp:x64-windows
+```
+
+This may take a while.
 
 Open Windows cmd or powershell, clone this Repositories:
 
