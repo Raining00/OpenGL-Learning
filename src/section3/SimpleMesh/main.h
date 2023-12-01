@@ -63,10 +63,14 @@ public:
         contianer[2]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[2]);
 
-        Renderer::StaticModelDrawable* model = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina.obj");
-        model->getTransformation()->setScale(glm::vec3(1.0f));
-        model->getTransformation()->setTranslation(glm::vec3(0.0f, -0.5f, 0.0f));        
-        m_renderSystem->addDrawable(model);
+        Renderer::StaticModelDrawable* model[2];
+        model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
+        model[0]->getTransformation()->setScale(glm::vec3(1.0f));
+        model[0]->getTransformation()->setTranslation(glm::vec3(0.5f, -0.5f, 0.0f));
+        m_renderSystem->addDrawable(model[0]);
+        model[1] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/seahorse.obj");
+        model[1]->getTransformation()->setTranslation(glm::vec3(0.0f, 0.0f, 0.5f));
+        m_renderSystem->addDrawable(model[1]);
         //m_renderSystem->setCullFace(false, GL_BACK);
     }
 
@@ -74,7 +78,7 @@ public:
     {
        m_renderDevice->beginFrame();
        m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
-    //    m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
+       m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
        m_renderSystem->render();
        DrawImGui();
        m_renderDevice->endFrame();
