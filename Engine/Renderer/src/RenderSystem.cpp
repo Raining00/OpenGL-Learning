@@ -127,6 +127,7 @@ namespace Renderer
         }
         else
             glDisable(GL_DEPTH_TEST);
+     
 
         if (m_useDrawableList)
         {

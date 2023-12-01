@@ -36,7 +36,7 @@ namespace Renderer
             m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 100.0f);
             Renderer::FPSCamera *fpsCamera = reinterpret_cast<Renderer::FPSCamera *>(m_camera.get());
             fpsCamera->setMouseSensitivity(0.3f);
-            fpsCamera->setMoveSpeed(10.f);
+            fpsCamera->setMoveSpeed(5.f);
         }
         else
         {

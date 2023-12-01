@@ -5,10 +5,10 @@
 #### Linux(Ubuntu)
 
 ```shell
-apt-get install build-essential libglew-dev cmake libopenexr-dev libassimp-dev
+sudo apt-get install build-essential mesa-common-dev libglew-dev cmake libopenexr-dev libassimp-dev
 ```
 
-make sure you have CUDA installed.
+Make sure you have CUDA installed.
 
 Clone this Repositories:
 

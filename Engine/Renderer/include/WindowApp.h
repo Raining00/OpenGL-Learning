@@ -29,7 +29,7 @@ protected:
     MeshManager::ptr m_meshManager;
     
     DrawableList::ptr m_drawableList;
-    glm::vec3 m_BackColor{0.2f, 0.3f, 0.3f};
+    glm::vec3 m_BackColor{ 0.0f,0.0f,0.0f };
 };
 
 }

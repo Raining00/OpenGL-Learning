@@ -107,9 +107,9 @@ set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shader")
 set(ASSETS_PATH "${PROJECT_SOURCE_DIR}/assets")
 configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.ini ${CMAKE_SOURCE_DIR}/include/Config.h)
 
-# assimp
+
 if(MSVC)
-    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+    add_subdirectory(shader)
 else()
     find_package(assimp REQUIRED)
     list(APPEND TARGET_INCLUDE_DIRECTORIES ${ASSIMP_INCLUDE_DIRS})

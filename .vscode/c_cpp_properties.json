@@ -7,11 +7,11 @@
                 "${workspaceFolder}/extern/glad/",
                 "${workspaceFolder}/extern/glfw/include",
                 "${workspaceFolder}/Engine/cuda/**",
-                "/usr/local/cuda-12.3/include",
-                "${workspaceFolder}/Engine/Renderer/include/**"
+                "${workspaceFolder}/Engine/Renderer/include/**",
+                "O:/vcpkg/installed/x64-windows/include/"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "",
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "${default}",

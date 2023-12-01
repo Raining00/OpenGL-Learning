@@ -10,10 +10,17 @@
 
 namespace Renderer
 {
+    typedef struct StencilHandle {
+        GLenum func{ GL_ALWAYS };
+        GLint ref{ 1 };
+        GLuint funcMask{ 0xFF };
+        GLuint stencilMask{ 0xFF };
+    }StencilHandle;
 
     class Drawable
     {
     public:
+
         typedef std::shared_ptr<Drawable> ptr;
 
         Drawable() = default;
@@ -29,6 +36,13 @@ namespace Renderer
             m_instance = instance;
             m_instanceNum = instanceNum;
         }
+
+        virtual void setStencil(const bool& stencil, const StencilHandle& stencilOp, GLuint stencilShaderIndex)
+		{
+			m_stencil = stencil;
+			m_stencilOp = stencilOp;
+            m_stencilShaderIndex = stencilShaderIndex;
+		}
 
         void setVisiable(bool visiable) { m_visible = visiable; }
         bool isVisiable() { return m_visible; }
@@ -49,12 +63,16 @@ namespace Renderer
         bool m_receiveShadow{ true };
         bool m_produceShadow{ true };
         bool m_visible{ true };
+        bool m_stencil{ false };
         int m_instanceNum{ 0 };
         Transform3D m_transformation;
 
         unsigned int m_shaderIndex;
+        unsigned int m_stencilShaderIndex;
         std::vector<unsigned int> m_texIndex;
         std::vector<unsigned int> m_meshIndex;
+
+        StencilHandle m_stencilOp;
     };
 
     class DrawableList : public Drawable

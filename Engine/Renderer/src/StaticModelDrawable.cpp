@@ -23,6 +23,16 @@ namespace Renderer
     {
         if (!m_visible)
             return;
+
+        glStencilMask(0x00);
+        if (m_stencil)
+        {
+            glEnable(GL_STENCIL_TEST);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+        }
+
         if (shader == nullptr)
         {
             shader = ShaderManager::getInstance()->getShader(m_shaderIndex);
@@ -42,9 +52,38 @@ namespace Renderer
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
         shader->setMat4("viewMatrix", camera->getViewMatrix());
-        shader->setMat4("projectionMatrix", camera->getProjectionMatrix());
+        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
+
+        // use stencil test to draw outline
+        if (m_stencil)
+		{
+            // for example: glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            // glStencilMask(0x00);
+            glStencilFunc(m_stencilOp.func, m_stencilOp.ref, m_stencilOp.funcMask);
+            glStencilMask(m_stencilOp.stencilMask);
+			glDisable(GL_DEPTH_TEST);
+			//Shader::ptr shader = ShaderManager::getInstance()->getShader("stencil");
+            shader = ShaderManager::getInstance()->getShader(m_stencilShaderIndex);
+			shader->use();
+            float scale = 1.1f;
+            glm::mat4 modelMatrix(1.0f);
+            modelMatrix = glm::translate(modelMatrix, m_transformation.translation());
+            modelMatrix = glm::scale(modelMatrix, glm::vec3(scale, scale, scale));
+
+			shader->setMat4("modelMatrix", modelMatrix);
+			shader->setMat4("viewMatrix", camera->getViewMatrix());
+			shader->setMat4("projectMatrix", camera->getProjectionMatrix());
+            shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
+			this->renderImp();
+            // reset and clear stencil buffer. make sure this will not affect other objects.
+			glStencilMask(0xFF);
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glEnable(GL_DEPTH_TEST);
+            glClear(GL_STENCIL_BUFFER_BIT);
+		}
+
         ShaderManager::getInstance()->unbindShader();
     }
 
