@@ -256,12 +256,94 @@ namespace Renderer
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         // here must be GL_NEAREST, otherwise there is a bug.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void TextureColor::clearTexture()
+    {
+        glDeleteTextures(1, &m_id);
+    }
+
+    TextureStencil::TextureStencil(int width, int height)
+		: m_width(width), m_height(height)
+	{
+		setupTexture("", "");
+	}
+
+    TextureStencil::~TextureStencil()
+	{
+		clearTexture();
+	}
+
+    void TextureStencil::bind(unsigned int slot)
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_id);
+	}
+
+	void TextureStencil::unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	void TextureStencil::setupTexture(const std::string &path, const std::string &pFix)
+	{
+		// generate depth buffer.
+		glGenTextures(1, &m_id);
+		glBindTexture(GL_TEXTURE_2D, m_id);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_STENCIL_INDEX,
+			m_width, m_height, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // minification filter
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // magnification filter
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // wrap on x axis
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // wrap on y axis
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	void TextureStencil::clearTexture()
+	{
+		glDeleteTextures(1, &m_id);
+	}
+
+    TextureDepthStencil::TextureDepthStencil(int width, int height):m_width(width), m_height(height)
+    {
+		setupTexture("", "");
+    }
+
+    TextureDepthStencil::~TextureDepthStencil()
+	{   
+        clearTexture();
+	}
+
+	void TextureDepthStencil::bind(unsigned int slot)
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_id);
+	}
+
+    void TextureDepthStencil::unbind()
+    {
+		glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void TextureDepthStencil::setupTexture(const std::string& path, const std::string& pFix)
+    {
+        glGenTextures(1, &m_id);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8,
+			m_width, m_height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
+        // filter setting
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // minification filter
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // magnification filter
+		// wrap setting
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // wrap on x axis
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // wrap on y axis
+		glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void TextureDepthStencil::clearTexture()
     {
         glDeleteTextures(1, &m_id);
     }

@@ -170,4 +170,52 @@ namespace Renderer
         ShaderManager::getSingleton()->unbindShader();
     }
 
+    FramebufferDrawable::FramebufferDrawable(unsigned int shaderIndex, unsigned int scrWidth, unsigned int scrHeight):
+        m_scrWidth(scrWidth), m_scrHeight(scrHeight)
+    {
+        m_shaderIndex = shaderIndex;
+        //m_frameBuffer = std::make_shared<FrameBuffer>(new FrameBuffer(m_scrWidth, m_scrHeight, "", "", { "ColorAttachment" }));
+    }
+    void FramebufferDrawable::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
+    {
+		if (!m_visible)
+			return;
+		m_frameBuffer->bind();
+		glViewport(0, 0, m_scrWidth, m_scrHeight);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (shader == nullptr)
+			shader = ShaderManager::getSingleton()->getShader(m_shaderIndex);
+        // depth map.
+        Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
+        if (depthMap != nullptr)
+        {
+            shader->setInt("depthMap", 1);
+            depthMap->bind(1);
+        }
+        if (lightCamera != nullptr)
+            shader->setMat4("lightSpaceMatrix",
+                lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+        else
+            shader->setMat4("lightSpaceMatrix", glm::mat4(1.0f));
+		shader->use();
+		shader->setInt("material.diffuse", 0);
+		shader->setBool("receiveShadow", m_receiveShadow);
+		shader->setMat4("viewMatrix", glm::mat4(glm::mat3(camera->getViewMatrix())));
+		shader->setMat4("projectMatrix", camera->getProjectionMatrix());
+		this->renderImp();
+		ShaderManager::getSingleton()->unbindShader();
+		m_frameBuffer->unBind();
+    }
+    void FramebufferDrawable::renderDepth(std::shared_ptr<Shader> shader, Camera3D::ptr lightCamera)
+    {
+        if (!m_visible || !m_produceShadow)
+			return;
+		shader->use();
+		shader->setBool("instance", false);
+		shader->setMat4("lightSpaceMatrix",
+			lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+		this->renderImp();
+		ShaderManager::getSingleton()->unbindShader();
+    }
 } // namespace Renderer

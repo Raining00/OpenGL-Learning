@@ -1,6 +1,8 @@
 #include "RenderSystem.h"
 #include "TPSCamera.h"
 #include "FPSCamera.h"
+#include "Config.h"
+
 namespace Renderer
 {
 
@@ -60,6 +62,16 @@ namespace Renderer
         _cam->lookAt(-m_sunLight->getDirection(), Camera3D::LocalUp);
     }
 
+    void RenderSystem::createFrameBuffer(int width, int height)
+    {
+        m_frameBuffer = std::make_shared<FrameBuffer>(width, height, "", "", std::vector<std::string>{"Color"});
+
+        // Framebuffer shader
+        m_shaderManager->loadShader("Framebuffer", SHADER_PATH "/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBuffer.fs");
+        // create quad
+        m_screenQuad = m_meshManager->loadMesh(new ScreenQuad());
+    }
+
     void RenderSystem::setClearMask(const GLbitfield &mask)
     {
         m_renderState.m_clearMask = mask;
@@ -80,6 +92,19 @@ namespace Renderer
     {
         m_renderState.m_depthTest = enable;
         m_renderState.m_depthFunc = func;
+    }
+    void RenderSystem::setBlend(const bool& enable, const GLenum& src, const GLenum& dst)
+    {
+        m_renderState.m_blend = enable;
+        m_renderState.m_blendSrc = src;
+        m_renderState.m_blendDst = dst;
+        if (enable)
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(src, dst);
+        }
+		else
+			glDisable(GL_BLEND);
     }
 
     void RenderSystem::setPolygonMode(GLenum mode)
@@ -102,7 +127,7 @@ namespace Renderer
         m_sunLight = std::shared_ptr<DirectionalLight>(light);
     }
 
-    void RenderSystem::render()
+    void RenderSystem::renderWithoutFramebuffer()
     {
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
@@ -127,7 +152,6 @@ namespace Renderer
         }
         else
             glDisable(GL_DEPTH_TEST);
-     
 
         if (m_useDrawableList)
         {
@@ -135,6 +159,64 @@ namespace Renderer
                 return;
             m_drawableList->render(m_camera, m_sunLight, m_lightCamera);
         }
+    }
+
+    void RenderSystem::renderWithFramebuffer()
+    {
+        if(m_frameBuffer == nullptr)
+		{
+			PRINT_WARNING("You have to create the framebuffer first before using it");
+			return;
+		}
+        // first bind the framebuffer, and draw everything as usual.
+        m_frameBuffer->bind();
+        glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
+        glClear(m_renderState.m_clearMask);
+        // depth test
+        if (m_renderState.m_depthTest)
+        {
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(m_renderState.m_depthFunc);
+        }
+        else
+            glDisable(GL_DEPTH_TEST);
+
+        // cullface
+        if (m_renderState.m_cullFace)
+        {
+            glEnable(GL_CULL_FACE);
+            glCullFace(m_renderState.m_cullFaceMode);
+        }
+        else
+            glDisable(GL_CULL_FACE);
+
+        if (m_useDrawableList)
+        {
+            if (m_drawableList == nullptr)
+                return;
+            m_drawableList->render(m_camera, m_sunLight, m_lightCamera);
+        }
+        // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // we should disable depth test here, otherwise the quad will be discarded.
+        glDisable(GL_DEPTH_TEST);
+        glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
+        glClear(GL_COLOR_BUFFER_BIT);
+        // draw the framebuffer texture on a quad. 
+        Shader::ptr framebufferShader = m_shaderManager->getShader("Framebuffer");
+        framebufferShader->use();
+        framebufferShader->setInt("screenTexture", 0);
+        GLuint colorTex = m_frameBuffer->getColorTextureIndex(0);
+        m_textureManager->bindTexture(colorTex, 0);
+        m_meshManager->drawMesh(m_screenQuad, false);
+    }
+
+    void RenderSystem::render(const bool& withFramebuffer)
+    {
+        if (withFramebuffer)
+			renderWithFramebuffer();
+		else
+			renderWithoutFramebuffer();
     }
 
 }

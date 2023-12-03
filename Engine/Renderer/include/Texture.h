@@ -125,4 +125,39 @@ namespace Renderer
         virtual void clearTexture();
     };
 
+    class TextureStencil :public Texture
+    {
+
+    public:
+        TextureStencil(int width, int height);
+		~TextureStencil();
+
+		virtual void bind(unsigned int unit);
+		virtual void unbind();
+
+    private:
+        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void clearTexture();
+
+    private:
+        int m_width, m_height;
+    };
+
+
+    class TextureDepthStencil :public Texture
+    {
+    public:
+        TextureDepthStencil(int width, int height);
+		~TextureDepthStencil();
+
+		virtual void bind(unsigned int unit);
+		virtual void unbind();
+
+    private:
+        virtual void setupTexture(const std::string &path, const std::string &pFix);
+		virtual void clearTexture();
+
+    private:
+        int m_width, m_height;
+    };
 }

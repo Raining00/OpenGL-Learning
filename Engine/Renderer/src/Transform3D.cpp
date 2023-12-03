@@ -18,7 +18,7 @@ namespace Renderer
         if (m_dirty)
         {
             m_dirty = false;
-            m_worldMatrix = glm::mat4_cast(m_rotation);
+            m_worldMatrix = glm::mat4(1.0f);
             m_worldMatrix = glm::translate(m_worldMatrix, m_translation);
             m_worldMatrix = m_worldMatrix * glm::mat4_cast(m_rotation);
             m_worldMatrix = glm::scale(m_worldMatrix, m_scale);

@@ -4,28 +4,29 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "StaticModelDrawable.h"
 
-class DepthTest : public Renderer::WindowApp
+class FrameBuffer : public Renderer::WindowApp
 {
 public:
-    DepthTest(int width = 1920, int height = 1080, const std::string &title = "SimpleMesh", const std::string &cameraType = "tps")
+    FrameBuffer(int width = 1920, int height = 1080, const std::string &title = "FrameBuffer", const std::string &cameraType = "tps")
         : WindowApp(width, height, title, cameraType)
     {
     }
 
-    ~DepthTest() = default;
+    ~FrameBuffer() = default;
 
     virtual void Init() override
     {
         //shaders
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
-        unsigned int stencilShader = m_shaderManager->loadShader("stencilShader", \
-            SHADER_PATH"/StencilTest/stencil.vs", SHADER_PATH"/StencilTest/stencil.fs");
+        //unsigned int screenShader = m_shaderManager->loadShader("FrameBuffer", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBuffer.fs");
 
         // texture
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
         unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg");
+        unsigned int blendMap = m_textureManager->loadTexture2D("blendMap", ASSETS_PATH"/texture/blending_transparent_window.png");
         float scale = 50.f;
-        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
+        unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
+        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0));
         unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
         
@@ -35,11 +36,13 @@ public:
 
         // add drawable
         m_renderSystem->UseDrawableList(true);
-        Renderer::SimpleDrawable* contianer[2];
+        Renderer::SimpleDrawable* contianer[3];
         // floor plan
         contianer[0] = new Renderer::SimpleDrawable(phoneShader);
-        contianer[0]->addMesh(planeMesh);
+        contianer[0]->addMesh(floor);
+        //contianer[0]->addMesh(cubeMesh);
         contianer[0]->addTexture(diffuseMap);
+        //contianer[0]->addTexture(specularMap);
         contianer[0]->setReceiveShadow(false);
         contianer[0]->setProduceShadow(false);
         contianer[0]->getTransformation()->setScale(glm::vec3(scale));
@@ -47,43 +50,9 @@ public:
         contianer[0]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[0]);
 
-        Renderer::StaticModelDrawable* model[3];
-        model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
-        Renderer::StencilHandle stencil;
-        stencil.func = GL_NOTEQUAL;
-        stencil.ref = 1;
-        stencil.funcMask = 0xFF;
-        stencil.stencilMask = 0x00;
-        model[0]->setStencil(true, stencil, stencilShader);
-        m_renderSystem->addDrawable(model[0]);
-
-        model[2] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furinaHome.obj");
-        model[2]->getTransformation()->setTranslation(glm::vec3(0.0f, 0.0f, 20.0f));
-        m_renderSystem->addDrawable(model[2]);
-
-
-        model[1] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/seahorse.obj");
-        model[1]->getTransformation()->setTranslation(glm::vec3(1.0f, 0.0f, 0.5f));
-        model[1]->setStencil(true, stencil, stencilShader);
-        m_renderSystem->addDrawable(model[1]);
-
-
-        //contianer[1] = new Renderer::SimpleDrawable(phoneShader);
-        //contianer[1]->addMesh(cubeMesh);
-        //contianer[1]->addTexture(specularMap);
-        //contianer[1]->setReceiveShadow(false);
-        //contianer[1]->setProduceShadow(false);
-        //Renderer::StencilHandle stencil;
-        //stencil.func = GL_NOTEQUAL;
-        //stencil.ref = 1;
-        //stencil.funcMask = 0xFF;
-        //stencil.stencilMask = 0x00;
-        //contianer[1]->setStencil(true, stencil, stencilShader);
-        //contianer[1]->getTransformation()->setScale(glm::vec3(1.0f));
-        //contianer[1]->getTransformation()->setTranslation(glm::vec3(0.0f, -0.5f, 1.0f));
-        //m_renderSystem->addDrawable(contianer[1]);
-
         //m_renderSystem->setCullFace(false, GL_BACK);
+        m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
     }
 
     virtual void Render() override
@@ -91,7 +60,7 @@ public:
        m_renderDevice->beginFrame();
        m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
        m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
-       m_renderSystem->render();
+       m_renderSystem->render(true);
        DrawImGui();
        m_renderDevice->endFrame();
     }

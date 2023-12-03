@@ -7,6 +7,7 @@
 #include "Geometry.h"
 #include "Camera3D.h"
 #include "Transform3D.h"
+#include "FrameBuffer.h"
 
 namespace Renderer
 {
@@ -143,6 +144,22 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
+    };
+
+    class FramebufferDrawable : public Drawable
+    {
+    public:
+        FramebufferDrawable(unsigned int shaderIndex, unsigned int scrWidth, unsigned int scrHeight);
+        ~FramebufferDrawable() = default;
+
+        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
+		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
+    private:
+        FrameBuffer::ptr m_frameBuffer;
+        unsigned int m_renderTarget;		// render buffer.
+        unsigned int m_depthTarget;			// depth buffer.
+        unsigned int m_scrWidth;
+        unsigned int m_scrHeight;
     };
 
     class ContainerDrawable : public Drawable

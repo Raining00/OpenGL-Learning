@@ -197,7 +197,8 @@ namespace Renderer
             {
                 //! front.
                 0, 1, 2,
-                0, 2, 3};
+                0, 2, 3
+        };
 
         setupMesh(vertices, indices);
     }

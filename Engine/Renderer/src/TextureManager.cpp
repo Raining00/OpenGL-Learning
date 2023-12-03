@@ -54,6 +54,26 @@ namespace Renderer
         return m_textures.size() - 1;
     }
 
+    unsigned int TextureManager::loadTextureStencil(const std::string& name, int width, int height)
+    {
+        if (m_textureMap.find(name) != m_textureMap.end())
+            return m_textureMap[name];
+        Texture::ptr texture = std::make_shared<TextureStencil>(width, height);
+        m_textures.push_back(texture);
+        m_textureMap[name] = m_textures.size() - 1;
+        return m_textures.size() - 1;
+    }
+
+    unsigned int TextureManager::loadTextureDepthStencil(const std::string& name, int width, int height)
+    {
+		if (m_textureMap.find(name) != m_textureMap.end())
+			return m_textureMap[name];
+		Texture::ptr texture = std::make_shared<TextureDepthStencil>(width, height);
+		m_textures.push_back(texture);
+		m_textureMap[name] = m_textures.size() - 1;
+		return m_textures.size() - 1;
+    }
+
     unsigned TextureManager::loadTextureColor(const std::string &name, int width, int height, bool hdr)
     {
         if (m_textureMap.find(name) != m_textureMap.end())

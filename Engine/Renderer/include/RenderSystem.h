@@ -15,17 +15,22 @@ namespace Renderer
         GLenum m_depthFunc;
         GLenum m_polygonMode;
         GLenum m_cullFaceMode;
+        GLenum m_blendSrc;
+        GLenum m_blendDst;
         glm::vec4 m_clearColor;
         GLbitfield m_clearMask;
-        bool m_depthTest, m_cullFace;
+        bool m_depthTest, m_cullFace, m_blend;
 
         RenderState() : m_depthFunc(GL_LESS),
             m_polygonMode(GL_FILL),
             m_cullFaceMode(GL_BACK),
+            m_blendSrc(GL_SRC_ALPHA),
+            m_blendDst(GL_ONE_MINUS_SRC_ALPHA),
             m_clearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
             m_clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
             m_depthTest(true),
-            m_cullFace(true)
+            m_cullFace(true),
+            m_blend(false)
         {
         }
     };
@@ -42,6 +47,7 @@ namespace Renderer
         void initialize(int width, int height);
         void createShadowDepthMap(int width, int height);
         void createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far);
+        void createFrameBuffer(int width, int height);
         Camera3D::ptr createTPSCamera(glm::vec3 pos, glm::vec3 target);
         Camera3D::ptr createFPSCamera(glm::vec3 pos, glm::vec3 target);
         void addDrawable(Drawable::ptr drawable) { m_drawableList->addDrawable(drawable); }
@@ -60,13 +66,17 @@ namespace Renderer
         void setClearColor(const glm::vec4& color);
         void setCullFace(const bool& enable, const GLenum& face);
         void setDepthTest(const bool& enable, const GLenum& func);
+        void setBlend(const bool& enable, const GLenum& src, const GLenum& dst);
         void UseDrawableList(const bool& use = false) { m_useDrawableList = use; }
 
-        void render();
+        void render(const bool& withFramebuffer = false);
+        void renderWithFramebuffer();
+        void renderWithoutFramebuffer();
 
     private:
         bool m_glowBlurEnable;
         int m_width, m_height;
+        unsigned int m_screenQuad;
         RenderState m_renderState;
 
         DirectionalLight::ptr m_sunLight;
@@ -82,6 +92,7 @@ namespace Renderer
         DrawableList::ptr m_drawableList;
         bool m_useDrawableList{ false };
 
+        FrameBuffer::ptr m_frameBuffer{ nullptr };
     private:
         void renderShadowDepth();
         void renderMotionBlurQuad();
