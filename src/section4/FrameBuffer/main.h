@@ -18,7 +18,7 @@ public:
     {
         //shaders
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
-        unsigned int blendingShader = m_shaderManager->loadShader("blendingShader", SHADER_PATH"/Blending/blend.vs", SHADER_PATH"/Blending/blend.fs");
+        unsigned int blendingShader = m_shaderManager->loadShader("blendingShader", SHADER_PATH"/Blending/Blend.vs", SHADER_PATH"/Blending/Blend.fs");
 
         // texture
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");

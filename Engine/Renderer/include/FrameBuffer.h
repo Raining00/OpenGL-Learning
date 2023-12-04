@@ -4,7 +4,7 @@
 #ifdef _WIN32
 #include "glad/glad.h"
 #elif defined(__linux__)
-#include "glew/glew.h"
+#include "GL/glew.h"
 #endif 
 #include <memory>
 #include <string>
