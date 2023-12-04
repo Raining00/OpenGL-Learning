@@ -18,7 +18,7 @@ public:
     {
         //shaders
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
-        //unsigned int screenShader = m_shaderManager->loadShader("FrameBuffer", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBuffer.fs");
+        unsigned int blendingShader = m_shaderManager->loadShader("blendingShader", SHADER_PATH"/Blending/blend.vs", SHADER_PATH"/Blending/blend.fs");
 
         // texture
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
@@ -36,19 +36,44 @@ public:
 
         // add drawable
         m_renderSystem->UseDrawableList(true);
-        Renderer::SimpleDrawable* contianer[3];
+        Renderer::SimpleDrawable* contianer[4];
         // floor plan
         contianer[0] = new Renderer::SimpleDrawable(phoneShader);
         contianer[0]->addMesh(floor);
-        //contianer[0]->addMesh(cubeMesh);
         contianer[0]->addTexture(diffuseMap);
-        //contianer[0]->addTexture(specularMap);
         contianer[0]->setReceiveShadow(false);
         contianer[0]->setProduceShadow(false);
         contianer[0]->getTransformation()->setScale(glm::vec3(scale));
         contianer[0]->getTransformation()->setTranslation(glm::vec3(0.0f, 0.0, 0.0f));
         contianer[0]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[0]);
+
+        contianer[1] = new Renderer::SimpleDrawable(phoneShader);
+        contianer[1]->addMesh(cubeMesh);
+        contianer[1]->addTexture(specularMap);
+        contianer[1]->setReceiveShadow(false);
+        contianer[1]->setProduceShadow(false);
+        contianer[1]->getTransformation()->setTranslation(glm::vec3(-1.0f, 0.5f, 1.0f));
+        m_renderSystem->addDrawable(contianer[1]);
+
+        contianer[2] = new Renderer::SimpleDrawable(blendingShader);
+        contianer[2]->addMesh(planeMesh);
+        contianer[2]->addTexture(blendMap);
+        contianer[2]->setReceiveShadow(false);
+        contianer[2]->setProduceShadow(false);
+        contianer[2]->getTransformation()->translate(glm::vec3(0.0f, 0.5f, 1.0f));
+        contianer[2]->getTransformation()->rotate(glm::vec3(1.0f, 0.0f, 0.0f), glm::radians(-90.0f));
+        contianer[2]->getTransformation()->rotate(glm::vec3(0.0f, 0.0f, 1.0f), glm::radians(180.0f));
+
+        Renderer::StaticModelDrawable* model[3];
+        model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
+        m_renderSystem->addDrawable(model[0]);
+
+        model[1] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/seahorse.obj");
+        model[1]->getTransformation()->setTranslation(glm::vec3(1.0f, 0.0f, 0.5f));
+        m_renderSystem->addDrawable(model[1]);
+
+        m_renderSystem->addDrawable(contianer[2]);
 
         //m_renderSystem->setCullFace(false, GL_BACK);
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
