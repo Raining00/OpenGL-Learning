@@ -16,10 +16,10 @@ namespace Renderer
         TextureManager::ptr textureManager = TextureManager::getSingleton();
         for (int x = 0; x < m_meshIndex.size(); x++)
         {
-            if (x < m_texIndex.size())
-                textureManager->bindTexture(m_texIndex[x], 0);
-            else
-                textureManager->unbindTexture(m_texIndex[x]);
+            for(int i = 0; i < m_texIndex.size(); i++)
+                textureManager->bindTexture(m_texIndex[x], i);
+            //else
+            //    textureManager->unbindTexture(m_texIndex[x]);
             meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
         }
     }
@@ -60,6 +60,7 @@ namespace Renderer
 
         // texture
         shader->setInt("material.diffuse", 0);
+        shader->setInt("material.specular", 1);
         // depth map.
         Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
         if (depthMap != nullptr)

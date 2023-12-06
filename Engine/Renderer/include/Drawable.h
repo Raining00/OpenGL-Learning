@@ -57,7 +57,7 @@ namespace Renderer
         Transform3D* getTransformation() { return &m_transformation; }
 
     protected:
-        void renderImp();
+        virtual void renderImp();
 
     protected:
         bool m_instance{ false };

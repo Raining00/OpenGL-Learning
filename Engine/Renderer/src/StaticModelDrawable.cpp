@@ -19,6 +19,27 @@ namespace Renderer
         loadModel(path);
     }
 
+    void StaticModelDrawable::renderImp()
+    {
+        MeshManager::ptr meshManager = MeshManager::getSingleton();
+		TextureManager::ptr textureManager = TextureManager::getSingleton();
+        for (int x = 0; x < m_meshIndex.size(); x++)
+        {
+            if (m_textureMapList[x].find("diffuse") != m_textureMapList[x].end())
+				textureManager->bindTexture(m_textureMapList[x]["diffuse"], 0);
+            if (m_textureMapList[x].find("specular") != m_textureMapList[x].end())
+                textureManager->bindTexture(m_textureMapList[x]["specular"], 1);
+            if (m_textureMapList[x].find("normal") != m_textureMapList[x].end())
+                textureManager->bindTexture(m_textureMapList[x]["normal"], 2);
+            if (m_textureMapList[x].find("height") != m_textureMapList[x].end())
+                textureManager->bindTexture(m_textureMapList[x]["height"], 3);
+            if(textureManager->getTexture("skybox") != nullptr)
+				textureManager->bindTexture(textureManager->getTextureIndex("skybox"), 4);
+			meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
+		}
+    }
+
+
     void StaticModelDrawable::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
     {
         if (!m_visible)
@@ -43,6 +64,10 @@ namespace Renderer
             sunLight->setLightUniforms(shader, camera, "sunLight");
         }
         shader->setInt("material.diffuse", 0);
+        shader->setInt("material.specular", 1);
+        shader->setInt("material.normal", 2);
+        shader->setInt("material.height", 3);
+        shader->setInt("material.reflection", 4);
         if (lightCamera != nullptr)
             shader->setMat4("lightSpaceMatrix", lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         else
@@ -192,12 +217,51 @@ namespace Renderer
         {
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
             aiString nameStr;
-            material->GetTexture(aiTextureType_DIFFUSE, 0, &nameStr);
-            std::string name(nameStr.C_Str());
-            if (name != "")
+            unsigned int count = material->GetTextureCount(aiTextureType_DIFFUSE);
+            std::map<std::string, unsigned int> tmp;
+            if (count > 0)
             {
-                texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+                material->GetTexture(aiTextureType_DIFFUSE, 0, &nameStr);
+                std::string name(nameStr.C_Str());
+                if (name != "")
+                {
+                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+                    tmp.insert(std::make_pair("diffuse", texIndex));
+                }
             }
+            count = material->GetTextureCount(aiTextureType_SPECULAR);
+            if (count > 0) {
+                material->GetTexture(aiTextureType_SPECULAR, 0, &nameStr);
+                std::string name = std::string(nameStr.C_Str());
+                if (name != "")
+                {
+                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+                    tmp.insert(std::make_pair("specular", texIndex));
+                }
+            }
+            count = material->GetTextureCount(aiTextureType_HEIGHT);
+            if (count > 0)
+            {
+				material->GetTexture(aiTextureType_HEIGHT, 0, &nameStr);
+				std::string name = std::string(nameStr.C_Str());
+                if (name != "")
+                {
+					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+					tmp.insert(std::make_pair("normal", texIndex));
+				}
+			}
+            count = material->GetTextureCount(aiTextureType_AMBIENT);
+            if (count > 0)
+            {
+                material->GetTexture(aiTextureType_AMBIENT, 0, &nameStr);
+				std::string name = std::string(nameStr.C_Str());
+                if (name != "")
+                {
+					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+					tmp.insert(std::make_pair("height", texIndex));
+				}
+            }
+            m_textureMapList.push_back(tmp);
         }
 
     }

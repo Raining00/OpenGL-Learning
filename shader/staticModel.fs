@@ -72,8 +72,14 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient  = light.ambient  * color;
     vec3 diffuse  = light.diffuse  * diff * color;
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
-    
-    return (ambient + diffuse + specular);
+    // reflect
+    vec3 I = normalize(FragPos - cameraPos);
+    vec3 R = reflect(I, normalize(Normal));
+    vec3 reflectTex = texture(material.height, TexCoords).rgb;
+    vec3 sampledSkybox = texture(material.reflection, R).rgb;
+    vec3 reflect = vec3(reflectTex.r * sampledSkybox.r, reflectTex.g * sampledSkybox.g, reflectTex.b * sampledSkybox.b);
+
+    return (ambient + diffuse + specular + reflect);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)

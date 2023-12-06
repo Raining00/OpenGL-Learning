@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Drawable.h"
-
+#include "../include/Drawable.h"
+#include <map>
 class aiMesh;
 class aiNode;
 class aiScene;
@@ -21,6 +21,8 @@ namespace Renderer
         virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
 
+    protected:
+        virtual void renderImp() override;
     
     private:
         void loadModel(const std::string& path);
@@ -29,5 +31,8 @@ namespace Renderer
     private:
         glm::vec3 m_min, m_max;
         std::string m_directory;
+        // string: texture type: diffuse, specular, normal, height
+        // unsigned int: texture index
+        std::vector<std::map<std::string, unsigned int>> m_textureMapList;
     };
 }
