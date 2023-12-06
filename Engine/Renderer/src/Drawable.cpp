@@ -18,10 +18,11 @@ namespace Renderer
         {
             for(int i = 0; i < m_texIndex.size(); i++)
                 textureManager->bindTexture(m_texIndex[x], i);
-            //else
-            //    textureManager->unbindTexture(m_texIndex[x]);
+               
             meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
+            textureManager->unbindTexture(m_texIndex[x]);
         }
+       
     }
 
     void SkyBox::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
@@ -60,7 +61,7 @@ namespace Renderer
 
         // texture
         shader->setInt("material.diffuse", 0);
-        shader->setInt("material.specular", 1);
+        shader->setInt("material.specular", 0);
         // depth map.
         Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
         if (depthMap != nullptr)

@@ -28,6 +28,9 @@ namespace Renderer
         void loadModel(const std::string& path);
         void processNode(aiNode* node, const aiScene* scene);
         void processMesh(aiMesh* mesh, const aiScene* scene, unsigned int& meshIndex, unsigned int& texIndex);
+
+        void bind(int x);
+        void unbind(int x);
     private:
         glm::vec3 m_min, m_max;
         std::string m_directory;
