@@ -1,7 +1,14 @@
 #include "FPSCamera.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include <iostream>
+#ifdef _WIN32
+#include "glad//glad.h"
+#elif defined(__linux__)
+#include <GL/glew.h>
+#endif // _WIN32
+
 
 namespace Renderer
 {
@@ -115,4 +122,13 @@ namespace Renderer
     {
         return m_rotation * LocalRight;
     }
+
+    void FPSCamera::updateMatrixUBO()
+    {
+        glBindBuffer(GL_UNIFORM_BUFFER, m_ubo);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(this->getProjectionMatrix()));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(this->getViewMatrix()));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
 }

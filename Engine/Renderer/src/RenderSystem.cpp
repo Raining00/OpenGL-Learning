@@ -47,6 +47,7 @@ namespace Renderer
     {
         FPSCamera *_cam = new FPSCamera(pos);
         _cam->lookAt(glm::normalize(target - pos), Camera3D::LocalUp);
+        _cam->createUBO();
         m_camera = std::shared_ptr<Camera3D>(_cam);
         return m_camera;
     }
@@ -54,6 +55,7 @@ namespace Renderer
     Camera3D::ptr RenderSystem::createTPSCamera(glm::vec3 pos, glm::vec3 target)
     {
         TPSCamera *_cam = new TPSCamera(target, 0.0f, 30.0f, 3.0f);
+        _cam->createUBO();
         m_camera = std::shared_ptr<Camera3D>(_cam);
         return m_camera;
     }
@@ -197,6 +199,7 @@ namespace Renderer
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
 
+        m_camera->updateMatrixUBO();
         // render the skydome.
         if (m_skyBox != nullptr)
         {

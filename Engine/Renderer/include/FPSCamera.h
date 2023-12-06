@@ -17,6 +17,7 @@ namespace Renderer
         virtual glm::vec3 getPosition() { return m_translation; }
         virtual glm::mat4 getViewMatrix() override;
         virtual glm::mat4 getInvViewMatrix() override;
+        void updateMatrixUBO() override;
 
         //setting functions
         void setMouseSensitivity(float sensitivity) { m_mouseSensitivity = sensitivity; }

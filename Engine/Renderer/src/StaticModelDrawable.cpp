@@ -66,8 +66,8 @@ namespace Renderer
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
-        shader->setMat4("viewMatrix", camera->getViewMatrix());
-        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
+        //shader->setMat4("viewMatrix", camera->getViewMatrix());
+        //shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
 

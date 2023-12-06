@@ -34,8 +34,8 @@ namespace Renderer
         shader->use();
         shader->setInt("image", 0);
         shader->setBool("receiveShadow", m_receiveShadow);
-        shader->setMat4("viewMatrix", glm::mat4(glm::mat3(camera->getViewMatrix())));
-        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
+        //shader->setMat4("viewMatrix", glm::mat4(glm::mat3(camera->getViewMatrix())));
+        //shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }
@@ -79,8 +79,8 @@ namespace Renderer
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
-        shader->setMat4("viewMatrix", camera->getViewMatrix());
-        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
+        /*shader->setMat4("viewMatrix", camera->getViewMatrix());
+        shader->setMat4("projectMatrix", camera->getProjectionMatrix());*/
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
         if (m_stencil)
@@ -151,8 +151,8 @@ namespace Renderer
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
-        shader->setMat4("viewMatrix", camera->getViewMatrix());
-        shader->setMat4("projectMatrix", camera->getProjectionMatrix());
+        //shader->setMat4("viewMatrix", camera->getViewMatrix());
+        //shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();

@@ -1,5 +1,10 @@
 #include "TPSCamera.h"
-
+#ifdef _WIN32
+#include "glad//glad.h"
+#elif defined(__linux__)
+#include <GL/glew.h>
+#endif // _WIN32
+#include "glm/gtc/type_ptr.hpp"
 #include <iostream>
 
 namespace Renderer
@@ -96,5 +101,13 @@ namespace Renderer
 	glm::vec3 TPSCamera::getUp() const
 	{
 		return glm::normalize(glm::cross(getRight(), getFront()));
+	}
+
+	void TPSCamera::updateMatrixUBO()
+	{
+		glBindBuffer(GL_UNIFORM_BUFFER, m_ubo);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(this->getProjectionMatrix()));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(this->getViewMatrix()));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 }

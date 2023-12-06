@@ -82,7 +82,6 @@ public:
         model[1] = new Renderer::StaticModelDrawable(staticModelShader, ASSETS_PATH "/model/nanosuit_reflection/nanosuit.obj");
         model[1]->getTransformation()->scale(glm::vec3(0.1));
         model[1]->getTransformation()->setTranslation(glm::vec3(1.0f, 0.0f, 0.5f));
-
         m_renderSystem->addDrawable(model[1]);
 
         m_renderSystem->addDrawable(contianer[2]);

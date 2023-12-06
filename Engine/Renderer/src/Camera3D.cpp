@@ -1,5 +1,11 @@
 #include "Camera3D.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#ifdef _WIN32
+#include "glad/glad.h"
+#elif defined(__linux__)
+#include "GL/glew.h"
+#endif 
 
 namespace Renderer
 {
@@ -37,5 +43,14 @@ namespace Renderer
     glm::mat4 Camera3D::getInvProjectionMatrix() const
     {
         return m_invProjectionMatrix;
+    }
+
+    void Camera3D::createUBO()
+    {
+        glGenBuffers(1, &m_ubo);
+        glBindBuffer(GL_UNIFORM_BUFFER, m_ubo);
+        glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_ubo, 0, 2 * sizeof(glm::mat4));
     }
 } // namespace Renderer

@@ -20,6 +20,9 @@ namespace Renderer
         Camera3D() = default;
         virtual ~Camera3D() = default;
 
+        void createUBO();
+        virtual void updateMatrixUBO() = 0;
+
         // setting functions
         void setAspect(float aspect);
         void setPerspective(float angle, float aspect, float near, float far);
@@ -49,6 +52,7 @@ namespace Renderer
         glm::mat4 m_projectionMatrix{glm::mat4(1.0f)};
         glm::mat4 m_invProjectionMatrix{glm::mat4(1.0f)};
         float m_angle, m_aspect, m_near, m_far;
+        unsigned int m_ubo;
     };
 
 }

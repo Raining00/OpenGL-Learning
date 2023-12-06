@@ -32,7 +32,7 @@ namespace Renderer
         {
             PRINT_INFO("Use FPS Camera");
             // FPS camera
-            m_camera = m_renderSystem->createFPSCamera(glm::vec3(0.0, 0.0, -3.0), glm::vec3(0.0, 0.0, 0.0));
+            m_camera = m_renderSystem->createFPSCamera(glm::vec3(0.0, 1.0, 3.0), glm::vec3(0.0, 0.0, 0.0));
             m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 100.0f);
             Renderer::FPSCamera *fpsCamera = reinterpret_cast<Renderer::FPSCamera *>(m_camera.get());
             fpsCamera->setMouseSensitivity(0.3f);

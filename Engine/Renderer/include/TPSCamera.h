@@ -18,6 +18,7 @@ namespace Renderer
         virtual glm::vec3 getPosition() override;
         virtual glm::mat4 getViewMatrix() override;
         virtual glm::mat4 getInvViewMatrix() override;
+        void updateMatrixUBO() override;
 
         // setter
         void setYaw(float yaw) { m_yaw = yaw;}

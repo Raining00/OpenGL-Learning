@@ -48,8 +48,9 @@ namespace Renderer
         void setVisiable(bool visiable) { m_visible = visiable; }
         bool isVisiable() { return m_visible; }
 
-        void setProduceShadow(bool produceShadow) { m_produceShadow = produceShadow; }
-        void setReceiveShadow(bool receiveShadow) { m_receiveShadow = receiveShadow; }
+        void setProduceShadow(const bool& produceShadow) { m_produceShadow = produceShadow; }
+        void setReceiveShadow(const bool& receiveShadow) { m_receiveShadow = receiveShadow; }
+        void setTransformUBO(const unsigned int& ubo) { uboMatrices = ubo; }
 
         void addTexture(unsigned int texIndex) { m_texIndex.push_back(texIndex); }
         void addMesh(unsigned int meshIndex) { m_meshIndex.push_back(meshIndex); }
@@ -70,6 +71,7 @@ namespace Renderer
 
         unsigned int m_shaderIndex;
         unsigned int m_stencilShaderIndex;
+        unsigned int uboMatrices; // (uniform buffer object) for matrices.(Transform matrix: model, view, project, normalMatrix)
         std::vector<unsigned int> m_texIndex;
         std::vector<unsigned int> m_meshIndex;
 
