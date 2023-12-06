@@ -21,7 +21,7 @@ namespace Renderer
         unsigned int loadTexture2D(const std::string& name, const std::string& path, glm::vec4 bColor = glm::vec4(1.0f));
         unsigned int loadTexture2D(const std::string& name, unsigned char* images, int width, int height, int channels);
 
-        unsigned int loadTextureCube(const std::string& name, const std::string& path, const std::string* posFix);
+        unsigned int loadTextureCube(const std::string& name, const std::string& path, const std::string& posFix);
 
         unsigned int loadTextureDepth(const std::string& name, int width, int height);
 

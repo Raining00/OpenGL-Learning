@@ -48,6 +48,15 @@ namespace Renderer
         void createShadowDepthMap(int width, int height);
         void createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far);
         void createFrameBuffer(int width, int height);
+        /**
+        * @brief create a skybox.
+        * make sure the images are in named in the following order:
+        * right, left, top, bottom, back, front
+        * otherwise the skybox will not be read successfully.
+        * @param path the path of the skybox texture. (should be the folder of sky box images)
+        * @param format the format of the skybox images. (should be the same, eg. jpg, png.)
+        */
+        void createSkyBox(const std::string& path, const std::string& format);
         Camera3D::ptr createTPSCamera(glm::vec3 pos, glm::vec3 target);
         Camera3D::ptr createFPSCamera(glm::vec3 pos, glm::vec3 target);
         void addDrawable(Drawable::ptr drawable) { m_drawableList->addDrawable(drawable); }
@@ -78,6 +87,7 @@ namespace Renderer
         int m_width, m_height;
         unsigned int m_screenQuad;
         RenderState m_renderState;
+        SkyBox::ptr m_skyBox;
 
         DirectionalLight::ptr m_sunLight;
 

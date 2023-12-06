@@ -34,7 +34,7 @@ namespace Renderer
         return m_textures.size() - 1;
     }
 
-    unsigned int TextureManager::loadTextureCube(const std::string &name, const std::string &path, const std::string *posFix)
+    unsigned int TextureManager::loadTextureCube(const std::string &name, const std::string &path, const std::string& posFix)
     {
         if (m_textureMap.find(name) != m_textureMap.end())
             return m_textureMap[name];

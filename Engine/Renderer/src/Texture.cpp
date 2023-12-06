@@ -103,9 +103,9 @@ namespace Renderer
         glDeleteTextures(1, &m_id);
     }
 
-    TextureCube::TextureCube(const std::string &path, const std::string *posFix)
+    TextureCube::TextureCube(const std::string &path, const std::string& posFix)
     {
-        setupTexture(path, *posFix);
+        setupTexture(path, posFix);
     }
 
     TextureCube::~TextureCube()

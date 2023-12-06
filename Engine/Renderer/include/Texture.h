@@ -66,7 +66,7 @@ namespace Renderer
     class TextureCube : public Texture
     {
     public:
-        TextureCube(const std::string &path, const std::string *posFix);
+        TextureCube(const std::string &path, const std::string& posFix);
         ~TextureCube();
 
         virtual void bind(unsigned slot);

@@ -28,6 +28,21 @@ namespace Renderer
         m_drawableList = std::make_shared<DrawableList>();
     }
 
+    void RenderSystem::createSkyBox(const std::string& path, const std::string& format)
+    {
+        if (m_skyBox != nullptr)
+        {
+			PRINT_WARNING("You have already created a skybox");
+			return;
+		}
+        unsigned int skyBoxShader = m_shaderManager->loadShader("skyboxShader", SHADER_PATH"/SkyBox/SkyBox.vs", SHADER_PATH"/SkyBox/SkyBox.fs");
+		m_skyBox = std::make_shared<SkyBox>(skyBoxShader);
+        unsigned int skyBoxTexture = m_textureManager->loadTextureCube("skybox", path, format);
+        unsigned int mesh = m_meshManager->loadMesh(new Sphere(1.0f, 10, 10));
+        m_skyBox->addTexture(skyBoxTexture);
+        m_skyBox->addMesh(mesh);
+	}
+
     Camera3D::ptr RenderSystem::createFPSCamera(glm::vec3 pos, glm::vec3 target)
     {
         FPSCamera *_cam = new FPSCamera(pos);
@@ -132,6 +147,14 @@ namespace Renderer
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
 
+        // render the skydome.
+        if (m_skyBox != nullptr)
+        {
+            glDepthFunc(GL_LEQUAL);
+            glCullFace(GL_FRONT);
+            m_skyBox->render(m_camera, m_sunLight, m_lightCamera);
+        }
+
         // polygon mode
         glPolygonMode(GL_FRONT_AND_BACK, m_renderState.m_polygonMode);
 
@@ -168,10 +191,20 @@ namespace Renderer
 			PRINT_WARNING("You have to create the framebuffer first before using it");
 			return;
 		}
+
         // first bind the framebuffer, and draw everything as usual.
         m_frameBuffer->bind();
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
+
+        // render the skydome.
+        if (m_skyBox != nullptr)
+        {
+            glDepthFunc(GL_LEQUAL);
+            glCullFace(GL_FRONT);
+            m_skyBox->render(m_camera, m_sunLight, m_lightCamera);
+        }
+
         // depth test
         if (m_renderState.m_depthTest)
         {
