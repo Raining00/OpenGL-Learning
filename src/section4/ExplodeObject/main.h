@@ -4,24 +4,22 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "StaticModelDrawable.h"
 
-class SkyBoxDemo : public Renderer::WindowApp
+class ExplodeObject : public Renderer::WindowApp
 {
 public:
-    SkyBoxDemo(int width = 1920, int height = 1080, const std::string& title = "SkyBoxDemo", const std::string& cameraType = "tps")
+    ExplodeObject(int width = 1920, int height = 1080, const std::string& title = "ExplodeObject", const std::string& cameraType = "tps")
         : WindowApp(width, height, title, cameraType)
     {
     }
 
-    ~SkyBoxDemo() = default;
+    ~ExplodeObject() = default;
 
     virtual void Init() override
     {
         //shaders
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
-        unsigned int staticModelShader = m_shaderManager->loadShader("staticModelShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/staticModel.fs");
-        unsigned int blendingShader = m_shaderManager->loadShader("blendingShader", SHADER_PATH"/Blending/Blend.vs", SHADER_PATH"/Blending/Blend.fs");
-        unsigned int skyBoxRelfectShader = m_shaderManager->loadShader("skyBoxRelfectShader", SHADER_PATH"/SkyBox/reflectBox.vs", SHADER_PATH"/SkyBox/reflectBox.fs");
-
+        unsigned int explodeShader = m_shaderManager->loadShader("explodeShader", SHADER_PATH"/ExplodeObject/ExplodeObject.vs", SHADER_PATH"/ExplodeObject/ExplodeObject.fs", SHADER_PATH"/ExplodeObject/ExplodeObject.gs");
+        unsigned int normalDisplay = m_shaderManager->loadShader("normalDisplay", SHADER_PATH"/NormalDisplay/NormalDisplay.vs", SHADER_PATH"/NormalDisplay/NormalDisplay.fs", SHADER_PATH"/NormalDisplay/NormalDisplay.gs");
         // texture
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
         unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg");
@@ -38,7 +36,7 @@ public:
 
         // add drawable
         m_renderSystem->UseDrawableList(true);
-        Renderer::SimpleDrawable* contianer[4];
+        Renderer::SimpleDrawable* contianer[1];
         // floor plan
         contianer[0] = new Renderer::SimpleDrawable(phoneShader);
         contianer[0]->addMesh(floor);
@@ -50,43 +48,20 @@ public:
         contianer[0]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(contianer[0]);
 
-        contianer[1] = new Renderer::SimpleDrawable(skyBoxRelfectShader);
-        contianer[1]->addMesh(cubeMesh);
-        contianer[1]->addTexture(m_textureManager->getTextureIndex("skybox"));
-        contianer[1]->setReceiveShadow(false);
-        contianer[1]->setProduceShadow(false);
-        contianer[1]->getTransformation()->setTranslation(glm::vec3(-2.0f, 0.5f, 1.0f));
-        m_renderSystem->addDrawable(contianer[1]);
-
-        contianer[2] = new Renderer::SimpleDrawable(blendingShader);
-        contianer[2]->addMesh(planeMesh);
-        contianer[2]->addTexture(blendMap);
-        contianer[2]->setReceiveShadow(false);
-        contianer[2]->setProduceShadow(false);
-        contianer[2]->getTransformation()->translate(glm::vec3(0.0f, 0.5f, 1.0f));
-        contianer[2]->getTransformation()->rotate(glm::vec3(1.0f, 0.0f, 0.0f), glm::radians(-90.0f));
-        contianer[2]->getTransformation()->rotate(glm::vec3(0.0f, 0.0f, 1.0f), glm::radians(180.0f));
-
-        contianer[3] = new Renderer::SimpleDrawable(skyBoxRelfectShader);
-        contianer[3]->addMesh(sphereMesh);
-        contianer[3]->addTexture(m_textureManager->getTextureIndex("skybox"));
-        contianer[3]->setReceiveShadow(false);
-        contianer[3]->setProduceShadow(false);
-        contianer[3]->getTransformation()->setTranslation(glm::vec3(3.0f, 1.0f, 1.0f));
-        m_renderSystem->addDrawable(contianer[3]);
-
-        Renderer::StaticModelDrawable* model[3];
+        Renderer::StaticModelDrawable* model[2];
         model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
+        model[0]->getTransformation()->scale(glm::vec3(2));
+        model[1]->getTransformation()->setTranslation(glm::vec3(5.0f, 0.0f, 0.5f));
+        model[0]->showNormal(true, 0.05);
         m_renderSystem->addDrawable(model[0]);
 
-        model[1] = new Renderer::StaticModelDrawable(staticModelShader, ASSETS_PATH "/model/nanosuit_reflection/nanosuit.obj");
-        model[1]->getTransformation()->scale(glm::vec3(0.1));
+        model[1] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/nanosuit_reflection/nanosuit.obj");
+        model[1]->showNormal(true, 0.4);
+        //model[1]->getTransformation()->scale(glm::vec3(0.1));
         model[1]->getTransformation()->setTranslation(glm::vec3(1.0f, 0.0f, 0.5f));
         m_renderSystem->addDrawable(model[1]);
-
-        m_renderSystem->addDrawable(contianer[2]);
-
         //m_renderSystem->setCullFace(false, GL_BACK);
+
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
     }
@@ -96,6 +71,9 @@ public:
         m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
+        //m_shaderManager->getShader("explodeShader")->use();
+        //m_shaderManager->getShader("explodeShader")->setFloat("sperateDistance", m_sperateDistance);
+        //m_shaderManager->getShader("explodeShader")->setFloat("sperateDistance", (float)glfwGetTime());
         m_renderSystem->render(true);
         DrawImGui();
         m_renderDevice->endFrame();
@@ -113,6 +91,9 @@ public:
             ImGui::ColorEdit3("sunLightColor", (float*)&sunLightColor);
             ImGui::Text("Ambient");
             ImGui::SliderFloat("ambientColor", (float*)&ambientCoef, 0.0f, 1.0f);
+
+            ImGui::DragFloat("sperateDistance", &m_sperateDistance, 0.001f, 0.0f, 1.0f);
+
             ImGui::Text("Diffuse");
             ImGui::SliderFloat("diffuseColor", (float*)&diffuseCoef, 0.0, 1.0f);
             ImGui::Text("Specular");
@@ -131,4 +112,5 @@ private:
     float ambientCoef{ 0.5f };
     float diffuseCoef{ 0.6f };
     float specularCoef{ 0.6f };
+    float m_sperateDistance{ 0.01f };
 };

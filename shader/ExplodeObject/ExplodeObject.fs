@@ -45,13 +45,13 @@ struct SpotLight {
 };
 
 out vec4 FragColor;
-in VS_OUT
+
+in GS_OUT
 {
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
 }fs_in;
-
 
 uniform vec3 cameraPos;
 
@@ -76,14 +76,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient  = light.ambient  * color;
     vec3 diffuse  = light.diffuse  * diff * color;
     vec3 specular = light.specular * spec * texture(material.specular, fs_in.TexCoords).rgb;
-    // reflect
-    vec3 I = -viewDir;
-    vec3 R = reflect(I, normal);
-    vec3 reflectTex = texture(material.height, fs_in.TexCoords).rgb;
-    vec3 sampledSkybox = texture(material.reflection, R).rgb;
-    vec3 reflect = vec3(reflectTex.r * sampledSkybox.r, reflectTex.g * sampledSkybox.g, reflectTex.b * sampledSkybox.b);
-
-    return (ambient + diffuse + specular + reflect);
+    
+    return (ambient + diffuse + specular);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)

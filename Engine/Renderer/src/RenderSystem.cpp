@@ -148,7 +148,7 @@ namespace Renderer
     {
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
-
+        m_camera->updateMatrixUBO();
         // render the skydome.
         if (m_skyBox != nullptr)
         {

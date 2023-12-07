@@ -6,6 +6,7 @@
 #include "LightManager.h"
 
 #include "ColorfulPrint.h"
+#include "Config.h"
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
@@ -66,11 +67,8 @@ namespace Renderer
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
-        //shader->setMat4("viewMatrix", camera->getViewMatrix());
-        //shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
-
         // use stencil test to draw outline
         if (m_stencil)
 		{
@@ -98,6 +96,22 @@ namespace Renderer
 			glEnable(GL_DEPTH_TEST);
             glClear(GL_STENCIL_BUFFER_BIT);
 		}
+
+        if (m_showNormal)
+        {
+            shader = ShaderManager::getInstance()->getShader("normalDisplay");
+            if (shader == nullptr)
+            {
+				ShaderManager::getInstance()->loadShader("normalDisplay", SHADER_PATH"/NormalDisplay/NormalDisplay.vs", SHADER_PATH"/NormalDisplay/NormalDisplay.fs", SHADER_PATH"/NormalDisplay/NormalDisplay.gs");
+                shader = ShaderManager::getInstance()->getShader("normalDisplay");
+			}
+			shader->use();
+            shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+            shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
+            shader->setFloat("normalDistance", m_normalDistance);
+            this->renderImp();
+			this->renderImp();
+        }
 
         ShaderManager::getInstance()->unbindShader();
     }
