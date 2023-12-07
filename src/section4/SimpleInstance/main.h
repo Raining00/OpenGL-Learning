@@ -7,7 +7,7 @@
 class SimpleInstance : public Renderer::WindowApp
 {
 public:
-    GLuint vao, vbo;
+    GLuint vao, vbo, instanceVBO;
 
     SimpleInstance(int width = 1920, int height = 1080, const std::string& title = "SimpleInstance", const std::string& cameraType = "tps")
         : WindowApp(width, height, title, cameraType)
@@ -39,8 +39,6 @@ public:
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
         glEnableVertexAttribArray(1);
-        // ENABLE Point sprite
-        glEnable(GL_PROGRAM_POINT_SIZE);
 
         int index = 0;
         float offset = 0.1f;
@@ -55,15 +53,22 @@ public:
             }
         }
 
-        m_shaderManager->bindShader(myShader);
-        for (unsigned int i = 0; i < 100; i++)
-        {
-            std::stringstream ss;
-            std::string index;
-            ss << i;
-            index = ss.str();
-            m_shaderManager->getShader(myShader)->setVec2("offsets[" + index + "]", translations[i]);
-        }
+        glGenBuffers(1, &instanceVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 100, &translations[0], GL_STATIC_DRAW);
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribDivisor(2, 1);
+        //m_shaderManager->bindShader(myShader);
+        //for (unsigned int i = 0; i < 100; i++)
+        //{
+        //    std::stringstream ss;
+        //    std::string index;
+        //    ss << i;
+        //    index = ss.str();
+        //    m_shaderManager->getShader(myShader)->setVec2("offsets[" + index + "]", translations[i]);
+        //}
     }
 
     virtual void Render() override
