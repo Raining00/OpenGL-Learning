@@ -64,7 +64,7 @@ namespace Renderer
         else
             shader->setMat4("lightSpaceMatrix", glm::mat4(1.0f));
         // object matrix
-        shader->setBool("instance", false);
+        shader->setBool("instance", m_instance);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());

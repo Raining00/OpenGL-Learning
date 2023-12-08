@@ -25,6 +25,39 @@ namespace Renderer
        
     }
 
+    void Drawable::setInstance(const bool& instance, const int& instanceNum, const int& instanceVBO, const GLuint& shaderAttribute)
+    {
+        if (shaderAttribute < 3)
+        {
+            PRINT_ERROR("shaderAttribute must be greater than 4. As the first there attributes are for vertex position, normal and texture coordinate.");
+            return;
+        }
+        m_instance = instance;
+        m_instanceNum = instanceNum;
+        auto meshMgr = MeshManager::getSingleton();
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        for (int i = 0; i < m_meshIndex.size(); i++)
+        {
+            GLuint meshVAO = meshMgr->getMesh(m_meshIndex[i])->getVAO();
+            glBindVertexArray(meshVAO);
+            // set attribute pointers for matrix (mat4) (4 times vec4).
+            GLsizei vec4Size = sizeof(glm::vec4);
+            glEnableVertexAttribArray(shaderAttribute + 0);
+            glVertexAttribPointer(shaderAttribute + 0, 4, GL_FLOAT, GL_FALSE, vec4Size * 4, (void*)0);
+            glEnableVertexAttribArray(shaderAttribute + 1);
+            glVertexAttribPointer(shaderAttribute + 1, 4, GL_FLOAT, GL_FALSE, vec4Size * 4, (void*)(sizeof(glm::vec4)));
+            glEnableVertexAttribArray(shaderAttribute + 2);
+            glVertexAttribPointer(shaderAttribute + 2, 4, GL_FLOAT, GL_FALSE, vec4Size * 4, (void*)(2 * sizeof(glm::vec4)));
+            glEnableVertexAttribArray(shaderAttribute + 3);
+            glVertexAttribPointer(shaderAttribute + 3, 4, GL_FLOAT, GL_FALSE, vec4Size * 4, (void*)(3 * sizeof(glm::vec4)));
+
+            glVertexAttribDivisor(shaderAttribute + 0, 1);
+            glVertexAttribDivisor(shaderAttribute + 1, 1);
+            glVertexAttribDivisor(shaderAttribute + 2, 1);
+            glVertexAttribDivisor(shaderAttribute + 3, 1);
+        }
+    }
+
     void SkyBox::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
     {
         if (!m_visible)

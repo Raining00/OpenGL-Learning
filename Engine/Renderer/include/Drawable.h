@@ -32,11 +32,7 @@ namespace Renderer
 
         virtual void getAABB(glm::vec3& min, glm::vec3& max) { min = glm::vec3(0.0f); max = glm::vec3(0.0f);}
 
-        virtual void setInstance(const bool& instance, const int& instanceNum = 0)
-        {
-            m_instance = instance;
-            m_instanceNum = instanceNum;
-        }
+        virtual void setInstance(const bool& instance, const int& instanceNum = 0, const int& instanceVBO = 0, const GLuint& shaderAttribute = 3);
 
         virtual void setStencil(const bool& stencil, const StencilHandle& stencilOp, GLuint stencilShaderIndex)
 		{
