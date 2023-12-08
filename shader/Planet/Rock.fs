@@ -72,10 +72,11 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 ambient  = light.ambient  * color;
     vec3 diffuse  = light.diffuse  * diff * color;
-    vec3 specular = light.specular * spec * texture(material.specular, fs_in.TexCoords).rgb;
+    vec3 specular = light.specular * spec * color;
     
     return (ambient + diffuse + specular);
 }
@@ -138,8 +139,8 @@ void main()
     // direction light
     vec3 result = CalcDirLight(sunLight, norm, viewDir);
 
+    // gamma correction
+    float gamma = 2.2;
+    result = pow(result, vec3(1.0/gamma));
     FragColor = vec4(result, 1.0);
-    // depth dest
-    // float depth = LinearizeDepth(gl_FragCoord.z) / far;
-    // FragColor = vec4(vec3(depth), 1.0);
 }

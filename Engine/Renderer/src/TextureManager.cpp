@@ -14,21 +14,21 @@ namespace Renderer
         return _instance;
     }
 
-    unsigned int TextureManager::loadTexture2D(const std::string &name, const std::string &path, glm::vec4 bColor)
+    unsigned int TextureManager::loadTexture2D(const std::string &name, const std::string &path, glm::vec4 bColor, const TextureType& textureType)
     {
         if (m_textureMap.find(name) != m_textureMap.end())
             return m_textureMap[name];
-        Texture::ptr texture = std::make_shared<Texture2D>(path, bColor);
+        Texture::ptr texture = std::make_shared<Texture2D>(path, bColor, textureType);
         m_textures.push_back(texture);
         m_textureMap[name] = m_textures.size() - 1;
         return m_textures.size() - 1;
     }
 
-    unsigned int TextureManager::loadTexture2D(const std::string &name, unsigned char *images, int width, int height, int channels)
+    unsigned int TextureManager::loadTexture2D(const std::string &name, unsigned char *images, int width, int height, int channels, const TextureType& textureType)
     {
         if (m_textureMap.find(name) != m_textureMap.end())
             return m_textureMap[name];
-        Texture::ptr texture = std::make_shared<Texture2D>(images, width, height, channels);
+        Texture::ptr texture = std::make_shared<Texture2D>(images, width, height, channels, textureType);
         m_textures.push_back(texture);
         m_textureMap[name] = m_textures.size() - 1;
         return m_textures.size() - 1;

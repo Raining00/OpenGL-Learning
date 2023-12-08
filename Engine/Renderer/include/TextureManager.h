@@ -18,8 +18,8 @@ namespace Renderer
 
         static TextureManager::ptr getInstance();
 
-        unsigned int loadTexture2D(const std::string& name, const std::string& path, glm::vec4 bColor = glm::vec4(1.0f));
-        unsigned int loadTexture2D(const std::string& name, unsigned char* images, int width, int height, int channels);
+        unsigned int loadTexture2D(const std::string& name, const std::string& path, glm::vec4 bColor = glm::vec4(1.0f), const TextureType& textureType = TextureType::AMBIENT);
+        unsigned int loadTexture2D(const std::string& name, unsigned char* images, int width, int height, int channels, const TextureType& textureType = TextureType::AMBIENT);
 
         unsigned int loadTextureCube(const std::string& name, const std::string& path, const std::string& posFix);
 

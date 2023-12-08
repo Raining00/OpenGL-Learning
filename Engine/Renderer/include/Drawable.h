@@ -27,7 +27,7 @@ namespace Renderer
         Drawable() = default;
         virtual ~Drawable() = default;
 
-        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) = 0;
+        virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) = 0;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) = 0;
 
         virtual void getAABB(glm::vec3& min, glm::vec3& max) { min = glm::vec3(0.0f); max = glm::vec3(0.0f);}
@@ -94,11 +94,11 @@ namespace Renderer
             return m_drawableList.size() - 1;
         }
 
-        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override
+        virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override
         {
             for (auto& drawable : m_drawableList)
             {
-                drawable->render(camera, sunLight, lightCamera, shader);
+                drawable->render(camera, lightCamera, shader);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Renderer
 
         virtual ~SkyBox() = default;
 
-        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
+        virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override {}
     };
 
@@ -140,7 +140,7 @@ namespace Renderer
         }
         ~SimpleDrawable() = default;
 
-        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
+        virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
     };
 
@@ -150,7 +150,7 @@ namespace Renderer
         FramebufferDrawable(unsigned int shaderIndex, unsigned int scrWidth, unsigned int scrHeight);
         ~FramebufferDrawable() = default;
 
-        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
+        virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
 		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
     private:
         FrameBuffer::ptr m_frameBuffer;
@@ -169,7 +169,7 @@ namespace Renderer
         }
         ~ContainerDrawable() = default;
 
-        virtual void render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
+        virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
     };
 

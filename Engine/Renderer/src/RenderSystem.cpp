@@ -62,13 +62,14 @@ namespace Renderer
 
     void RenderSystem::createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far)
     {
-        if (m_sunLight == nullptr)
+        DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("sunLight").get());
+        if (sunLight == nullptr)
         {
             PRINT_WARNING("You have to set the sun light first before creating the sun light camera");
             return;
         }
         const float length = 200;
-        glm::vec3 pos = length * m_sunLight->getDirection();
+        glm::vec3 pos = length * sunLight->getDirection();
         if (m_lightCamera == nullptr)
         {
             FPSCamera *_cam = new FPSCamera(pos);
@@ -76,7 +77,7 @@ namespace Renderer
         }
         m_lightCamera->setOrtho(left, right, bottom, top, near, far);
         FPSCamera *_cam = static_cast<FPSCamera *>(m_lightCamera.get());
-        _cam->lookAt(-m_sunLight->getDirection(), Camera3D::LocalUp);
+        _cam->lookAt(-sunLight->getDirection(), Camera3D::LocalUp);
     }
 
     void RenderSystem::createFrameBuffer(int width, int height)
@@ -132,16 +133,14 @@ namespace Renderer
     void RenderSystem::setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
     {
         // TODO: IMPLEMENT DIRECTIONAL LIGHT
-        if(m_sunLight != nullptr)
+        DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("sunLight").get());
+        if(sunLight != nullptr)
         {
-            m_sunLight->setLightDirection(direction);
-            m_sunLight->setLightColor(ambient, diffuse, specular);
+            sunLight->setLightDirection(direction);
+            sunLight->setLightColor(ambient, diffuse, specular);
             return;
         }
-        DirectionalLight *light = new DirectionalLight();
-        light->setLightDirection(direction);
-        light->setLightColor(ambient, diffuse, specular);
-        m_sunLight = std::shared_ptr<DirectionalLight>(light);
+        m_lightManager->CreateDirectionalLight("sunLight", direction, ambient, diffuse, specular);
     }
 
     void RenderSystem::renderWithoutFramebuffer()
@@ -154,7 +153,7 @@ namespace Renderer
         {
             glDepthFunc(GL_LEQUAL);
             glCullFace(GL_FRONT);
-            m_skyBox->render(m_camera, m_sunLight, m_lightCamera);
+            m_skyBox->render(m_camera, m_lightCamera);
         }
 
         // polygon mode
@@ -182,7 +181,7 @@ namespace Renderer
         {
             if (m_drawableList == nullptr)
                 return;
-            m_drawableList->render(m_camera, m_sunLight, m_lightCamera);
+            m_drawableList->render(m_camera, m_lightCamera);
         }
     }
 
@@ -205,7 +204,7 @@ namespace Renderer
         {
             glDepthFunc(GL_LEQUAL);
             glCullFace(GL_FRONT);
-            m_skyBox->render(m_camera, m_sunLight, m_lightCamera);
+            m_skyBox->render(m_camera, m_lightCamera);
         }
 
         // depth test
@@ -230,7 +229,7 @@ namespace Renderer
         {
             if (m_drawableList == nullptr)
                 return;
-            m_drawableList->render(m_camera, m_sunLight, m_lightCamera);
+            m_drawableList->render(m_camera, m_lightCamera);
         }
         // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

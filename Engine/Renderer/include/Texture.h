@@ -6,6 +6,14 @@
 
 namespace Renderer
 {
+    enum class TextureType{
+        AMBIENT,
+        DIFFUSE,
+        SPECULAR,
+        NORMAL, 
+        HEIGHT,
+        REFLECT,
+    };
 
     class Texture
     {
@@ -22,6 +30,7 @@ namespace Renderer
     protected:
         std::string m_name;
         unsigned int m_id;
+        TextureType m_textureType;
 
     private:
         virtual void setupTexture(const std::string &path, const std::string &pFix) = 0;
@@ -40,15 +49,15 @@ namespace Renderer
     public:
         typedef std::shared_ptr<Texture2D> ptr;
 
-        Texture2D(unsigned char *images, int width, int height, int channels);
-        Texture2D(const std::string &path, glm::vec4 bColor = glm::vec4(1.0f));
+        Texture2D(unsigned char *images, int width, int height, int channels, const TextureType& textureType = TextureType::AMBIENT);
+        Texture2D(const std::string &path, glm::vec4 bColor = glm::vec4(1.0f), const TextureType& textureType = TextureType::AMBIENT);
         ~Texture2D();
 
         virtual void bind(unsigned int slot);
         virtual void unbind();
 
     private:
-        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
         virtual void clearTexture();
 
     private:
@@ -73,7 +82,7 @@ namespace Renderer
         virtual void unbind();
 
     private:
-        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
         virtual void clearTexture();
     };
 
@@ -97,7 +106,7 @@ namespace Renderer
         virtual void unbind();
 
     private:
-        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
         virtual void clearTexture();
     };
 
@@ -121,7 +130,7 @@ namespace Renderer
         virtual void unbind();
 
     private:
-        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
         virtual void clearTexture();
     };
 
@@ -136,7 +145,7 @@ namespace Renderer
 		virtual void unbind();
 
     private:
-        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
         virtual void clearTexture();
 
     private:
@@ -154,7 +163,7 @@ namespace Renderer
 		virtual void unbind();
 
     private:
-        virtual void setupTexture(const std::string &path, const std::string &pFix);
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
 		virtual void clearTexture();
 
     private:

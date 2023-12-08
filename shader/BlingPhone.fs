@@ -59,7 +59,7 @@ uniform Material material;
 uniform DirLight sunLight;
 uniform PointLight pointLight;
 uniform SpotLight spotLight;
-
+uniform bool UseBlingPhone;
 float near = 0.1; 
 float far  = 100.0; 
 
@@ -71,9 +71,17 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32);
+    float spec;
+    if (UseBlingPhone)
+    {
+        vec3 halfwayDir = normalize(light.direction + viewDir);
+        spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
+    }
+    else
+    {
+        vec3 reflectDir = reflect(-lightDir, normal);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    }
     vec3 ambient  = light.ambient  * color;
     vec3 diffuse  = light.diffuse  * diff * color;
     vec3 specular = light.specular * spec * color;
@@ -139,8 +147,12 @@ void main()
     // direction light
     vec3 result = CalcDirLight(sunLight, norm, viewDir);
 
-    //gamma correction
+    // gamma correction
     float gamma = 2.2;
     result = pow(result, vec3(1.0/gamma));
     FragColor = vec4(result, 1.0);
+
+    // depth dest
+    // float depth = LinearizeDepth(gl_FragCoord.z) / far;
+    // FragColor = vec4(vec3(depth), 1.0);
 }

@@ -11,8 +11,9 @@
 
 namespace Renderer
 {
-    Texture2D::Texture2D(unsigned char *images, int width, int height, int channels) : m_width(width), m_height(height), m_channels(channels)
+    Texture2D::Texture2D(unsigned char *images, int width, int height, int channels, const TextureType& textureType) : m_width(width), m_height(height), m_channels(channels)
     {
+        m_textureType = textureType;
         glGenTextures(1, &m_id);
         glBindTexture(GL_TEXTURE_2D, m_id);
         // filter setting
@@ -22,25 +23,36 @@ namespace Renderer
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // wrap on x axis
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // wrap on y axis
         // load the image
-        GLenum format;
+        GLenum format = GL_RGB, sformat = GL_SRGB;
         if (channels == 1)
+        {
+            sformat = GL_RED;
             format = GL_RED;
+        }
         else if (channels == 3)
         {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            sformat = GL_SRGB;
             format = GL_RGB;
         }
         else if (channels == 4)
+        {
+            sformat = GL_SRGB_ALPHA;
             format = GL_RGBA;
+        }
         else
             PRINT_ERROR("Unsupported image format!");
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, images);
+        if(m_textureType == TextureType::DIFFUSE)
+            glTexImage2D(GL_TEXTURE_2D, 0, sformat, width, height, 0, format, GL_UNSIGNED_BYTE, images);
+        else
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, images);
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    Texture2D::Texture2D(const std::string &path, glm::vec4 bColor) : m_borderColor(bColor)
+    Texture2D::Texture2D(const std::string &path, glm::vec4 bColor, const TextureType& textureType) : m_borderColor(bColor)
     {
+        m_textureType = textureType;
         setupTexture(path, "");
     }
 
@@ -79,16 +91,28 @@ namespace Renderer
         unsigned char *data = stbi_load((path + pFix).c_str(), &width, &height, &channels, 0);
         if (data)
         {
-            GLenum format;
+            GLenum format = GL_RGB, sformat = GL_SRGB;
             if (channels == 1)
+            {
+                sformat = GL_RED;
                 format = GL_RED;
+            }
             else if (channels == 3)
+            {
+                sformat = GL_SRGB;
                 format = GL_RGB;
+            }
             else if (channels == 4)
+            {
+                sformat = GL_SRGB_ALPHA;
                 format = GL_RGBA;
+            }
             else
                 PRINT_ERROR("Unsupported image format!");
-            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            if(m_textureType == TextureType::DIFFUSE)
+                glTexImage2D(GL_TEXTURE_2D, 0, sformat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            else
+                glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else
@@ -144,13 +168,22 @@ namespace Renderer
             unsigned char *data = stbi_load(faces[x].c_str(), &width, &height, &nrComponents, 0);
             if (data)
             {
-                GLenum format;
+                GLenum format = GL_RGB, sformat = GL_SRGB;
                 if (nrComponents == 1)
+                {
+                    sformat = GL_RED;
                     format = GL_RED;
+                }
                 else if (nrComponents == 3)
+                {
+                    sformat = GL_SRGB;
                     format = GL_RGB;
+                }
                 else if (nrComponents == 4)
+                {
+                    sformat = GL_SRGB_ALPHA;
                     format = GL_RGBA;
+                }
                 else
                     PRINT_ERROR("Unsupported image format!");
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + x, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

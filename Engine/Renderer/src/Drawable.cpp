@@ -58,7 +58,7 @@ namespace Renderer
         }
     }
 
-    void SkyBox::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
+    void SkyBox::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)
     {
         if (!m_visible)
             return;
@@ -73,7 +73,7 @@ namespace Renderer
         ShaderManager::getSingleton()->unbindShader();
     }
 
-    void SimpleDrawable::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
+    void SimpleDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
     {
         if (!m_visible)
             return;
@@ -89,6 +89,7 @@ namespace Renderer
         if (shader == nullptr)
             shader = ShaderManager::getSingleton()->getShader(m_shaderIndex);
         shader->use();
+        Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
         if (sunLight)
             sunLight->setLightUniforms(shader, camera, "sunLight");
 
@@ -155,8 +156,7 @@ namespace Renderer
         ShaderManager::getSingleton()->unbindShader();
     }
 
-    void ContainerDrawable::render(Camera3D::ptr camera, Light::ptr sunLight,
-        Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
+    void ContainerDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
     {
         if (!m_visible)
             return;
@@ -164,6 +164,7 @@ namespace Renderer
         if (shader == nullptr)
             shader = ShaderManager::getSingleton()->getShader(m_shaderIndex);
         shader->use();
+        Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
         if (sunLight)
             sunLight->setLightUniforms(shader, camera, "sunLight");
         shader->setInt("material.diffuse", 0);
@@ -211,7 +212,7 @@ namespace Renderer
         m_shaderIndex = shaderIndex;
         //m_frameBuffer = std::make_shared<FrameBuffer>(new FrameBuffer(m_scrWidth, m_scrHeight, "", "", { "ColorAttachment" }));
     }
-    void FramebufferDrawable::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
+    void FramebufferDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)
     {
 		if (!m_visible)
 			return;

@@ -17,6 +17,7 @@ public:
     virtual void Init() override
     {
         //shaders
+        unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
         unsigned int staticModelShader = m_shaderManager->loadShader("staticModelShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/staticModel.fs");
         unsigned int RockShader = m_shaderManager->loadShader("Rock", SHADER_PATH"/Planet/Rock.vs", SHADER_PATH"/Planet/Rock.fs");
         unsigned int PlanetShader = m_shaderManager->loadShader("Planet", SHADER_PATH"/Planet/Planet.vs", SHADER_PATH"/Planet/Planet.fs");
@@ -47,31 +48,31 @@ public:
         glm::mat4* modelMatrices;
         modelMatrices = new glm::mat4[amount];
         //std::shared_ptr<glm::mat4[]> modelMatrices = std::make_shared<glm::mat4[]>(amount); // C++ 17 feature
-        srand(glfwGetTime()); // ³õÊ¼»¯Ëæ»úÖÖ×Ó    
+        srand(glfwGetTime()); // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    
         float radius = 50.0;
         float offset = 10.f;
         for (unsigned int i = 0; i < amount; i++)
         {
             glm::mat4 model(1.0f);
-            // 1. Î»ÒÆ£º·Ö²¼ÔÚ°ë¾¶Îª 'radius' µÄÔ²ÐÎÉÏ£¬Æ«ÒÆµÄ·¶Î§ÊÇ [-offset, offset]
+            // 1. Î»ï¿½Æ£ï¿½ï¿½Ö²ï¿½ï¿½Ú°ë¾¶Îª 'radius' ï¿½ï¿½Ô²ï¿½ï¿½ï¿½Ï£ï¿½Æ«ï¿½ÆµÄ·ï¿½Î§ï¿½ï¿½ [-offset, offset]
             float angle = (float)i / (float)amount * 360.0f;
             float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
             float x = sin(angle) * radius + displacement;
             displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-            float y = displacement * 0.4f; // ÈÃÐÐÐÇ´øµÄ¸ß¶È±ÈxºÍzµÄ¿í¶ÈÒªÐ¡
+            float y = displacement * 0.4f; // ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½Ä¸ß¶È±ï¿½xï¿½ï¿½zï¿½Ä¿ï¿½ï¿½ï¿½ÒªÐ¡
             displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
             float z = cos(angle) * radius + displacement;
             model = glm::translate(model, glm::vec3(x, y, z));
 
-            // 2. Ëõ·Å£ºÔÚ 0.05 ºÍ 0.25f Ö®¼äËõ·Å
+            // 2. ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ 0.05 ï¿½ï¿½ 0.25f Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             float scale = (rand() % 20) / 100.0f + 0.05;
             model = glm::scale(model, glm::vec3(scale));
 
-            // 3. Ðý×ª£ºÈÆ×ÅÒ»¸ö£¨°ë£©Ëæ»úÑ¡ÔñµÄÐý×ªÖáÏòÁ¿½øÐÐËæ»úµÄÐý×ª
+            // 3. ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ë£©ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ª
             float rotAngle = (rand() % 360);
             model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
-            // 4. Ìí¼Óµ½¾ØÕóµÄÊý×éÖÐ
+            // 4. ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             modelMatrices[i] = model;
         }
         unsigned int buffer;
@@ -91,7 +92,7 @@ public:
     {
         m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
-        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
+        m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
         m_renderSystem->render(true);
         DrawImGui();
         m_renderDevice->endFrame();
@@ -101,14 +102,18 @@ public:
     {
         // imgui
         {
-            ImGui::Begin("Planet Example");
-            ImGui::Text("Planet Example");
+            ImGui::Begin("CMakeLists Example");
+            ImGui::Text("CMakeLists Example");
             ImGui::ColorEdit3("backgroundColor", (float*)&m_BackColor);
             ImGui::Text("SunLight");
             ImGui::SliderFloat3("sunLightDir", (float*)&sunLightDir, -1.0f, 1.0f);
-            ImGui::ColorEdit3("sunLightColorAmbient", (float*)&sunLightColorAmbient);
-            ImGui::ColorEdit3("sunLightColorDiffse", (float*)&sunLightColorDiffse);
-            ImGui::ColorEdit3("sunLightColorSpecular", (float*)&sunLightColorSpecular);
+            ImGui::ColorEdit3("sunLightColor", (float*)&sunLightColor);
+            ImGui::Text("Ambient");
+            ImGui::SliderFloat("ambientColor", (float*)&ambientCoef, 0.0f, 1.0f);
+            ImGui::Text("Diffuse");
+            ImGui::SliderFloat("diffuseColor", (float*)&diffuseCoef, 0.0, 1.0f);
+            ImGui::Text("Specular");
+            ImGui::SliderFloat("specularColor", (float*)&specularCoef, 0.0, 1.0f);
             ImGui::End();
         }
     }
@@ -119,7 +124,8 @@ public:
 
 private:
     glm::vec3 sunLightDir{ glm::vec3(0.072f, 0.42f, 1.0f) };
-    glm::vec3 sunLightColorAmbient{ glm::vec3(0.1) };
-    glm::vec3 sunLightColorDiffse{ glm::vec3(0.4) };
-    glm::vec3 sunLightColorSpecular{ glm::vec3(1.0) };
+    glm::vec3 sunLightColor{ glm::vec3(0.5) };
+    float ambientCoef{ 0.5f };
+    float diffuseCoef{ 0.6f };
+    float specularCoef{ 0.6f };
 };

@@ -31,7 +31,7 @@ namespace Renderer
 		}
     }
 
-    void StaticModelDrawable::render(Camera3D::ptr camera, Light::ptr sunLight, Camera3D::ptr lightCamera, Shader::ptr shader)
+    void StaticModelDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)
     {
         if (!m_visible)
             return;
@@ -50,6 +50,7 @@ namespace Renderer
             shader = ShaderManager::getInstance()->getShader(m_shaderIndex);
             shader->use();
         }
+        Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
         if (sunLight)
         {
             sunLight->setLightUniforms(shader, camera, "sunLight");
@@ -260,7 +261,7 @@ namespace Renderer
                 std::string name(nameStr.C_Str());
                 if (name != "")
                 {
-                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::DIFFUSE);
                     tmp.insert(std::make_pair("diffuse", texIndex));
                 }
             }
@@ -270,7 +271,7 @@ namespace Renderer
                 std::string name = std::string(nameStr.C_Str());
                 if (name != "")
                 {
-                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::SPECULAR);
                     tmp.insert(std::make_pair("specular", texIndex));
                 }
             }
@@ -281,7 +282,7 @@ namespace Renderer
 				std::string name = std::string(nameStr.C_Str());
                 if (name != "")
                 {
-					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::HEIGHT);
 					tmp.insert(std::make_pair("normal", texIndex));
 				}
 			}
@@ -292,7 +293,7 @@ namespace Renderer
 				std::string name = std::string(nameStr.C_Str());
                 if (name != "")
                 {
-					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name);
+					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::AMBIENT);
 					tmp.insert(std::make_pair("height", texIndex));
 				}
             }

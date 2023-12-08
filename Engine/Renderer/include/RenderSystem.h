@@ -92,8 +92,6 @@ namespace Renderer
         RenderState m_renderState;
         SkyBox::ptr m_skyBox;
 
-        DirectionalLight::ptr m_sunLight;
-
         Camera3D::ptr m_camera;
         Camera3D::ptr m_lightCamera;
 

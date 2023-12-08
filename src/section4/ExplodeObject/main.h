@@ -83,8 +83,8 @@ public:
     {
         // imgui
         {
-            ImGui::Begin("DepthTesting Example");
-            ImGui::Text("DepthTesting Example");
+            ImGui::Begin("ExplodeObject Example");
+            ImGui::Text("ExplodeObject Example");
             ImGui::ColorEdit3("backgroundColor", (float*)&m_BackColor);
             ImGui::Text("SunLight");
             ImGui::SliderFloat3("sunLightDir", (float*)&sunLightDir, -1.0f, 1.0f);
