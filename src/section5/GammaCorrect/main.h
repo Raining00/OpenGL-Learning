@@ -30,9 +30,18 @@ public:
         unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
         //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
-        m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), glm::vec3(0.5), glm::vec3(0.6f), glm::vec3(0.6));
+        glm::vec3 ambient = glm::vec3(0.2f, 0.1f, 0.05f); // 暖色调，偏黄/橙
+        glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f); // 明亮的暖色调
+        glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); // 明亮的暖色调高光
+
+        m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), ambient, diffuse, specular);
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
             -600.0f, +600.0f, 1.0f, 500.0f);
+
+        m_lightManager->CreatePointLight("PointLight0", glm::vec3(0.0f, 0.3f, 0.f), ambient, diffuse, specular, 1.0f, 0.7, 1.8);
+        m_lightManager->CreatePointLight("PointLight1", glm::vec3(7.f, 0.3f, 0.f), ambient, diffuse, specular, 1.0f, 0.7, 1.8);
+        m_lightManager->CreatePointLight("PointLight2", glm::vec3(-7.f, 0.3f, 0.f), ambient, diffuse, specular, 1.0f, 0.7, 1.8);
+        
 
         // add drawable
         m_renderSystem->UseDrawableList(true);

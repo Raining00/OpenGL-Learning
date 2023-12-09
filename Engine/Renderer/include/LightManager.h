@@ -137,6 +137,16 @@ public:
      * You can both use the name or the id to set the light uniform.
      */
     void setLightUniform(unsigned int id, Shader::ptr shader, Camera3D::ptr camera, const std::string &lightName, const bool &ifArray=false, const unsigned int &slot=0);
+
+    /**
+     * @brief Set all lights in the scene for the shader.
+     * 
+     * @param shader Which shader you want to set the light uniform.
+     * @param camera Which camera you are using.
+     *
+     */
+    void setLight(Shader::ptr shader, Camera3D::ptr camera);
+
 private:
     std::vector<Light::ptr> m_lights;
     std::map<std::string, unsigned int> m_lightMap;

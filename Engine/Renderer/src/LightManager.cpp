@@ -107,5 +107,26 @@ void LightManager::setLightUniform(unsigned int id, Shader::ptr shader, Camera3D
     }
 }
 
+void LightManager::setLight(Shader::ptr shader, Camera3D::ptr camera)
+{
+    unsigned int pointLightNum = 0;
+    for (auto& light : m_lightMap)
+    {
+	    if(light.first.find("DirectionalLight") != std::string::npos)
+			m_lights[light.second]->setLightUniforms(shader, camera, "directionalLight", false);
+        else if (light.first.find("SunLight") != std::string::npos)
+            m_lights[light.second]->setLightUniforms(shader, camera, "sunLight", false, 0);
+        else if (light.first.find("PointLight") != std::string::npos)
+        {
+            m_lights[light.second]->setLightUniforms(shader, camera, "pointLights",  true, pointLightNum++);
+        }
+		else if(light.first.find("SpotLight") != std::string::npos)
+			m_lights[light.second]->setLightUniforms(shader, camera, "spotLight", false);
+		else
+			PRINT_ERROR("LightManager::setLight: light type not supported")
+	}
+    shader->setInt("pointLightNum", pointLightNum);
+}
+
 } // namespace Renderer
 

@@ -67,8 +67,6 @@ namespace Renderer
         shader->use();
         shader->setInt("image", 0);
         shader->setBool("receiveShadow", m_receiveShadow);
-        //shader->setMat4("viewMatrix", glm::mat4(glm::mat3(camera->getViewMatrix())));
-        //shader->setMat4("projectMatrix", camera->getProjectionMatrix());
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }
@@ -89,10 +87,10 @@ namespace Renderer
         if (shader == nullptr)
             shader = ShaderManager::getSingleton()->getShader(m_shaderIndex);
         shader->use();
-        Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
-        if (sunLight)
-            sunLight->setLightUniforms(shader, camera, "sunLight");
-
+        //Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
+        //if (sunLight)
+        //    sunLight->setLightUniforms(shader, camera, "sunLight");
+        LightManager::getInstance()->setLight(shader, camera);
         // texture
         shader->setInt("material.diffuse", 0);
         shader->setInt("material.specular", 0);
@@ -113,8 +111,6 @@ namespace Renderer
         shader->setBool("instance", false);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
-        /*shader->setMat4("viewMatrix", camera->getViewMatrix());
-        shader->setMat4("projectMatrix", camera->getProjectionMatrix());*/
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
         this->renderImp();
         if (m_stencil)

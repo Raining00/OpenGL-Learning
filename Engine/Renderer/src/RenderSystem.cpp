@@ -62,7 +62,7 @@ namespace Renderer
 
     void RenderSystem::createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far)
     {
-        DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("sunLight").get());
+        DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("SunLight").get());
         if (sunLight == nullptr)
         {
             PRINT_WARNING("You have to set the sun light first before creating the sun light camera");
@@ -133,14 +133,14 @@ namespace Renderer
     void RenderSystem::setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
     {
         // TODO: IMPLEMENT DIRECTIONAL LIGHT
-        DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("sunLight").get());
+        DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("SunLight").get());
         if(sunLight != nullptr)
         {
             sunLight->setLightDirection(direction);
             sunLight->setLightColor(ambient, diffuse, specular);
             return;
         }
-        m_lightManager->CreateDirectionalLight("sunLight", direction, ambient, diffuse, specular);
+        m_lightManager->CreateDirectionalLight("SunLight", direction, ambient, diffuse, specular);
     }
 
     void RenderSystem::renderWithoutFramebuffer()

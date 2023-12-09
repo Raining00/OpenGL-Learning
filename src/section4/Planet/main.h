@@ -17,25 +17,31 @@ public:
     virtual void Init() override
     {
         //shaders
-        unsigned int staticModelShader = m_shaderManager->loadShader("staticModelShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/staticModel.fs");
         unsigned int RockShader = m_shaderManager->loadShader("Rock", SHADER_PATH"/Planet/Rock.vs", SHADER_PATH"/Planet/Rock.fs");
         unsigned int PlanetShader = m_shaderManager->loadShader("Planet", SHADER_PATH"/Planet/Planet.vs", SHADER_PATH"/Planet/Planet.fs");
+        unsigned int SunShader = m_shaderManager->loadShader("SunPlanet", SHADER_PATH"/Planet/Sun.vs", SHADER_PATH"/Planet/Sun.fs");
 
         // texture
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
-        unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg");
-        unsigned int blendMap = m_textureManager->loadTexture2D("blendMap", ASSETS_PATH"/texture/blending_transparent_window.png");
+        unsigned int sunTexture = m_textureManager->loadTexture2D("sunTexture", ASSETS_PATH"/texture/sun.jpg");
+
         float scale = 50.f;
-        unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
-        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0));
-        unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
-        unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
+        unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(10.0, 50, 50));
         m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), glm::vec3(0.5), glm::vec3(0.6f), glm::vec3(0.6));
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
             -600.0f, +600.0f, 1.0f, 500.0f);
 
         // add drawable
         m_renderSystem->UseDrawableList(true);
+        Renderer::SimpleDrawable* sun = new Renderer::SimpleDrawable(SunShader);
+        sun->addMesh(sphereMesh);
+        sun->addTexture(sunTexture);
+        sun->getTransformation()->scale(glm::vec3(30.0f));
+        sun->getTransformation()->translate(glm::vec3(-500.0f, 0.0f, 0.0f));
+        sun->setReceiveShadow(false);
+        sun->setProduceShadow(false);
+        m_renderSystem->addDrawable(sun);
+
         Renderer::StaticModelDrawable* model[3];
         model[0] = new Renderer::StaticModelDrawable(PlanetShader, ASSETS_PATH "/model/planet/planet.obj");
         model[0]->getTransformation()->scale(glm::vec3(5.0f));
@@ -118,8 +124,8 @@ public:
     }
 
 private:
-    glm::vec3 sunLightDir{ glm::vec3(0.072f, 0.42f, 1.0f) };
-    glm::vec3 sunLightColorAmbient{ glm::vec3(0.1) };
-    glm::vec3 sunLightColorDiffse{ glm::vec3(0.4) };
-    glm::vec3 sunLightColorSpecular{ glm::vec3(1.0) };
+    glm::vec3 sunLightDir{ glm::vec3(-1.0, 0.42f, -0.125) };
+    glm::vec3 sunLightColorAmbient{ glm::vec3(0.01) };
+    glm::vec3 sunLightColorDiffse{ glm::vec3(1.0) };
+    glm::vec3 sunLightColorSpecular{ glm::vec3(0.6) };
 };

@@ -48,13 +48,14 @@ namespace Renderer
         if (shader == nullptr)
         {
             shader = ShaderManager::getInstance()->getShader(m_shaderIndex);
-            shader->use();
         }
-        Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
-        if (sunLight)
-        {
-            sunLight->setLightUniforms(shader, camera, "sunLight");
-        }
+        //Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
+        //if (sunLight)
+        //{
+        //    sunLight->setLightUniforms(shader, camera, "sunLight");
+        //}
+        shader->use();
+        LightManager::getInstance()->setLight(shader, camera);
         shader->setInt("material.diffuse", 0);
         shader->setInt("material.specular", 1);
         shader->setInt("material.normal", 2);

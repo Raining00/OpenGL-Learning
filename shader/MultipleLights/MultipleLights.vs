@@ -13,14 +13,14 @@ layout(std140, binding=0) uniform TransformMatrix
     mat4 view;
 };
 
-uniform mat4 modelMatrix;
+uniform mat4 model;
 // uniform mat4 view;
 // uniform mat4 projection;
 
 void main()
 {
     FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(modelMatrix))) * aNormal;  
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
     TexCoords = aTexCoords;
     gl_Position = project * view * vec4(FragPos, 1.0);
 }
