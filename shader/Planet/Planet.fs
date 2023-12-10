@@ -54,7 +54,7 @@ in VS_OUT
 
 
 uniform vec3 cameraPos;
-
+uniform float time;
 uniform Material material;
 uniform DirLight sunLight;
 uniform PointLight pointLight;

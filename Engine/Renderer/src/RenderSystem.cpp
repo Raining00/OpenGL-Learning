@@ -11,8 +11,8 @@ namespace Renderer
         m_width = width;
         m_height = height;
         glViewport(0, 0, m_width, m_height);
-        if (m_camera != nullptr)
-            m_camera->setAspect(static_cast<float>(m_width) / static_cast<float>(m_height));
+        if (m_activateCamera != nullptr)
+            m_activateCamera->setAspect(static_cast<float>(m_width) / static_cast<float>(m_height));
     }
 
     void RenderSystem::initialize(int width, int height)
@@ -45,10 +45,11 @@ namespace Renderer
 
     Camera3D::ptr RenderSystem::createFPSCamera(glm::vec3 pos, glm::vec3 target)
     {
-        FPSCamera *_cam = new FPSCamera(pos);
+        FPSCamera* _cam = new FPSCamera(pos);
         _cam->lookAt(glm::normalize(target - pos), Camera3D::LocalUp);
         _cam->createUBO();
         m_camera = std::shared_ptr<Camera3D>(_cam);
+        m_activateCamera = m_camera;
         return m_camera;
     }
 
@@ -57,6 +58,7 @@ namespace Renderer
         TPSCamera *_cam = new TPSCamera(target, 0.0f, 30.0f, 3.0f);
         _cam->createUBO();
         m_camera = std::shared_ptr<Camera3D>(_cam);
+        m_activateCamera = m_camera;
         return m_camera;
     }
 
@@ -68,7 +70,7 @@ namespace Renderer
             PRINT_WARNING("You have to set the sun light first before creating the sun light camera");
             return;
         }
-        const float length = 200;
+        const float length = 30.f;
         glm::vec3 pos = length * sunLight->getDirection();
         if (m_lightCamera == nullptr)
         {
@@ -77,12 +79,27 @@ namespace Renderer
         }
         m_lightCamera->setOrtho(left, right, bottom, top, near, far);
         FPSCamera *_cam = static_cast<FPSCamera *>(m_lightCamera.get());
-        _cam->lookAt(-sunLight->getDirection(), Camera3D::LocalUp);
+        _cam->lookAt(glm::normalize( - sunLight->getDirection()), Camera3D::LocalUp);
+        //_cam->lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //m_lightCamera = m_camera;
     }
 
-    void RenderSystem::createFrameBuffer(int width, int height)
+    void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr)
     {
-        m_frameBuffer = std::make_shared<FrameBuffer>(width, height, "", "", std::vector<std::string>{"Color"});
+        if(m_shaderManager->getShader("shadowDepth") == nullptr)
+            m_shaderManager->loadShader("shadowDepth", SHADER_PATH"/shadowDepth.vs", SHADER_PATH"/shadowDepth.fs");
+        if (m_shaderManager->getShader("FrameBufferDepth") == nullptr)
+            m_shaderManager->loadShader("FramebufferDepth", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBufferDepth.fs");
+        if (m_shadowDepthBuffer == nullptr)
+        {
+            FrameBuffer* framebuf = new FrameBuffer(width, height, "shadowDepth", "", {}, hdr);
+            m_shadowDepthBuffer = std::shared_ptr<FrameBuffer>(framebuf);
+        }
+    }
+
+    void RenderSystem::createFrameBuffer(int width, int height, bool hdr)
+    {
+        m_frameBuffer = std::make_shared<FrameBuffer>(width, height, "", "", std::vector<std::string>{"Color"}, hdr);
 
         // Framebuffer shader
         m_shaderManager->loadShader("Framebuffer", SHADER_PATH "/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBuffer.fs");
@@ -145,15 +162,20 @@ namespace Renderer
 
     void RenderSystem::renderWithoutFramebuffer()
     {
+        // render the shadow.
+        {
+            renderShadowDepth();
+        }
+
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
-        m_camera->updateMatrixUBO();
+        m_activateCamera->updateMatrixUBO();
         // render the skydome.
         if (m_skyBox != nullptr)
         {
             glDepthFunc(GL_LEQUAL);
             glCullFace(GL_FRONT);
-            m_skyBox->render(m_camera, m_lightCamera);
+            m_skyBox->render(m_activateCamera, m_lightCamera);
         }
 
         // polygon mode
@@ -181,7 +203,7 @@ namespace Renderer
         {
             if (m_drawableList == nullptr)
                 return;
-            m_drawableList->render(m_camera, m_lightCamera);
+            m_drawableList->render(m_activateCamera, m_lightCamera);
         }
     }
 
@@ -192,19 +214,22 @@ namespace Renderer
 			PRINT_WARNING("You have to create the framebuffer first before using it");
 			return;
 		}
-
+        // render the shadow.
+        {
+            renderShadowDepth();
+        }
         // first bind the framebuffer, and draw everything as usual.
         m_frameBuffer->bind();
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(m_renderState.m_clearMask);
 
-        m_camera->updateMatrixUBO();
+        m_activateCamera->updateMatrixUBO();
         // render the skydome.
         if (m_skyBox != nullptr)
         {
             glDepthFunc(GL_LEQUAL);
             glCullFace(GL_FRONT);
-            m_skyBox->render(m_camera, m_lightCamera);
+            m_skyBox->render(m_activateCamera, m_lightCamera);
         }
 
         // depth test
@@ -229,8 +254,9 @@ namespace Renderer
         {
             if (m_drawableList == nullptr)
                 return;
-            m_drawableList->render(m_camera, m_lightCamera);
+            m_drawableList->render(m_activateCamera, m_lightCamera);
         }
+
         // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         // we should disable depth test here, otherwise the quad will be discarded.
@@ -238,10 +264,20 @@ namespace Renderer
         glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
         glClear(GL_COLOR_BUFFER_BIT);
         // draw the framebuffer texture on a quad. 
-        Shader::ptr framebufferShader = m_shaderManager->getShader("Framebuffer");
+        Shader::ptr framebufferShader;
+        GLuint colorTex = 0;
+        if (m_showShadowMap)
+        {
+            framebufferShader = m_shaderManager->getShader("FramebufferDepth");
+            colorTex = m_shadowDepthBuffer->getDepthTextureIndex();
+        }
+        else
+        {
+            framebufferShader = m_shaderManager->getShader("Framebuffer");
+            colorTex = m_frameBuffer->getColorTextureIndex(0);
+        }
         framebufferShader->use();
         framebufferShader->setInt("screenTexture", 0);
-        GLuint colorTex = m_frameBuffer->getColorTextureIndex(0);
         m_textureManager->bindTexture(colorTex, 0);
         m_meshManager->drawMesh(m_screenQuad, false);
     }
@@ -254,4 +290,18 @@ namespace Renderer
 			renderWithoutFramebuffer();
     }
 
+    void RenderSystem::renderShadowDepth()
+    {
+        if (m_lightCamera == nullptr || m_shadowDepthBuffer == nullptr)
+            return;
+        m_shadowDepthBuffer->bind();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        glEnable(GL_DEPTH_TEST);
+        m_drawableList->renderDepth(m_shaderManager->getShader("shadowDepth"), m_lightCamera);
+        m_shadowDepthBuffer->unBind(m_width, m_height);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+    }
 }

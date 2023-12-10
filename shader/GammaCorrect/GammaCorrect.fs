@@ -184,6 +184,15 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
+uniform float far = 100;
+uniform float near = 0.1;
+
+float LinearizeDepth(float depth) 
+{
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));    
+}
+
 void main()
 {
     vec3 norm = normalize(fs_in.Normal);
@@ -211,4 +220,6 @@ void main()
         }
     }
     FragColor = vec4(result, 1.0);
+    // float depth = LinearizeDepth(gl_FragCoord.z) / far;
+    // FragColor = vec4(vec3(depth), 1.0);
 }

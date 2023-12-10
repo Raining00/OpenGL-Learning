@@ -11,7 +11,6 @@ out VS_OUT
 }vs_out;
 
 uniform bool instance;
-
 layout(std140, binding=0) uniform TransformMatrix
 {
     mat4 project;

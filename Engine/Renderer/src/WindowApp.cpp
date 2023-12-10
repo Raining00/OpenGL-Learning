@@ -34,6 +34,7 @@ namespace Renderer
             // FPS camera
             m_camera = m_renderSystem->createFPSCamera(glm::vec3(0.0, 1.0, 3.0), glm::vec3(0.0, 0.0, 0.0));
             m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 1000.f);
+            //m_camera->setOrtho(-10, 10.f, -10.f, 10.f, 1.0f, 100.f);
             Renderer::FPSCamera *fpsCamera = reinterpret_cast<Renderer::FPSCamera *>(m_camera.get());
             fpsCamera->setMouseSensitivity(0.3f);
             fpsCamera->setMoveSpeed(5.f);

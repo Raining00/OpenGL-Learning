@@ -78,11 +78,24 @@ namespace Renderer
         this->rotate(getRight(), deltaY * m_mouseSensitivity);
     }
 
-    void FPSCamera::lookAt(glm::vec3 dir, glm::vec3 up)
+    void FPSCamera::lookAt(const glm::vec3& dir, const glm::vec3& up)
     {
         m_rotation = glm::quatLookAt(dir, up);
         m_dirty = true;
     }
+
+    void FPSCamera::lookAt(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up)
+    {
+        glm::mat4 viewMatrix = glm::lookAt(eye, center, up);
+
+        glm::mat3 rotationMat3(viewMatrix);
+        m_rotation = glm::quat_cast(rotationMat3);
+
+        m_translation = eye;
+
+        m_dirty = true;
+    }
+
 
     void FPSCamera::translate(const glm::vec3 &dt)
     {

@@ -29,7 +29,8 @@ namespace Renderer
         virtual void onMouseMove(double deltaX, double deltaY, std::string button) override;
 
         // Transform camera's axis
-        void lookAt(glm::vec3 dir, glm::vec3 up);
+        void lookAt(const glm::vec3& dir, const glm::vec3& up);
+        void lookAt(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up);
         void translate(const glm::vec3& dt);
         void rotate(const glm::vec3& axis, float angle);
         void setTranslation(const glm::vec3& t);

@@ -6,7 +6,6 @@
 #include "LightManager.h"
 
 #include "ColorfulPrint.h"
-
 namespace Renderer
 {
 
@@ -108,7 +107,7 @@ namespace Renderer
         else
             shader->setMat4("lightSpaceMatrix", glm::mat4(1.0f));
         // object matrix.
-        shader->setBool("instance", false);
+        shader->setBool("instance", m_instance);
         shader->setBool("receiveShadow", m_receiveShadow);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
         shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
@@ -144,7 +143,7 @@ namespace Renderer
         if (!m_visible || !m_produceShadow)
             return;
         shader->use();
-        shader->setBool("instance", false);
+        shader->setBool("instance", m_instance);
         shader->setMat4("lightSpaceMatrix",
             lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());

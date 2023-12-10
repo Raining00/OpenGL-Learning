@@ -42,7 +42,7 @@ public:
         sun->setProduceShadow(false);
         m_renderSystem->addDrawable(sun);
 
-        Renderer::StaticModelDrawable* model[3];
+        Renderer::StaticModelDrawable* model[2];
         model[0] = new Renderer::StaticModelDrawable(PlanetShader, ASSETS_PATH "/model/planet/planet.obj");
         model[0]->getTransformation()->scale(glm::vec3(5.0f));
         m_renderSystem->addDrawable(model[0]);
@@ -99,6 +99,10 @@ public:
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
+
+        Renderer::Shader::ptr shader = m_shaderManager->getShader("SunPlanet");
+        shader->use();
+        shader->setFloat("time", glfwGetTime());
         DrawImGui();
         m_renderDevice->endFrame();
     }

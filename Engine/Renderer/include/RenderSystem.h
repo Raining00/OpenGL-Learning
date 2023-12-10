@@ -45,9 +45,9 @@ namespace Renderer
 
         void resize(int width, int height);
         void initialize(int width, int height);
-        void createShadowDepthMap(int width, int height);
         void createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far);
-        void createFrameBuffer(int width, int height);
+        void createShadowDepthBuffer(int width, int height, bool hdr = false);
+        void createFrameBuffer(int width, int height, bool hdr = false);
         /**
         * @brief create a skybox.
         * make sure the images are in named in the following order:
@@ -63,11 +63,13 @@ namespace Renderer
         void addDrawable(Drawable::ptr drawable) { m_drawableList->addDrawable(drawable); }
         void addDrawable(Drawable* drawable) { m_drawableList->addDrawable(drawable); }
 
+        // =====================================  Getters ==========================================================//
         Camera3D::ptr getCamera() { return m_camera; }
         ShaderManager::ptr getShaderManager() { return m_shaderManager; }
         TextureManager::ptr getTextureManager() { return m_textureManager; }
         LightManager::ptr getLightManager() { return m_lightManager; }
         MeshManager::ptr getMeshManager() { return m_meshManager; }
+        bool& getShowShadowMap() { return m_showShadowMap; }
 
         // settters
         void setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
@@ -78,21 +80,26 @@ namespace Renderer
         void setDepthTest(const bool& enable, const GLenum& func);
         void setBlend(const bool& enable, const GLenum& src, const GLenum& dst);
         void UseDrawableList(const bool& use = false) { m_useDrawableList = use; }
+        void useLightCamera(const bool& use = false) { m_activateCamera = use ? m_lightCamera : m_camera; }
 
         void render(const bool& withFramebuffer = false);
         void renderWithFramebuffer();
-        void renderWithoutFramebuffer();
-
-        
+        void renderWithoutFramebuffer();      
 
     private:
-        bool m_glowBlurEnable;
+        void renderShadowDepth();
+
+    private:
+        bool m_glowBlurEnable, m_showShadowMap{ false };
         int m_width, m_height;
         unsigned int m_screenQuad;
         RenderState m_renderState;
+        std::shared_ptr<FrameBuffer> m_shadowDepthBuffer{ nullptr };
+
         SkyBox::ptr m_skyBox;
 
         Camera3D::ptr m_camera;
+        Camera3D::ptr m_activateCamera;
         Camera3D::ptr m_lightCamera;
 
         ShaderManager::ptr m_shaderManager;
@@ -104,9 +111,6 @@ namespace Renderer
         bool m_useDrawableList{ false };
 
         FrameBuffer::ptr m_frameBuffer{ nullptr };
-    private:
-        void renderShadowDepth();
-        void renderMotionBlurQuad();
     };
 
 }

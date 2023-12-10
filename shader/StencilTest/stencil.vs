@@ -9,9 +9,9 @@ layout(std140, binding=0) uniform TransformMatrix
     mat4 view;
 };
 
-// uniform mat4 modelMatrix;
+uniform mat4 modelMatrix;
 // uniform mat4 viewMatrix;
-uniform mat4 projectMatrix;
+// uniform mat4 projectMatrix;
 uniform mat3 normalMatrix;
 
 out vec3 Normal;
