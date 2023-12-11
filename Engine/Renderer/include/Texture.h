@@ -13,6 +13,8 @@ namespace Renderer
         NORMAL, 
         HEIGHT,
         REFLECT,
+        COLOR,
+        DEPTH
     };
 
     class Texture

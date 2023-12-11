@@ -58,6 +58,8 @@ else()
     list(APPEND TARGET_LIBRARIES GLEW::GLEW)
 endif()
 
+list(APPEND TARGET_INCLUDE_DIRECTORIES "extern/stb_image")
+
 # JsonCpp
 # 禁用 jsoncpp 的测试、示例等
 set(JSONCPP_WITH_TESTS OFF CACHE BOOL "" FORCE)

@@ -9,6 +9,7 @@
 
 namespace Renderer
 {
+
     class TextureManager : public Singleton<TextureManager>
     {
     public:
