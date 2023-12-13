@@ -70,7 +70,7 @@ namespace Renderer
             PRINT_WARNING("You have to set the sun light first before creating the sun light camera");
             return;
         }
-        const float length = 5.f;
+        const float length = 10.f;
         glm::vec3 pos = length * sunLight->getDirection();
         if (m_lightCamera == nullptr)
         {
@@ -81,7 +81,7 @@ namespace Renderer
         FPSCamera *_cam = static_cast<FPSCamera *>(m_lightCamera.get());
         _cam->lookAt(glm::normalize( - sunLight->getDirection()), Camera3D::LocalUp);
         //_cam->lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_lightCamera = m_camera;
+        //m_lightCamera = m_camera;
     }
 
     void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr)

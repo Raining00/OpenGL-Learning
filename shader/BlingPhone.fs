@@ -50,6 +50,7 @@ in VS_OUT
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
+    vec4 FragPosLightSpace;
 }fs_in;
 
 
@@ -59,7 +60,21 @@ uniform Material material;
 uniform DirLight sunLight;
 uniform PointLight pointLight;
 uniform SpotLight spotLight;
-uniform bool UseBlingPhone;
+
+uniform bool receiveShadow;
+uniform sampler2D shadowMap; // 5
+
+float ShadowCalculation(vec4 FragPosLightSpace)
+{
+    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
+}
+
 float near = 0.1; 
 float far  = 100.0; 
 
@@ -71,22 +86,15 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     // diffuse shading
     float diff = max(dot(lightDir, normal), 0.0);
     // specular shading
-    float spec;
-    if (UseBlingPhone)
-    {
-        vec3 halfwayDir = normalize(light.direction + viewDir);
-        spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
-    }
-    else
-    {
-        vec3 reflectDir = reflect(-lightDir, normal);
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
-    }
+    vec3 halfwayDir = normalize(light.direction + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     vec3 ambient  = light.ambient  * color;
     vec3 diffuse  = light.diffuse  * diff * color;
     vec3 specular = light.specular * spec * color;
-    
-    return (ambient + diffuse + specular);
+    float shadow = 0.0f;
+    if(receiveShadow)
+        shadow = ShadowCalculation(fs_in.FragPosLightSpace);
+    return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)

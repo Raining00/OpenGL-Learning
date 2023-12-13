@@ -97,8 +97,8 @@ namespace Renderer
         Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
         if (depthMap != nullptr)
         {
-            shader->setInt("depthMap", 1);
-            depthMap->bind(1);
+            shader->setInt("shadowMap", 5);
+            depthMap->bind(5);
         }
         // light space matrix.
         if (lightCamera != nullptr)

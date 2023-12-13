@@ -49,11 +49,6 @@ namespace Renderer
         {
             shader = ShaderManager::getInstance()->getShader(m_shaderIndex);
         }
-        //Light::ptr sunLight = LightManager::getInstance()->getLight("sunLight");
-        //if (sunLight)
-        //{
-        //    sunLight->setLightUniforms(shader, camera, "sunLight");
-        //}
         shader->use();
         LightManager::getInstance()->setLight(shader, camera);
         shader->setInt("material.diffuse", 0);
@@ -61,6 +56,12 @@ namespace Renderer
         shader->setInt("material.normal", 2);
         shader->setInt("material.height", 3);
         shader->setInt("material.reflection", 4);
+        Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
+        if (depthMap != nullptr)
+        {
+            shader->setInt("shadowMap", 5);
+            depthMap->bind(5);
+        }
         if (lightCamera != nullptr)
             shader->setMat4("lightSpaceMatrix", lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         else
@@ -130,6 +131,20 @@ namespace Renderer
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }
+    void StaticModelDrawable::bind(int x)
+    {
+        TextureManager::ptr textureManager = TextureManager::getSingleton();
+        if (m_textureMapList[x].find("diffuse") != m_textureMapList[x].end())
+            textureManager->bindTexture(m_textureMapList[x]["diffuse"], 0);
+        if (m_textureMapList[x].find("specular") != m_textureMapList[x].end())
+            textureManager->bindTexture(m_textureMapList[x]["specular"], 1);
+        if (m_textureMapList[x].find("normal") != m_textureMapList[x].end())
+            textureManager->bindTexture(m_textureMapList[x]["normal"], 2);
+        if (m_textureMapList[x].find("height") != m_textureMapList[x].end())
+            textureManager->bindTexture(m_textureMapList[x]["height"], 3);
+        if (textureManager->getTexture("skybox") != nullptr)
+            textureManager->bindTexture(textureManager->getTextureIndex("skybox"), 4);
+    }
 
     void StaticModelDrawable::unbind(int x)
     {
@@ -144,21 +159,6 @@ namespace Renderer
             textureManager->unbindTexture(m_textureMapList[x]["height"]);
         if (textureManager->getTexture("skybox") != nullptr)
             textureManager->unbindTexture(textureManager->getTextureIndex("skybox"));
-    }
-
-    void StaticModelDrawable::bind(int x)
-    {
-        TextureManager::ptr textureManager = TextureManager::getSingleton();
-        if (m_textureMapList[x].find("diffuse") != m_textureMapList[x].end())
-            textureManager->bindTexture(m_textureMapList[x]["diffuse"], 0);
-        if (m_textureMapList[x].find("specular") != m_textureMapList[x].end())
-            textureManager->bindTexture(m_textureMapList[x]["specular"], 1);
-        if (m_textureMapList[x].find("normal") != m_textureMapList[x].end())
-            textureManager->bindTexture(m_textureMapList[x]["normal"], 2);
-        if (m_textureMapList[x].find("height") != m_textureMapList[x].end())
-            textureManager->bindTexture(m_textureMapList[x]["height"], 3);
-        if (textureManager->getTexture("skybox") != nullptr)
-            textureManager->bindTexture(textureManager->getTextureIndex("skybox"), 4);
     }
 
 

@@ -1,11 +1,11 @@
 #version 330 core
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
-    sampler2D normal;
-    sampler2D height;
-    samplerCube reflection;
+    sampler2D diffuse;      // 0
+    sampler2D specular;     // 1
+    sampler2D normal;       // 2
+    sampler2D height;       // 3
+    samplerCube reflection; // 4
     float shininess;
 }; 
 
@@ -50,6 +50,7 @@ in VS_OUT
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
+    vec4 FragPosLightSpace;
 }fs_in;
 
 
@@ -60,8 +61,22 @@ uniform DirLight sunLight;
 uniform PointLight pointLight;
 uniform SpotLight spotLight;
 
+uniform bool receiveShadow;
+uniform sampler2D shadowMap; // 5
+
 float near = 0.1; 
 float far  = 100.0; 
+
+float ShadowCalculation(vec4 FragPosLightSpace)
+{
+    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
+}
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
@@ -76,8 +91,10 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient  = light.ambient  * color;
     vec3 diffuse  = light.diffuse  * diff * color;
     vec3 specular = light.specular * spec * texture(material.specular, fs_in.TexCoords).rgb;
-    
-    return (ambient + diffuse + specular);
+    float shadow = 0.0f;
+    if(receiveShadow)
+        shadow = ShadowCalculation(fs_in.FragPosLightSpace);
+    return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -138,6 +155,8 @@ void main()
     // direction light
     vec3 result = CalcDirLight(sunLight, norm, viewDir);
 
+    float gamma = 2.2f;
+    result = pow(result, vec3(1.0/gamma));
     FragColor = vec4(result, 1.0);
     
     // depth dest
