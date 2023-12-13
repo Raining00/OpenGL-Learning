@@ -124,7 +124,7 @@ namespace Renderer
         if (!m_visible || !m_produceShadow)
             return;
         shader->use();
-        shader->setBool("instance", false);
+        shader->setBool("instance", m_instance);
         shader->setMat4("lightSpaceMatrix",
                         lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());

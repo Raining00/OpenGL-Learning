@@ -32,7 +32,6 @@ void main()
         FragPos = vec3(modelMatrix * vec4(aPos, 1.0));
     else
         FragPos = vec3(modelMatrix * instanceMatrix * vec4(aPos, 1.0));
-
     vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     vs_out.FragPos = FragPos;
     gl_Position = project * view * vec4(FragPos, 1.0);

@@ -34,8 +34,8 @@ public:
         glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); 
 
         m_renderSystem->setSunLight(sunLightDir, ambient, diffuse, specular);
-        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -10.f, +10.0f,    
-            -10.0f, +10.0f, 1.0f, 100.f);
+        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,    
+            -5.0f, +5.0f, 1.0f, 15.f);
 
         // add drawable
         m_renderSystem->UseDrawableList(true);

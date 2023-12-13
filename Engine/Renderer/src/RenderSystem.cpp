@@ -70,7 +70,7 @@ namespace Renderer
             PRINT_WARNING("You have to set the sun light first before creating the sun light camera");
             return;
         }
-        const float length = 10.f;
+        const float length = 100.f;
         glm::vec3 pos = length * sunLight->getDirection();
         if (m_lightCamera == nullptr)
         {
@@ -297,7 +297,7 @@ namespace Renderer
         m_shadowDepthBuffer->bind();
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_CULL_FACE);
-        //glCullFace(GL_FRONT);
+        glCullFace(GL_FRONT);
         glEnable(GL_DEPTH_TEST);
         m_drawableList->renderDepth(m_shaderManager->getShader("shadowDepth"), m_lightCamera);
         m_shadowDepthBuffer->unBind(m_width, m_height);
