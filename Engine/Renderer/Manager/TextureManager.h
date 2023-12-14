@@ -3,9 +3,8 @@
 #include <map>
 #include <vector>
 
-#include "ColorfulPrint.h"
 #include "Singleton.h"
-#include "Texture.h"
+#include "Texture/Texture.h"
 
 namespace Renderer
 {

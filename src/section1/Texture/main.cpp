@@ -1,8 +1,8 @@
 #include "ColorfulPrint.h"
 #include "Config.h"
-#include "RenderDevice.h"
-#include "ShaderManager.h"
-#include "TextureManager.h"
+#include "RenderApp/RenderDevice.h"
+#include "Manager/ShaderManager.h"
+#include "Manager/TextureManager.h"
 
 int main()
 {

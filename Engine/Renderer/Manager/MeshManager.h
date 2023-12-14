@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mesh.h"
-#include "Singleton.h"
+#include "Mesh/Mesh.h"
+#include "Manager/Singleton.h"
 
 #include <map>
 #include <vector>

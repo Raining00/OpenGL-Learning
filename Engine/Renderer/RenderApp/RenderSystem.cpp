@@ -1,7 +1,8 @@
 #include "RenderSystem.h"
-#include "TPSCamera.h"
-#include "FPSCamera.h"
-#include "Config.h"
+#include "Camera/FPSCamera.h"
+#include "Camera/TPSCamera.h"
+#include "include/Config.h"
+#include "include/ColorfulPrint.h"
 
 namespace Renderer
 {

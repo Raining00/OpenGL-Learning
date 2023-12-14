@@ -119,11 +119,14 @@ else()
 endif()
 
 # Render base system
-list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
-FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
-add_library(Renderer STATIC ${RENDER_SYS_SOURCE})
-target_link_libraries(Renderer PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
-target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
+# list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/include)
+# FILE(GLOB_RECURSE RENDER_SYS_SOURCE Engine/Renderer/src/*.cpp)
+# add_library(Renderer STATIC ${RENDER_SYS_SOURCE})
+# target_link_libraries(Renderer PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
+# target_include_directories(Renderer PUBLIC ${TARGET_INCLUDE_DIRECTORIES})
+# set_property(TARGET Renderer PROPERTY FOLDER "extern/Renderer")
+add_subdirectory(Engine/Renderer)
+list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/)
 set_property(TARGET Renderer PROPERTY FOLDER "extern/Renderer")
 
 # cuda data structure

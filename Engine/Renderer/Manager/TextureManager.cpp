@@ -1,4 +1,5 @@
 #include "TextureManager.h"
+#include "../../include/ColorfulPrint.h"
 
 namespace Renderer
 {

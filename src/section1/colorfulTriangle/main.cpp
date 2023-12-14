@@ -1,7 +1,7 @@
-#include "RenderDevice.h"
+#include "RenderApp/RenderDevice.h"
 #include "ColorfulPrint.h"
 #include "Config.h"
-#include "ShaderManager.h"
+#include "Manager/ShaderManager.h"
 
 int main()
 {

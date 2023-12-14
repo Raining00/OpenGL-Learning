@@ -1,8 +1,8 @@
 #pragma once
 #include "RenderDevice.h"
 
-#include "ColorfulPrint.h"
-#include "Config.h"
+#include "include/ColorfulPrint.h"
+#include "include/Config.h"
 
 namespace Renderer{
 class WindowApp

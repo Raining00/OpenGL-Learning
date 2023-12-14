@@ -1,8 +1,8 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "Camera3D.h"
-#include "Shader.h"
+#include "Camera/Camera3D.h"
+#include "Shader/Shader.h"
 
 namespace Renderer
 {

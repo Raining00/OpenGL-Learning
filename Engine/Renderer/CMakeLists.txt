@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(Renderer)
+
+set(TARGET Renderer)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB_RECURSE RENDER_HEARD_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+file(GLOB_RECURSE RENDER_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+
+add_library(${TARGET} STATIC ${RENDER_SOURCE_FILES})
+target_link_libraries(${TARGET} PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
+target_include_directories(${TARGET} PUBLIC ${CMAKE_SOURCE_DIR}/extern ${CMAKE_SOURCE_DIR}/extern/imgui ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+
+
+foreach(RENDER_FILE ${RENDER_HEARD_FILES} ${RENDER_SOURCE_FILES})
+    get_filename_component(RENDER_PATH "${RENDER_FILE}" PATH)
+    file(RELATIVE_PATH RENDER_PATH_REL "${CMAKE_CURRENT_SOURCE_DIR}/" "${RENDER_PATH}")
+    string(REPLACE "/" "\\" GROUP_PATH "${RENDER_PATH_REL}")
+    source_group("\\${GROUP_PATH}" FILES "${RENDER_FILE}")
+endforeach()

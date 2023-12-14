@@ -1,8 +1,8 @@
 #pragma once
-#include "WindowApp.h"
+#include "RenderApp/WindowApp.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "StaticModelDrawable.h"
+#include "Drawable/StaticModelDrawable.h"
 class SimpleMesh : public Renderer::WindowApp
 {
 public:

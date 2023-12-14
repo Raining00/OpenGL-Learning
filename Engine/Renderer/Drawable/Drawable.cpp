@@ -1,11 +1,12 @@
 #include "Drawable.h"
 
-#include "TextureManager.h"
-#include "ShaderManager.h"
-#include "MeshManager.h"
-#include "LightManager.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ShaderManager.h"
+#include "Manager/MeshManager.h"
+#include "Manager/LightManager.h"
 
-#include "ColorfulPrint.h"
+#include "../../include/ColorfulPrint.h"
+
 namespace Renderer
 {
 

@@ -1,12 +1,13 @@
 #include "StaticModelDrawable.h"
 
-#include "MeshManager.h"
-#include "TextureManager.h"
-#include "ShaderManager.h"
-#include "LightManager.h"
+#include "Manager/MeshManager.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ShaderManager.h"
+#include "Manager/LightManager.h"
 
-#include "ColorfulPrint.h"
-#include "Config.h"
+#include "../../include/ColorfulPrint.h"
+#include "../../include/Config.h"
+
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>

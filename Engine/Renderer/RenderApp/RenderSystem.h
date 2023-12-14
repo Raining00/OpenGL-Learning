@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ShaderManager.h"
-#include "TextureManager.h"
-#include "LightManager.h"
-#include "MeshManager.h"
-#include "Drawable.h"
-#include "Camera3D.h"
+#include "Manager/ShaderManager.h"
+#include "Manager/TextureManager.h"
+#include "Manager/LightManager.h"
+#include "Manager/MeshManager.h"
+#include "Drawable/Drawable.h"
+#include "Camera/Camera3D.h"
 
 namespace Renderer
 {

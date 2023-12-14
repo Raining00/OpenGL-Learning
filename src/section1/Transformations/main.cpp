@@ -1,6 +1,6 @@
-#include "RenderDevice.h"
-#include "TextureManager.h"
-#include "ShaderManager.h"
+#include "RenderApp/RenderDevice.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ShaderManager.h"
 #include "ColorfulPrint.h"
 #include "Config.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/Drawable.h"
+#include "Drawable/Drawable.h"
 #include <map>
 class aiMesh;
 class aiNode;

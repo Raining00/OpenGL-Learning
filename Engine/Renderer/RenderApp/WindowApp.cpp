@@ -1,6 +1,6 @@
 #include "WindowApp.h"
-#include "TPSCamera.h"
-#include "FPSCamera.h"
+#include "Camera/TPSCamera.h"
+#include "Camera/FPSCamera.h"
 namespace Renderer
 {
 

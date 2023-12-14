@@ -1,5 +1,5 @@
 #include "LightManager.h"
-#include "ColorfulPrint.h"
+#include "../../include/ColorfulPrint.h"
 
 namespace Renderer
 {

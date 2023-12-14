@@ -3,8 +3,8 @@
 #include <map>
 #include <vector>
 
-#include "Shader.h"
-#include "Singleton.h"
+#include "Shader/Shader.h"
+#include "Manager/Singleton.h"
 
 namespace Renderer
 {

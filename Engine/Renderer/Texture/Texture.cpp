@@ -7,7 +7,7 @@
 #endif
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include "ColorfulPrint.h"
+#include "include/ColorfulPrint.h"
 
 namespace Renderer
 {

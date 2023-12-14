@@ -3,8 +3,8 @@
 #include <map>
 #include <vector>
 
-#include "Singleton.h"
-#include "Light.h"
+#include "Manager/Singleton.h"
+#include "Light/Light.h"
 
 namespace Renderer{
 /**

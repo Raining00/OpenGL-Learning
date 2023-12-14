@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "Shader/Shader.h"
 #include "Config.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

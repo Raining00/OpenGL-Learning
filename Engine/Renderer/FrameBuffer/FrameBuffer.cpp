@@ -1,6 +1,6 @@
 #include "FrameBuffer.h"
-#include "ColorfulPrint.h"
-#include "TextureManager.h"
+#include "include/ColorfulPrint.h"
+#include "Manager/TextureManager.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"

@@ -3,11 +3,11 @@
 #include <vector>
 #include <memory>
 
-#include "Light.h"
-#include "Geometry.h"
-#include "Camera3D.h"
-#include "Transform3D.h"
-#include "FrameBuffer.h"
+#include "Light/Light.h"
+#include "Mesh/Geometry.h"
+#include "Camera/Camera3D.h"
+#include "Camera/Transform3D.h"
+#include "FrameBuffer/FrameBuffer.h"
 
 namespace Renderer
 {

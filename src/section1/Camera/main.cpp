@@ -8,13 +8,13 @@
  * @copyright Copyright (c) 2023
  *
  */
-#include "RenderDevice.h"
-#include "TextureManager.h"
-#include "ShaderManager.h"
+#include "RenderApp/RenderDevice.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ShaderManager.h"
 #include "ColorfulPrint.h"
 #include "Config.h"
-#include "TPSCamera.h"
-#include "FPSCamera.h"
+#include "Camera/TPSCamera.h"
+#include "Camera/FPSCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
