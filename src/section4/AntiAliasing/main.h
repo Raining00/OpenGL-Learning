@@ -16,8 +16,6 @@ public:
     virtual void Init() override
     {
         //shaders
-        unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
-        unsigned int staticModelShader = m_shaderManager->loadShader("staticModelShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/staticModel.fs");
         unsigned int RockShader = m_shaderManager->loadShader("Rock", SHADER_PATH"/Planet/Rock.vs", SHADER_PATH"/Planet/Rock.fs");
         unsigned int PlanetShader = m_shaderManager->loadShader("Planet", SHADER_PATH"/Planet/Planet.vs", SHADER_PATH"/Planet/Planet.fs");
 
@@ -47,31 +45,27 @@ public:
         glm::mat4* modelMatrices;
         modelMatrices = new glm::mat4[amount];
         //std::shared_ptr<glm::mat4[]> modelMatrices = std::make_shared<glm::mat4[]>(amount); // C++ 17 feature
-        srand(glfwGetTime()); // ��ʼ���������    
+        srand(glfwGetTime());  
         float radius = 50.0;
         float offset = 10.f;
         for (unsigned int i = 0; i < amount; i++)
         {
             glm::mat4 model(1.0f);
-            // 1. λ�ƣ��ֲ��ڰ뾶Ϊ 'radius' ��Բ���ϣ�ƫ�Ƶķ�Χ�� [-offset, offset]
             float angle = (float)i / (float)amount * 360.0f;
             float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
             float x = sin(angle) * radius + displacement;
             displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-            float y = displacement * 0.4f; // �����Ǵ��ĸ߶ȱ�x��z�Ŀ���ҪС
+            float y = displacement * 0.4f;
             displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
             float z = cos(angle) * radius + displacement;
             model = glm::translate(model, glm::vec3(x, y, z));
 
-            // 2. ���ţ��� 0.05 �� 0.25f ֮������
             float scale = (rand() % 20) / 100.0f + 0.05;
             model = glm::scale(model, glm::vec3(scale));
 
-            // 3. ��ת������һ�����룩���ѡ�����ת�����������������ת
             float rotAngle = (rand() % 360);
             model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
-            // 4. ���ӵ������������
             modelMatrices[i] = model;
         }
         unsigned int buffer;
@@ -89,15 +83,12 @@ public:
 
     virtual void Render() override
     {
-        m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
         m_renderSystem->render(true);
-        DrawImGui();
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI() override
     {
         // imgui
         {

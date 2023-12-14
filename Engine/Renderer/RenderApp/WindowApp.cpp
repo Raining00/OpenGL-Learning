@@ -58,18 +58,28 @@ namespace Renderer
     {
     }
 
-    void WindowApp::Render()
+    void WindowApp::preRender()
     {
         m_renderDevice->beginFrame();
+    }
+
+    void WindowApp::Render()
+    {
         m_renderSystem->setClearColor(glm::vec4(0.0, 0.0, 0.0, 1.0f));
         m_renderSystem->render();
-        {
-            // Render UI
-            ImGui::Begin("WindowApp");
-            ImGui::Text("This is a example of WindowApp");
-            ImGui::End();
-        }
+    }
+
+    void WindowApp::postRender()
+    {
         m_renderDevice->endFrame();
+    }
+
+    void WindowApp::RenderUI()
+    {
+        // Render UI
+        ImGui::Begin("WindowApp");
+        ImGui::Text("This is a example of WindowApp");
+        ImGui::End();
     }
 
     void WindowApp::Release()
@@ -82,7 +92,10 @@ namespace Renderer
         while (m_renderDevice->run())
         {
             Update();
+            preRender();
             Render();
+            RenderUI();
+            postRender();
         }
         Release();
     }

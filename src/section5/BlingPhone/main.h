@@ -54,7 +54,6 @@ public:
 
     virtual void Render() override
     {
-        m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
@@ -62,11 +61,9 @@ public:
         m_shaderManager->getShader("blingphoneShader")->setInt("UseBlingPhone", BlingPhoneOn);
 
         m_shaderManager->unbindShader();
-        DrawImGui();
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI() override
     {
         // imgui
         {

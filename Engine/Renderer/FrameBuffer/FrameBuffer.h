@@ -41,7 +41,7 @@ namespace Renderer
 		unsigned int getDepthTextureIndex() const { return m_depthTexIndex; }
 		unsigned int getColorTextureIndex(int idx) const { return m_colorTexIndex[idx]; }
 		unsigned int getColorTextureBuffer() const { return m_textureColorbuffer; }
-		void saveTextureToFile(const std::string& filename, unsigned int textureIndex, TextureType type);
+		void saveTextureToFile(const std::string& filename, TextureType type);
 
 	private:
 		void setupDepthFramebuffer(const std::string& depthName);

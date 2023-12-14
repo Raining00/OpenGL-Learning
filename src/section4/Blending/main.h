@@ -85,15 +85,12 @@ public:
 
     virtual void Render() override
     {
-       m_renderDevice->beginFrame();
        m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
        m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
        m_renderSystem->render();
-       DrawImGui();
-       m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI()
     {
         // imgui
         {

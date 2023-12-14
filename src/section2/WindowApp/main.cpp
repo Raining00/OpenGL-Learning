@@ -23,7 +23,6 @@ public:
     virtual void Render() override
     {
         // you own render code here
-        m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->render();
         {
@@ -32,7 +31,6 @@ public:
             ImGui::ColorEdit3("Background Color", (float *)&m_BackColor);
             ImGui::End();
         }
-        m_renderDevice->endFrame();
     }
 
     virtual void Release() override

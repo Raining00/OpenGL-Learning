@@ -57,9 +57,9 @@ namespace Renderer
         * @param format the format of the skybox images. (should be the same, eg. jpg, png.)
         */
         void createSkyBox(const std::string& path, const std::string& format);
-        void createUBO(unsigned int& uboIdx);
         Camera3D::ptr createTPSCamera(glm::vec3 pos, glm::vec3 target);
         Camera3D::ptr createFPSCamera(glm::vec3 pos, glm::vec3 target);
+        void saveDepthFrameBuffer(const std::string& path);
         void addDrawable(Drawable::ptr drawable) { m_drawableList->addDrawable(drawable); }
         void addDrawable(Drawable* drawable) { m_drawableList->addDrawable(drawable); }
 

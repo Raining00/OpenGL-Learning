@@ -85,33 +85,23 @@ public:
 
     virtual void Render() override
     {
-        m_renderDevice->beginFrame();
-        m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
-        DrawImGui();
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI() override
     {
         // imgui
-        {
-            ImGui::Begin("GammaCorrect Example");
-            ImGui::Text("GammaCorrect Example");
-            ImGui::ColorEdit3("backgroundColor", (float*)&m_BackColor);
-            ImGui::Text("SunLight");
-            ImGui::SliderFloat3("sunLightDir", (float*)&sunLightDir, -1.0f, 1.0f);
-            ImGui::ColorEdit3("sunLightColorAmbient", (float*)&sunLightColorAmbient);
-            ImGui::ColorEdit3("sunLightColorDiffse", (float*)&sunLightColorDiffse);
-            ImGui::ColorEdit3("sunLightColorSpecular", (float*)&sunLightColorSpecular);
-            ImGui::Checkbox("ShowShadowMap", &m_renderSystem->getShowShadowMap());
-            ImGui::End();
-        }
-    }
-
-    void Release() override
-    {
+        ImGui::Begin("GammaCorrect Example");
+        ImGui::Text("GammaCorrect Example");
+        ImGui::ColorEdit3("backgroundColor", (float*)&m_BackColor);
+        ImGui::Text("SunLight");
+        ImGui::SliderFloat3("sunLightDir", (float*)&sunLightDir, -1.0f, 1.0f);
+        ImGui::ColorEdit3("sunLightColorAmbient", (float*)&sunLightColorAmbient);
+        ImGui::ColorEdit3("sunLightColorDiffse", (float*)&sunLightColorDiffse);
+        ImGui::ColorEdit3("sunLightColorSpecular", (float*)&sunLightColorSpecular);
+        ImGui::Checkbox("ShowShadowMap", &m_renderSystem->getShowShadowMap());
+        ImGui::End();
     }
 
 private:

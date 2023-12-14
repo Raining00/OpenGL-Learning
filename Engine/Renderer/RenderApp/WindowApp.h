@@ -13,7 +13,10 @@ public:
 
     virtual void Init();
     virtual void Update();
+    virtual void preRender();
     virtual void Render();
+    virtual void postRender();
+    virtual void RenderUI();
     virtual void Release();
 
     void Run();

@@ -107,7 +107,6 @@ public:
 
     virtual void Render()
     {
-        m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->render();
 
@@ -163,12 +162,9 @@ public:
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         m_shaderManager->unbindShader();
-        DrawImGui();
-
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI() override
     {
         // imgui
         {

@@ -64,7 +64,6 @@ public:
 
     virtual void Render() override
     {
-        m_renderDevice->beginFrame();
         m_renderSystem->useLightCamera(useLightCamera);
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
@@ -77,11 +76,9 @@ public:
         m_shaderManager->getShader("blingphoneShader")->setBool("GammaCorrectOn", GammaCorrectOn);
         m_shaderManager->getShader("blingphoneShader")->setFloat("gamma", m_gamma);
         m_shaderManager->unbindShader();
-        DrawImGui();
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI() override
     {
         // imgui
         {
@@ -100,6 +97,11 @@ public:
             ImGui::DragFloat("halfScreenWidth: ", (float*)&m_halfScreenWidth);
             ImGui::Checkbox("ShowShadowMap", &m_renderSystem->getShowShadowMap());
             ImGui::Checkbox("UseLightCamera", (bool*)&useLightCamera);
+            if(ImGui::Button("click me"))
+            {
+                PRINT_CYAN_BLINK("click me");
+                m_renderSystem->saveDepthFrameBuffer("O:/depth.png");
+            }
             ImGui::End();
         }
     }

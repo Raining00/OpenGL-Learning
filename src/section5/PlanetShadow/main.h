@@ -100,19 +100,14 @@ public:
 
     virtual void Render() override
     {
-        m_renderDevice->beginFrame();
-        m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
-
         Renderer::Shader::ptr shader = m_shaderManager->getShader("SunPlanet");
         shader->use();
         shader->setFloat("time", glfwGetTime());
-        DrawImGui();
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI()
     {
         // imgui
         {

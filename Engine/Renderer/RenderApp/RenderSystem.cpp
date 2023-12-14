@@ -54,6 +54,16 @@ namespace Renderer
         return m_camera;
     }
 
+    void RenderSystem::saveDepthFrameBuffer(const std::string& path)
+    {
+        if (m_shadowDepthBuffer == nullptr)
+        {
+			PRINT_WARNING("You have to create the shadow depth buffer first before saving it");
+			return;
+		}
+        m_shadowDepthBuffer->saveTextureToFile(path, TextureType::DEPTH);
+    }
+
     Camera3D::ptr RenderSystem::createTPSCamera(glm::vec3 pos, glm::vec3 target)
     {
         TPSCamera *_cam = new TPSCamera(target, 0.0f, 30.0f, 3.0f);
@@ -82,7 +92,7 @@ namespace Renderer
         FPSCamera *_cam = static_cast<FPSCamera *>(m_lightCamera.get());
         _cam->lookAt(glm::normalize( - sunLight->getDirection()), Camera3D::LocalUp);
         //_cam->lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        //m_lightCamera = m_camera;
+        m_lightCamera = m_camera;
     }
 
     void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr)

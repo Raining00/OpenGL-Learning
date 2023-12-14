@@ -77,7 +77,6 @@ public:
             m_renderSystem->setPolygonMode(GL_LINE);
         else
             m_renderSystem->setPolygonMode(GL_FILL);
-        m_renderDevice->beginFrame();
         m_renderSystem->setClearColor(glm::vec4(m_BackColor, 1.0f));
         m_renderSystem->setSunLight(sunLightDir, glm::vec3(ambientCoef), glm::vec3(diffuseCoef), glm::vec3(specularCoef));
         m_renderSystem->render();
@@ -85,11 +84,9 @@ public:
         glBindVertexArray(vao);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
         m_shaderManager->unbindShader();
-        DrawImGui();
-        m_renderDevice->endFrame();
     }
 
-    void DrawImGui()
+    void RenderUI() override
     {
         // imgui
         {
