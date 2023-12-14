@@ -6,7 +6,7 @@
 #include <GL/glew.h>
 #endif
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "stb_image/stb_image.h"
 #include "include/ColorfulPrint.h"
 
 namespace Renderer

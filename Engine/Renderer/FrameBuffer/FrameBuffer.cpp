@@ -3,7 +3,7 @@
 #include "Manager/TextureManager.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "stb_image/stb_image_write.h"
 
 namespace Renderer
 {
@@ -118,33 +118,28 @@ namespace Renderer
 
 	void FrameBuffer::saveTextureToFile(const std::string& filename, TextureType type)
 	{
-		// °ó¶¨Ö¡»º³å
+		// ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 		GLenum attachment = (type == TextureType::COLOR) ? GL_COLOR_ATTACHMENT0 : GL_DEPTH_ATTACHMENT;
 		GLuint textureIndex = (type == TextureType::COLOR) ? m_colorTexIndex[0] : m_depthTexIndex;
 		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, 
 			TextureManager::getInstance()->getTexture(m_depthTexIndex)->getTextureId(), 0);
 
-		// ¶ÁÈ¡ÏñËØÊý¾Ý
-		std::vector<float> pixels(m_width * m_height * (type == TextureType::COLOR ? 4 : 1)); // RGBA»òµ¥Í¨µÀÉî¶È
+		std::vector<float> pixels(m_width * m_height * (type == TextureType::COLOR ? 4 : 1)); // RGBAï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½
 		GLenum format = (type == TextureType::COLOR) ? GL_RGBA : GL_DEPTH_COMPONENT;
 		GLenum dataType = GL_FLOAT;
 		glReadPixels(0, 0, m_width, m_height, format, dataType, pixels.data());
 
-		// ·­×ªÏñËØÊý¾Ý
 		int rowSize = m_width * (type == TextureType::COLOR ? 4 : 1);
 		std::vector<float> flippedPixels(pixels.size());
 		for (int y = 0; y < m_height; y++) {
-			std::memcpy(&flippedPixels[y * rowSize], &pixels[(m_height - 1 - y) * rowSize], rowSize * sizeof(float));
+			memcpy(&flippedPixels[y * rowSize], &pixels[(m_height - 1 - y) * rowSize], rowSize * sizeof(float));
 		}
 
-		// ±£´æÎªÍ¼ÏñÎÄ¼þ
 		if (type == TextureType::COLOR) {
 			stbi_write_png(filename.c_str(), m_width, m_height, 4, flippedPixels.data(), m_width * 4);
 		}
 		else {
-			// ¶ÔÓÚÉî¶ÈÎÆÀí£¬¿ÉÄÜÐèÒª×ª»»Êý¾Ý¸ñÊ½»ò½øÐÐËõ·Å
-			// ÕâÀïÖ»ÊÇÒ»¸ö¼òµ¥µÄÊ¾Àý£¬¿ÉÄÜÐèÒª¸ù¾ÝÊµ¼ÊÇé¿öµ÷Õû
 			std::vector<unsigned char> depthPixels(m_width * m_height);
 			for (size_t i = 0; i < depthPixels.size(); ++i) {
 				depthPixels[i] = static_cast<unsigned char>(255.0f * flippedPixels[i]);
@@ -152,7 +147,6 @@ namespace Renderer
 			stbi_write_png(filename.c_str(), m_width, m_height, 1, depthPixels.data(), m_width);
 		}
 
-		// ½â°óÖ¡»º³å
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
