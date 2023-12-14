@@ -45,7 +45,7 @@ namespace Renderer
 
         void resize(int width, int height);
         void initialize(int width, int height);
-        void createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far);
+        void createSunLightCamera(const glm::vec3& target, const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far, const float& distance = 10.f);
         void createShadowDepthBuffer(int width, int height, bool hdr = false);
         void createFrameBuffer(int width, int height, bool hdr = false);
         /**

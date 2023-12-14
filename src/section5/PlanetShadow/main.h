@@ -29,7 +29,7 @@ public:
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(10.0, 50, 50));
         m_renderSystem->setSunLight(sunLightDir, glm::vec3(0.5), glm::vec3(0.6f), glm::vec3(0.6));
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -50.0f, +50.0f,
-            -50.0f, +50.0f, 1.0f, 1000.f);
+            -50.0f, +50.0f, 1.0f, 1000.f, 100.f);
 
         // add drawable
         m_renderSystem->UseDrawableList(true);

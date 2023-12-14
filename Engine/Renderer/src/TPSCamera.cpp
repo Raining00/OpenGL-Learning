@@ -71,6 +71,12 @@ namespace Renderer
 			m_yaw += m_mouseSty * (-deltaX);
 			m_yaw = fmod(m_yaw, 360.0f);
 		}
+		else if (button == "MIDDLE")
+		{
+			m_dirty = true;
+			glm::vec3 move = getRight() * (float)deltaX * m_moveSpeed / 100.f + getUp() * (float)deltaY * m_moveSpeed / 100.f;
+			m_target.translate(move);
+		}
 	}
 
 	void TPSCamera::update()

@@ -250,7 +250,7 @@ namespace Renderer
     void RenderDevice::cursorPositionCallback(GLFWwindow *window, double xpos, double ypos)
     {
         static bool first = true;
-        if ((!m_buttonPressed[GLFW_MOUSE_BUTTON_LEFT] && !m_buttonPressed[GLFW_MOUSE_BUTTON_RIGHT]))
+        if (!m_buttonPressed[GLFW_MOUSE_BUTTON_LEFT] && !m_buttonPressed[GLFW_MOUSE_BUTTON_RIGHT] && !m_buttonPressed[GLFW_MOUSE_BUTTON_MIDDLE])
         {
             first = true;
             return;
@@ -322,6 +322,8 @@ namespace Renderer
             device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "LEFT");
         else if (m_buttonPressed[GLFW_MOUSE_BUTTON_RIGHT])
             device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "RIGHT");
+        else if (m_buttonPressed[GLFW_MOUSE_BUTTON_MIDDLE])
+			device->getRenderSystem()->getCamera()->onMouseMove(m_deltaCurPos.x, m_deltaCurPos.y, "MIDDLE");
         m_deltaCurPos = glm::vec2(0.0f);
     }
 

@@ -35,7 +35,7 @@ public:
 
         m_renderSystem->setSunLight(sunLightDir, ambient, diffuse, specular);
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,    
-            -5.0f, +5.0f, 1.0f, 15.f);
+            -5.0f, +5.0f, 1.0f, 15.f, 5.f);
 
         // add drawable
         m_renderSystem->UseDrawableList(true);

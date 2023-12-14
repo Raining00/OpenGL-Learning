@@ -62,7 +62,7 @@ namespace Renderer
         return m_camera;
     }
 
-    void RenderSystem::createSunLightCamera(glm::vec3 target, float left, float right, float bottom, float top, float near, float far)
+    void RenderSystem::createSunLightCamera(const glm::vec3& target, const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far, const float& distance)
     {
         DirectionalLight* sunLight = reinterpret_cast<DirectionalLight*>(m_lightManager->getLight("SunLight").get());
         if (sunLight == nullptr)
@@ -70,7 +70,7 @@ namespace Renderer
             PRINT_WARNING("You have to set the sun light first before creating the sun light camera");
             return;
         }
-        const float length = 100.f;
+        const float length = distance;
         glm::vec3 pos = length * sunLight->getDirection();
         if (m_lightCamera == nullptr)
         {
