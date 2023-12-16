@@ -92,7 +92,7 @@ namespace Renderer
         FPSCamera *_cam = static_cast<FPSCamera *>(m_lightCamera.get());
         _cam->lookAt(glm::normalize( - sunLight->getDirection()), Camera3D::LocalUp);
         //_cam->lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_lightCamera = m_camera;
+        //m_lightCamera = m_camera;
     }
 
     void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr)

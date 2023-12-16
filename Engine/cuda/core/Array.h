@@ -22,14 +22,14 @@ public:
 	{
 	};
 
-	Array(uint num)
+	Array(unsigned int num)
 	{
 		mData.resize((size_t)num);
 	}
 
 	~Array() {};
 
-	void resize(uint n);
+	void resize(const unsigned int n);
 
 	/*!
 	*	\brief	Clear all data to zero.
@@ -56,7 +56,7 @@ public:
 		return mData[id];
 	}
 
-	inline uint size() const { return (uint)mData.size(); }
+	inline unsigned int size() const { return (unsigned int)mData.size(); }
 	inline bool isCPU() const { return true; }
 	inline bool isGPU() const { return false; }
 	inline bool isEmpty() const { return mData.empty(); }
@@ -64,7 +64,7 @@ public:
 	inline void pushBack(T ele) { mData.push_back(ele); }
 
 	void assign(const T& val);
-	void assign(uint num, const T& val);
+	void assign(unsigned int num, const T& val);
 
 #ifndef NO_BACKEND
 	void assign(const Array<T, DeviceType::GPU>& src);
@@ -74,7 +74,7 @@ public:
 
 	friend std::ostream& operator<<(std::ostream &out, const Array<T, DeviceType::CPU>& cArray)
 	{
-		for (uint i = 0; i < cArray.size(); i++)
+		for (unsigned int i = 0; i < cArray.size(); i++)
 		{
 			out << i << ": " << cArray[i] << std::endl;
 		}
@@ -87,7 +87,7 @@ private:
 };
 
 template<typename T>
-void Array<T, DeviceType::CPU>::resize(const uint n)
+void Array<T, DeviceType::CPU>::resize(const unsigned int n)
 {
 	mData.resize(n);
 }
@@ -120,7 +120,7 @@ void Array<T, DeviceType::CPU>::assign(const T& val)
 }
 
 template<typename T>
-void Array<T, DeviceType::CPU>::assign(uint num, const T& val)
+void Array<T, DeviceType::CPU>::assign(unsigned int num, const T& val)
 {
 	mData.assign(num, val);
 }
@@ -150,7 +150,7 @@ public:
 	{
 	};
 
-	Array(uint num)
+	Array(unsigned int num)
 	{
 		this->resize(num);
 	}
@@ -160,7 +160,7 @@ public:
 	*/
 	~Array() {};
 
-	void resize(const uint n);
+	void resize(const unsigned int n);
 
 	/*!
 	*	\brief	Clear all data to zero.
@@ -185,7 +185,7 @@ public:
 		return mData[id];
 	}
 
-	__device__ __host__ inline uint size() const { return mTotalNum; }
+	__device__ __host__ inline unsigned int size() const { return mTotalNum; }
 	__device__ __host__ inline bool isCPU() const { return false; }
 	__device__ __host__ inline bool isGPU() const { return true; }
 	__device__ __host__ inline bool isEmpty() const { return mData == nullptr; }
@@ -194,9 +194,9 @@ public:
 	void assign(const Array<T, DeviceType::CPU>& src);
 	void assign(const std::vector<T>& src);
 
-	void assign(const Array<T, DeviceType::GPU>& src, const uint count, const uint dstOffset = 0, const uint srcOffset = 0);
-	void assign(const Array<T, DeviceType::CPU>& src, const uint count, const uint dstOffset = 0, const uint srcOffset = 0);
-	void assign(const std::vector<T>& src, const uint count, const uint dstOffset = 0, const uint srcOffset = 0);
+	void assign(const Array<T, DeviceType::GPU>& src, const unsigned int count, const unsigned int dstOffset = 0, const unsigned int srcOffset = 0);
+	void assign(const Array<T, DeviceType::CPU>& src, const unsigned int count, const unsigned int dstOffset = 0, const unsigned int srcOffset = 0);
+	void assign(const std::vector<T>& src, const unsigned int count, const unsigned int dstOffset = 0, const unsigned int srcOffset = 0);
 
 	friend std::ostream& operator<<(std::ostream &out, const Array<T, DeviceType::GPU>& dArray)
 	{
@@ -210,15 +210,15 @@ public:
 
 private:
 	T* mData = nullptr;
-	uint mTotalNum = 0;
-	uint mBufferNum = 0;
+	unsigned int mTotalNum = 0;
+	unsigned int mBufferNum = 0;
 };
 
 template<typename T>
 using DArray = Array<T, DeviceType::GPU>;
 
 template<typename T>
-void Array<T, DeviceType::GPU>::resize(const uint n)
+void Array<T, DeviceType::GPU>::resize(const unsigned int n)
 {
 	if (mTotalNum == n) return;
 
@@ -285,25 +285,25 @@ template<typename T>
 void Array<T, DeviceType::GPU>::assign(const std::vector<T>& src)
 {
 	if (mTotalNum != src.size())
-		this->resize((uint)src.size());
+		this->resize((unsigned int)src.size());
 
 	cudaMemcpy(mData, src.data(), src.size() * sizeof(T), cudaMemcpyHostToDevice);
 }
 
 template<typename T>
-void Array<T, DeviceType::GPU>::assign(const std::vector<T>& src, const uint count, const uint dstOffset, const uint srcOffset)
+void Array<T, DeviceType::GPU>::assign(const std::vector<T>& src, const unsigned int count, const unsigned int dstOffset, const unsigned int srcOffset)
 {
 	cudaMemcpy(mData + dstOffset, src.data() + srcOffset, count * sizeof(T), cudaMemcpyHostToDevice);
 }
 
 template<typename T>
-void Array<T, DeviceType::GPU>::assign(const Array<T, DeviceType::CPU>& src, const uint count, const uint dstOffset, const uint srcOffset)
+void Array<T, DeviceType::GPU>::assign(const Array<T, DeviceType::CPU>& src, const unsigned int count, const unsigned int dstOffset, const unsigned int srcOffset)
 {
 	cudaMemcpy(mData + dstOffset, src.begin() + srcOffset, count * sizeof(T), cudaMemcpyHostToDevice);
 }
 
 template<typename T>
-void Array<T, DeviceType::GPU>::assign(const Array<T, DeviceType::GPU>& src, const uint count, const uint dstOffset, const uint srcOffset)
+void Array<T, DeviceType::GPU>::assign(const Array<T, DeviceType::GPU>& src, const unsigned int count, const unsigned int dstOffset, const unsigned int srcOffset)
 {
 	cudaMemcpy(mData + dstOffset, src.begin() + srcOffset, count * sizeof(T), cudaMemcpyDeviceToDevice);
 }

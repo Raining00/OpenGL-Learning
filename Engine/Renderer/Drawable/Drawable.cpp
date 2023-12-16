@@ -35,6 +35,7 @@ namespace Renderer
         m_instance = instance;
         m_instanceNum = instanceNum;
         auto meshMgr = MeshManager::getSingleton();
+        m_instanceVBO = instanceVBO;
         glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
         for (int i = 0; i < m_meshIndex.size(); i++)
         {
@@ -69,6 +70,14 @@ namespace Renderer
         shader->setBool("receiveShadow", m_receiveShadow);
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
+    }
+
+    Drawable::~Drawable()
+    {
+        if (m_instance)
+        {
+			glDeleteBuffers(1, &m_instanceVBO);
+		}
     }
 
     void SimpleDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
@@ -250,4 +259,5 @@ namespace Renderer
 		this->renderImp();
 		ShaderManager::getSingleton()->unbindShader();
     }
+
 } // namespace Renderer

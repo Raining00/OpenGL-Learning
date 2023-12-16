@@ -25,7 +25,7 @@ namespace Renderer
         typedef std::shared_ptr<Drawable> ptr;
 
         Drawable() = default;
-        virtual ~Drawable() = default;
+        virtual ~Drawable();
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) = 0;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) = 0;
@@ -68,6 +68,7 @@ namespace Renderer
         unsigned int m_shaderIndex;
         unsigned int m_stencilShaderIndex;
         unsigned int uboMatrices; // (uniform buffer object) for matrices.(Transform matrix: model, view, project, normalMatrix)
+        unsigned int m_instanceVBO;
         std::vector<unsigned int> m_texIndex;
         std::vector<unsigned int> m_meshIndex;
 

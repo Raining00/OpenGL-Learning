@@ -52,7 +52,7 @@ public:
         model[1] = new Renderer::StaticModelDrawable(SimpleShow, "O:/soap.obj");
         model[1]->setReceiveShadow(false);
         model[1]->setProduceShadow(true);
-        model[0]->getTransformation()->setTranslation(glm::vec3(0.2f, -0.3, 0.0f));
+        model[1]->getTransformation()->setTranslation(glm::vec3(0.2f, 0.3, 0.0f));
         m_renderSystem->addDrawable(model[1]);
 
 
