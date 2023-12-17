@@ -1,22 +1,44 @@
 #include "Drawable/ParticleDrawable.h"
+#include "RenderApp/RenderDevice.h"
+
 #include "include/Config.h"
 #include "include/ColorfulPrint.h"
 
+#include "Engine/cuda/core/base.h"
+
 namespace Renderer
 {
-	ParticlePointSpriteDrawable::ParticlePointSpriteDrawable(unsigned int posChannel):m_posChannel(posChannel)
+	ParticlePointSpriteDrawable::ParticlePointSpriteDrawable(const unsigned int& particleNum, const float& particleRadius, const unsigned int& posChannel):
+		m_posChannel(posChannel),m_numParticles(particleNum), m_particleRadius(particleRadius)
 	{
-		m_particleVBO = 0;
-		m_numParticles = 0;
-		m_particleRadius = 1.0f;
-		m_vboCreateBySelf = false;
 		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
 		glGenVertexArrays(1, &m_particleVAO);
+		glGenBuffers(1, &m_particleVBO);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+		m_vboCreateBySelf = true;
+
+		glBindVertexArray(m_particleVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferData(GL_ARRAY_BUFFER, m_numParticles * m_posChannel * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
+		glVertexAttribDivisor(0, 1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 
 		// load shader and texture
 		m_shaderManager = ShaderManager::getInstance();
 		m_textureManager = TextureManager::getInstance();
-		m_shaderManager->loadShader("Particle", SHADER_PATH"/Particles/ParticlePointSprit.vs", SHADER_PATH"/Particles/ParticlePointSprit.fs");
+		std::string vertexPath;
+		if(m_posChannel == 3)
+			vertexPath = SHADER_PATH "/Particles/ParticlePointSpriteVec3.vs";
+		else if(m_posChannel == 4)
+			vertexPath = SHADER_PATH "/Particles/ParticlePointSprite.vs";
+		else
+			throw std::runtime_error("ParticlePointSpriteDrawable::ParticlePointSpriteDrawable: posChannel must be 3 or 4.");
+		m_shaderIndex = m_shaderManager->loadShader("ParticlePointSprite", vertexPath.c_str(), SHADER_PATH "/Particles/ParticlePointSprite.fs");
 		generateGaussianMap(32);
 	}
 
@@ -25,6 +47,168 @@ namespace Renderer
 		if (m_vboCreateBySelf && m_particleVBO != 0)
 			glDeleteBuffers(1, &m_particleVBO);
 		glDeleteVertexArrays(1, &m_particleVAO);
+	}
+
+	void ParticlePointSpriteDrawable::setParticlePositions(const std::vector<glm::vec3>& positions)
+	{
+		if(m_posChannel != 3)
+			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 3.");
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(glm::vec3), positions.data());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::setParticlePositions(const std::vector<glm::vec4>& positions)
+	{
+		if (m_posChannel != 4)
+			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 4.");
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(glm::vec4), positions.data());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::setParticlePositions(CArray<Vec3f>& positions)
+	{
+		if (m_posChannel != 3)
+			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 3.");
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec3f), positions.begin());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::setParticlePositions(CArray<Vec4f>& positions)
+	{
+		if (m_posChannel != 4)
+			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 4.");
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec4f), positions.begin());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::setParticlePositions(std::vector<Vec3f>& positions)
+	{
+		if (m_posChannel != 3)
+			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 3.");
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec3f), positions.data());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::setParticlePositions(std::vector<Vec4f>& positions)
+	{
+		if (m_posChannel != 4)
+			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 4.");
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec4f), positions.data());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::setParticleVBO(GLuint vbo)
+	{
+		if (m_vboCreateBySelf && m_particleVBO != 0)
+			glDeleteBuffers(1, &m_particleVBO);
+		m_particleVBO = vbo;
+		m_vboCreateBySelf = false;
+		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
+	}
+
+	void ParticlePointSpriteDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)
+	{
+		if (!m_visible) return;
+
+		// calculate particle size scale factor
+		float aspect = camera->getAspect();
+		float fovy = camera->getFovy();
+		int width = RenderDevice::getInstance()->getWindowWidth();
+		float pointScale = 1.0f * width / aspect * (1.0f / tanf(glm::radians(fovy) * 0.5f));
+
+		glEnable(GL_PROGRAM_POINT_SIZE);
+		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+		// disable stencil test.
+		glStencilMask(0x00);
+		if (m_stencil)
+		{
+			glEnable(GL_STENCIL_TEST);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilMask(0xFF);
+		}
+		shader = m_shaderManager->getShader(m_shaderIndex);
+		shader->use();
+		LightManager::getInstance()->setLight(shader, camera);
+		shader->setInt("particleTexture", 0);
+		shader->setFloat("pointScale", pointScale);
+		shader->setVec3("baseColor", m_baseColor);
+		shader->setFloat("pointSize", m_particleRadius);
+		Texture::ptr depthMap = m_textureManager->getTexture("shadowDepth");
+		if (depthMap != nullptr)
+		{
+			shader->setInt("shadowMap", 5);
+			depthMap->bind(5);
+		}
+		// light space matrix.
+		if (lightCamera != nullptr)
+			shader->setMat4("lightSpaceMatrix",
+				lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+		else
+			shader->setMat4("lightSpaceMatrix", glm::mat4(1.0f));
+		// object matrix.
+		shader->setBool("instance", m_instance);
+		shader->setBool("receiveShadow", m_receiveShadow);
+		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+		shader->setMat3("normalMatrix", m_transformation.getNormalMatrix());
+
+		// bind particle texture.
+		m_textureManager->bindTexture(m_particleTexture, 0);
+
+		// draw
+		glBindVertexArray(m_particleVAO);
+		glDrawArraysInstanced(GL_POINTS, 0, 1, m_numParticles);
+		glBindVertexArray(0);
+
+		// restore
+		m_shaderManager->unbindShader();
+		m_textureManager->unbindTexture(m_particleTexture);
+		glDisable(GL_PROGRAM_POINT_SIZE);
+	}
+
+	void ParticlePointSpriteDrawable::renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera)
+	{
+		if (!m_visible || !m_produceShadow)
+			return;
+		static unsigned int index = m_shaderManager->loadShader("spriteDepth", SHADER_PATH"/Particles/spriteDepth.vs",
+			SHADER_PATH"/Particles/spriteDepth.fs");
+		shader = m_shaderManager->getShader(index);
+		shader->use();
+		shader->setInt("particleTexture", 0);
+		shader->setFloat("pointSize", m_particleRadius);
+		shader->setMat4("lightSpaceMatrix",
+			lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
+		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+		m_textureManager->bindTexture(m_particleTexture, 0);
+
+		glEnable(GL_PROGRAM_POINT_SIZE);
+		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+		glBindVertexArray(m_particleVAO);
+		glDrawArraysInstanced(GL_POINTS, 0, 1, m_numParticles);
+		glBindVertexArray(0);
+		glDisable(GL_PROGRAM_POINT_SIZE);
+		m_shaderManager->unbindShader();
+		m_textureManager->unbindTexture(m_particleTexture);
 	}
 
 	void ParticlePointSpriteDrawable::generateGaussianMap(int resolution)
@@ -56,6 +240,4 @@ namespace Renderer
 		m_particleTexture = m_textureManager->loadTexture2D("GaussianMap", data, resolution, resolution, 4);
 		delete[]data;
 	}
-
-
 }

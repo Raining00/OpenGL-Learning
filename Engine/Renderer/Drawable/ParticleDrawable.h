@@ -7,23 +7,27 @@
 #include "Engine/cuda/core/Array.h"
 #include "Engine/cuda/core/Vector/Vector.h"
 
+#include <cuda_gl_interop.h>
+
 namespace Renderer
 {
 	class ParticlePointSpriteDrawable : public Drawable
 	{
 	public:
-		ParticlePointSpriteDrawable(unsigned int posChannel = 4);
+		ParticlePointSpriteDrawable(const unsigned int& particleNum, const float& particleRadius = 1, const unsigned int& posChannel = 4);
 
 		~ParticlePointSpriteDrawable();
 
-		void setParticleRadius(float radius);
-		void setPositions(const std::vector<glm::vec3>& positions);
-		void setPositions(const std::vector<glm::vec4>& positions);
-		void setPositions(CArray<Vec3f> &positions);
-		void setPositions(std::vector<Vec3f> &positions);
+		void setParticleRadius(const float& radius);
 
-		void setPositionsFromDecvice(const float* positions, unsigned int numParticles, unsigned int posChannel);
-		void setPositionsFromDevice(DArray<Vec3f> &positions);
+		void setParticlePositions(const std::vector<glm::vec3>& positions);
+		void setParticlePositions(const std::vector<glm::vec4>& positions);
+
+		void setParticlePositions(CArray<Vec3f> &positions);
+		void setParticlePositions(CArray<Vec4f> &positions);
+
+		void setParticlePositions(std::vector<Vec3f> &positions);
+		void setParticlePositions(std::vector<Vec4f> &positions);
 
 		void setParticleVBO(GLuint vbo);
 
@@ -36,7 +40,6 @@ namespace Renderer
 
 	private:
 		void generateGaussianMap(int resolution);
-
 	private:
 		ShaderManager::ptr m_shaderManager;
 		TextureManager::ptr m_textureManager;
@@ -48,5 +51,6 @@ namespace Renderer
 		bool m_vboCreateBySelf;
 		unsigned int m_numParticles;
 		unsigned int m_posChannel; // 3 or 4 (vec3 or vec4)
+		cudaGraphicsResource *m_cudaVBOResource;
 	};
 }
