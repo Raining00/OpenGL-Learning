@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(Renderer)
+find_package(CUDA REQUIRED)
 
 set(TARGET Renderer)
 
@@ -13,10 +14,13 @@ file(GLOB_RECURSE RENDER_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_library(${TARGET} STATIC ${RENDER_SOURCE_FILES})
 target_link_libraries(${TARGET} PUBLIC glfw imgui ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm)
 target_include_directories(${TARGET} PUBLIC ${CMAKE_SOURCE_DIR}/extern ${CMAKE_SOURCE_DIR}/extern/imgui ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+
 enable_language(CUDA)
 target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
-                       --generate-code arch=compute_86,code=[sm_86,compute_86] -std=c++17>)
+                    --generate-code arch=compute_86,code=[sm_86,compute_86] -std=c++17>)
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+target_link_libraries(${TARGET} PRIVATE ${CUDA_LIBRARIES} cudart) 
+
 
 foreach(RENDER_FILE ${RENDER_HEARD_FILES} ${RENDER_SOURCE_FILES})
     get_filename_component(RENDER_PATH "${RENDER_FILE}" PATH)

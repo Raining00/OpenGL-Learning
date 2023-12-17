@@ -14,12 +14,12 @@ namespace Renderer
 		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
 		glGenVertexArrays(1, &m_particleVAO);
 		glGenBuffers(1, &m_particleVBO);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 		m_vboCreateBySelf = true;
 
 		glBindVertexArray(m_particleVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferData(GL_ARRAY_BUFFER, m_numParticles * m_posChannel * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
@@ -35,7 +35,7 @@ namespace Renderer
 		if(m_posChannel == 3)
 			vertexPath = SHADER_PATH "/Particles/ParticlePointSpriteVec3.vs";
 		else if(m_posChannel == 4)
-			vertexPath = SHADER_PATH "/Particles/ParticlePointSprite.vs";
+			vertexPath = SHADER_PATH "/Particles/ParticlePointSpriteVec4.vs";
 		else
 			throw std::runtime_error("ParticlePointSpriteDrawable::ParticlePointSpriteDrawable: posChannel must be 3 or 4.");
 		m_shaderIndex = m_shaderManager->loadShader("ParticlePointSprite", vertexPath.c_str(), SHADER_PATH "/Particles/ParticlePointSprite.fs");
