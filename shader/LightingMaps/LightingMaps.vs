@@ -7,12 +7,6 @@ out vec3 FragPos;
 out vec3 Normal;
 out vec2 TexCoords;
 
-layout(std140, binding=0) uniform TransformMatrix
-{
-    mat4 project;
-    mat4 view;
-};
-
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;

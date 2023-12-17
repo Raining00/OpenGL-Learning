@@ -66,7 +66,14 @@ int main()
      0.5f, -0.5f, 0.0f,
      0.0f,  0.5f, 0.0f
     };
-
+#ifdef _WIN32
+    // glad init
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+		std::cout<<"Failed to initialize GLAD"<<std::endl;
+		return -1;
+	}
+#elif defined(__linux__)
     // glew: load all OpenGL function pointers
     // ---------------------------------------
     glewExperimental = GL_TRUE;
@@ -75,6 +82,7 @@ int main()
         std::cout<<"Failed to initialize GLEW"<<std::endl;
         return -1;
     }
+#endif
     
     std::string vertex_shader = SHADER_PATH;
     vertex_shader += "/HelloTriangle/Triangle.vert";
