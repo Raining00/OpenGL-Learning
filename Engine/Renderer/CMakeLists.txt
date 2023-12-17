@@ -19,7 +19,7 @@ enable_language(CUDA)
 target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
                     --generate-code arch=compute_86,code=[sm_86,compute_86] -std=c++17>)
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
-target_link_libraries(${TARGET} PRIVATE ${CUDA_LIBRARIES} cudart) 
+target_link_libraries(${TARGET} PRIVATE ${CUDA_LIBRARIES}) 
 
 
 foreach(RENDER_FILE ${RENDER_HEARD_FILES} ${RENDER_SOURCE_FILES})
