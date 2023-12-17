@@ -137,7 +137,7 @@ namespace Renderer
 
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
+		glDisable(GL_CULL_FACE);
 		// disable stencil test.
 		glStencilMask(0x00);
 		if (m_stencil)
@@ -184,13 +184,21 @@ namespace Renderer
 		m_shaderManager->unbindShader();
 		m_textureManager->unbindTexture(m_particleTexture);
 		glDisable(GL_PROGRAM_POINT_SIZE);
+		glEnable(GL_CULL_FACE);
 	}
 
 	void ParticlePointSpriteDrawable::renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera)
 	{
 		if (!m_visible || !m_produceShadow)
 			return;
-		static unsigned int index = m_shaderManager->loadShader("spriteDepth", SHADER_PATH"/Particles/spriteDepth.vs",
+		std::string vertexPath;
+		if(m_posChannel == 3)
+			vertexPath = SHADER_PATH "/Particles/spriteDepthVec3.vs";
+		else if(m_posChannel == 4)
+			vertexPath = SHADER_PATH "/Particles/spriteDepthVec4.vs";
+		else
+			throw std::runtime_error("ParticlePointSpriteDrawable::renderDepth: posChannel must be 3 or 4.");
+		static unsigned int index = m_shaderManager->loadShader("spriteDepth", vertexPath.c_str(),
 			SHADER_PATH"/Particles/spriteDepth.fs");
 		shader = m_shaderManager->getShader(index);
 		shader->use();
@@ -200,13 +208,14 @@ namespace Renderer
 			lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
 		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
 		m_textureManager->bindTexture(m_particleTexture, 0);
-
+		glDisable(GL_CULL_FACE);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 		glBindVertexArray(m_particleVAO);
 		glDrawArraysInstanced(GL_POINTS, 0, 1, m_numParticles);
 		glBindVertexArray(0);
 		glDisable(GL_PROGRAM_POINT_SIZE);
+		glEnable(GL_CULL_FACE);
 		m_shaderManager->unbindShader();
 		m_textureManager->unbindTexture(m_particleTexture);
 	}

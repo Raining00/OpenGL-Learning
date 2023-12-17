@@ -25,9 +25,9 @@ public:
         float scale = 100.f;
         unsigned int plan = m_meshManager->loadMesh(new Renderer::Plane(1.0f, 1.0f, scale));
         m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), glm::vec3(0.5), glm::vec3(0.6f), glm::vec3(0.6));
-        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
-            -600.0f, +600.0f, 1.0f, 500.0f);
-        m_renderSystem->createShadowDepthBuffer(1024, 1024);
+        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,
+            -5.0f, +5.0f, 1.0f, 15.f, 5.f);
+        m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
 
         // add drawable
         m_renderSystem->UseDrawableList(true);
@@ -39,7 +39,24 @@ public:
         contianer->setProduceShadow(false);
         m_renderSystem->addDrawable(contianer);
 
-        Renderer::ParticlePointSpriteDrawable* particle = new Renderer::ParticlePointSpriteDrawable(100, 1.0, 3);
+        // particle
+        CArray<Vec3f> _ParticlePos;
+        for (float i = 0; i < 1.0f; i += 0.02f)
+        {
+            for (float j = 0; j < 1.0f; j += 0.02f)
+            {
+                for (float k = 0; k < 1.0f; k += 0.02f)
+                {
+					_ParticlePos.pushBack(Vec3f(i, j, k));
+				}
+			}
+		}
+        PRINT_CYAN_BLINK("Particle Count: " << _ParticlePos.size());
+        Renderer::ParticlePointSpriteDrawable* particle = new Renderer::ParticlePointSpriteDrawable(_ParticlePos.size(), 0.01f, 3);
+        particle->setParticlePositions(_ParticlePos);
+        //particle->setBaseColor(glm::vec3(0.0f, 0.0f, 0.5f));
+        particle->setProduceShadow(true);
+        m_renderSystem->addDrawable(particle);
 
         //m_renderSystem->setCullFace(false, GL_BACK);
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -65,6 +82,7 @@ public:
             ImGui::ColorEdit3("sunLightColorAmbient", (float*)&sunLightColorAmbient);
             ImGui::ColorEdit3("sunLightColorDiffse", (float*)&sunLightColorDiffse);
             ImGui::ColorEdit3("sunLightColorSpecular", (float*)&sunLightColorSpecular);
+            ImGui::Checkbox("ShowShadowMap", &m_renderSystem->getShowShadowMap());
             ImGui::End();
         }
     }
