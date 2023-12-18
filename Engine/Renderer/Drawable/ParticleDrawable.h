@@ -37,6 +37,7 @@ namespace Renderer
 
 		virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr);
 		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera);
+		virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera);
 
 	private:
 		void generateGaussianMap(int resolution);

@@ -47,13 +47,14 @@ namespace Renderer
 		void setupDepthFramebuffer(const std::string& depthName);
 		void setupStencilFramebuffer(const std::string& stencilName);
 		void setupColorFramebuffer(const std::string& name, unsigned int attachIdx);
+		void setupDepthCubeFrameBuffer(const std::string& depthCubeName);
 		void clearFramebuffer();
 
 	private:
 		bool m_hdr;
 		unsigned int m_id, m_rbo, m_textureColorbuffer;
 		int m_width, m_height;
-		unsigned int m_depthTexIndex, m_stencilTexIndex;
+		unsigned int m_depthTexIndex, m_stencilTexIndex, m_depthCubeTexIndex;
 		std::vector<unsigned int> m_colorTexIndex;
 	};
 }

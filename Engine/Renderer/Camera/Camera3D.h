@@ -35,6 +35,7 @@ namespace Renderer
         float getAspect() const { return m_aspect; }
         float getNear() const { return m_near; }
         float getFar() const { return m_far; }
+
         virtual glm::vec3 getPosition() = 0;
         virtual glm::mat4 getViewMatrix() = 0;
         virtual glm::mat4 getInvViewMatrix() = 0;

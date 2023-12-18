@@ -128,5 +128,35 @@ void LightManager::setLight(Shader::ptr shader, Camera3D::ptr camera)
     shader->setInt("pointLightNum", pointLightNum);
 }
 
+bool LightManager::hasPointLight()
+{
+    for (auto& light : m_lightMap)
+    {
+		if (light.first.find("PointLight") != std::string::npos)
+			return true;
+	}
+    return false;
+}
+
+bool LightManager::hasSpotLight()
+{
+    for (auto& light : m_lightMap)
+    {
+        if (light.first.find("SpotLight") != std::string::npos)
+            return true;
+    }
+    return false;
+}
+
+bool LightManager::hasDirectionalLight()
+{
+    for (auto& light : m_lightMap)
+    {
+		if (light.first.find("DirectionalLight") != std::string::npos)
+			return true;
+	}
+	return false;
+}
+
 } // namespace Renderer
 

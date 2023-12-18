@@ -110,6 +110,12 @@ namespace Renderer
             shader->setInt("shadowMap", 5);
             depthMap->bind(5);
         }
+        Texture::ptr shadowDepthCubeMap = TextureManager::getSingleton()->getTexture("shadowDepthCube");
+        if (shadowDepthCubeMap != nullptr)
+        {
+			shader->setInt("shadowMap", 6);
+			shadowDepthCubeMap->bind(6);
+		}
         // light space matrix.
         if (lightCamera != nullptr)
             shader->setMat4("lightSpaceMatrix",
@@ -161,6 +167,34 @@ namespace Renderer
         ShaderManager::getSingleton()->unbindShader();
     }
 
+    void SimpleDrawable::renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera)
+    {
+        if (!m_visible || !m_produceShadow)
+			return;
+		shader->use();
+		shader->setBool("instance", m_instance);
+		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+        glm::vec3 lightPos = pointLightCamera->getPosition();
+        std::vector<glm::mat4> shadowTransforms;
+        glm::mat4 shadowProj = pointLightCamera->getProjectionMatrix();
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+        for (unsigned int i = 0; i < 6; ++i)
+            shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		this->renderImp();
+		ShaderManager::getSingleton()->unbindShader();
+    }
+
     void ContainerDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
     {
         if (!m_visible)
@@ -207,6 +241,34 @@ namespace Renderer
         shader->setMat4("lightSpaceMatrix",
             lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+        this->renderImp();
+        ShaderManager::getSingleton()->unbindShader();
+    }
+
+    void ContainerDrawable::renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera)
+    {
+        if (!m_visible || !m_produceShadow)
+            return;
+        shader->use();
+        shader->setBool("instance", m_instance);
+        shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+        glm::vec3 lightPos = pointLightCamera->getPosition();
+        std::vector<glm::mat4> shadowTransforms;
+        glm::mat4 shadowProj = pointLightCamera->getProjectionMatrix();
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+        shadowTransforms.push_back(shadowProj *
+            glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+        for (unsigned int i = 0; i < 6; ++i)
+            shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
         this->renderImp();
         ShaderManager::getSingleton()->unbindShader();
     }

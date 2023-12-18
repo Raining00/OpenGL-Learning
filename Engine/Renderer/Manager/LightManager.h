@@ -147,6 +147,9 @@ public:
      */
     void setLight(Shader::ptr shader, Camera3D::ptr camera);
 
+    bool hasPointLight();
+    bool hasSpotLight();
+    bool hasDirectionalLight();
 private:
     std::vector<Light::ptr> m_lights;
     std::map<std::string, unsigned int> m_lightMap;

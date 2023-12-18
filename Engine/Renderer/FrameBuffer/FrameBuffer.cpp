@@ -17,8 +17,13 @@ namespace Renderer
 
 		for(int x = 0; x < colorNames.size(); x++)
 			setupColorFramebuffer(colorNames[x], x);
-		if(!depthName.empty())
-			setupDepthFramebuffer(depthName);
+		if (!depthName.empty())
+		{	
+			if(depthName.find("depthCube") != std::string::npos)
+				setupDepthCubeFrameBuffer(depthName);
+			else
+				setupDepthFramebuffer(depthName);
+		}
 		if(!stencilName.empty())
 			setupStencilFramebuffer(stencilName);
 		// Generate render buffer object
@@ -111,6 +116,16 @@ namespace Renderer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
+	void FrameBuffer::setupDepthCubeFrameBuffer(const std::string& depthCubeName)
+	{
+		TextureManager::ptr textureMgr = TextureManager::getSingleton();
+		m_depthCubeTexIndex = textureMgr->loadTextureDepthCube(depthCubeName, m_width, m_height);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+						textureMgr->getTexture(m_depthCubeTexIndex)->getTextureId(), 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
 	void FrameBuffer::clearFramebuffer()
 	{
 		glDeleteFramebuffers(1, &m_id);
@@ -118,7 +133,6 @@ namespace Renderer
 
 	void FrameBuffer::saveTextureToFile(const std::string& filename, TextureType type)
 	{
-		// ��֡����
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 		GLenum attachment = (type == TextureType::COLOR) ? GL_COLOR_ATTACHMENT0 : GL_DEPTH_ATTACHMENT;
 		GLuint textureIndex = (type == TextureType::COLOR) ? m_colorTexIndex[0] : m_depthTexIndex;

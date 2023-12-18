@@ -220,6 +220,34 @@ namespace Renderer
 		m_textureManager->unbindTexture(m_particleTexture);
 	}
 
+	void ParticlePointSpriteDrawable::renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera)
+	{
+		if (!m_visible || !m_produceShadow)
+			return;
+		shader->use();
+		shader->setBool("instance", m_instance);
+		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
+		glm::vec3 lightPos = pointLightCamera->getPosition();
+		std::vector<glm::mat4> shadowTransforms;
+		glm::mat4 shadowProj = pointLightCamera->getProjectionMatrix();
+		shadowTransforms.push_back(shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+		shadowTransforms.push_back(shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+		shadowTransforms.push_back(shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+		shadowTransforms.push_back(shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+		shadowTransforms.push_back(shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+		shadowTransforms.push_back(shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		for (unsigned int i = 0; i < 6; ++i)
+			shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		this->renderImp();
+		ShaderManager::getSingleton()->unbindShader();
+	}
+
 	void ParticlePointSpriteDrawable::generateGaussianMap(int resolution)
 	{
 		// generate gaussian map manually.

@@ -95,16 +95,49 @@ namespace Renderer
         //m_lightCamera = m_camera;
     }
 
-    void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr)
+    void RenderSystem::createPointLightCamera(const glm::vec3& pos, const glm::vec3& target, const float& aspect, const float& near, const float& far, const float& fov)
     {
-        if(m_shaderManager->getShader("shadowDepth") == nullptr)
-            m_shaderManager->loadShader("shadowDepth", SHADER_PATH"/shadowDepth.vs", SHADER_PATH"/shadowDepth.fs");
-        if (m_shaderManager->getShader("FrameBufferDepth") == nullptr)
-            m_shaderManager->loadShader("FramebufferDepth", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBufferDepth.fs");
-        if (m_shadowDepthBuffer == nullptr)
+        if (m_pointLightCamera == nullptr)
         {
-            FrameBuffer* framebuf = new FrameBuffer(width, height, "shadowDepth", "", {}, hdr);
-            m_shadowDepthBuffer = std::shared_ptr<FrameBuffer>(framebuf);
+			FPSCamera *_cam = new FPSCamera(pos);
+			m_pointLightCamera = std::shared_ptr<Camera3D>(_cam);
+		}
+        if (m_textureManager->getTexture("shadowCubeMap") == nullptr)
+        {
+            PRINT_WARNING("You have to create the shadow cube map first before creating the point light camera!\n" << "Use 1024 x 1024 as default texture size");
+            createShadowDepthBuffer(1024, 1024, false, TextureType::DEPTH_CUBE);
+        }
+        m_pointLightCamera->setPerspective(fov, aspect, near, far);
+        FPSCamera* _cam = static_cast<FPSCamera *>(m_pointLightCamera.get());
+		_cam->lookAt(glm::normalize(target - pos), Camera3D::LocalUp);
+    }
+
+    void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr, const TextureType& textureType)
+    {
+        if(textureType != TextureType::DEPTH && textureType != TextureType::DEPTH_CUBE)
+            throw std::runtime_error("The texture type of shadow depth buffer should be DEPTH or DEPTH_CUBE");
+        if (textureType == TextureType::DEPTH)
+        {
+            if (m_shaderManager->getShader("shadowDepth") == nullptr)
+                m_shaderManager->loadShader("shadowDepth", SHADER_PATH"/shadowDepth.vs", SHADER_PATH"/shadowDepth.fs");
+            if (m_shaderManager->getShader("FrameBufferDepth") == nullptr)
+                m_shaderManager->loadShader("FramebufferDepth", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBufferDepth.fs");
+            if (m_shadowDepthBuffer == nullptr)
+            {
+                FrameBuffer* framebuff = new FrameBuffer(width, height, "shadowDepth", "", {}, hdr);
+                m_shadowDepthBuffer = std::shared_ptr<FrameBuffer>(framebuff);
+            }
+        }
+        else if (textureType == TextureType::DEPTH_CUBE)
+        {
+            if (m_shaderManager->getShader("shadowDepthCube") == nullptr)
+                m_shaderManager->loadShader("shadowDepthCube", SHADER_PATH"/shadowDepthCube/shadowDepthCube.vs", SHADER_PATH"/shadowDepthCube/shadowDepthCube.fs", \
+                    SHADER_PATH"/shadowDepthCube/shadowDepthCube.gs");
+            if (m_shadowDepthCubeBuffer == nullptr)
+            {
+                FrameBuffer* framebuff = new FrameBuffer(width, height, "shadowDepthCube", "", {}, hdr);
+                m_shadowDepthCubeBuffer = std::shared_ptr<FrameBuffer>(framebuff);
+            }
         }
     }
 
@@ -303,16 +336,31 @@ namespace Renderer
 
     void RenderSystem::renderShadowDepth()
     {
-        if (m_lightCamera == nullptr || m_shadowDepthBuffer == nullptr)
+        if ((m_lightCamera == nullptr && m_pointLightCamera == nullptr) || (m_shadowDepthBuffer == nullptr && m_shadowDepthCubeBuffer == nullptr))
             return;
-        m_shadowDepthBuffer->bind();
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-        glEnable(GL_DEPTH_TEST);
-        m_drawableList->renderDepth(m_shaderManager->getShader("shadowDepth"), m_lightCamera);
-        m_shadowDepthBuffer->unBind(m_width, m_height);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
+        if (m_shadowDepthBuffer != nullptr)
+        {
+            m_shadowDepthBuffer->bind();
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_FRONT);
+            glEnable(GL_DEPTH_TEST);
+            m_drawableList->renderDepth(m_shaderManager->getShader("shadowDepth"), m_lightCamera);
+            m_shadowDepthBuffer->unBind(m_width, m_height);
+            glDisable(GL_CULL_FACE);
+            glDisable(GL_DEPTH_TEST);
+        }
+        if (m_shadowDepthCubeBuffer != nullptr)
+        {
+            m_shadowDepthCubeBuffer->bind();
+            glClear(GL_DEPTH_BUFFER_BIT);
+            //glEnable(GL_CULL_FACE);
+            //glCullFace(GL_FRONT);
+            //glEnable(GL_DEPTH_TEST);
+            m_drawableList->renderDepthCube(m_shaderManager->getShader("shadowDepthCube"), m_pointLightCamera);
+            m_shadowDepthCubeBuffer->unBind(m_width, m_height);
+            //glDisable(GL_CULL_FACE);
+            //glDisable(GL_DEPTH_TEST);
+        }
     }
 }

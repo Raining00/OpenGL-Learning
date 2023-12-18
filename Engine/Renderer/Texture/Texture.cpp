@@ -380,4 +380,47 @@ namespace Renderer
     {
         glDeleteTextures(1, &m_id);
     }
+
+
+    TextureDepthCube::TextureDepthCube(int width, int height) :m_width(width), m_height(height)
+    {
+		setupTexture("", "");
+	}
+    TextureDepthCube::~TextureDepthCube()
+    {
+		clearTexture();
+	}
+
+    void TextureDepthCube::bind(unsigned int slot)
+    {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+    }
+
+    void TextureDepthCube::unbind()
+    {
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
+    void TextureDepthCube::setupTexture(const std::string& path, const std::string& pFix)
+    {
+        glGenTextures(1, &m_id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+		for (unsigned int i = 0; i < 6; ++i)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+                				m_width, m_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+        // filter setting
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // minification filter
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // magnification filter
+        // wrap setting
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // wrap on x axis
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // wrap on y axis
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); // wrap on z axis
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+
+    void TextureDepthCube::clearTexture()
+    {
+        glDeleteTextures(1, &m_id);
+    }
 }

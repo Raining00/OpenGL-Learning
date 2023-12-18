@@ -46,7 +46,21 @@ namespace Renderer
         void resize(int width, int height);
         void initialize(int width, int height);
         void createSunLightCamera(const glm::vec3& target, const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far, const float& distance = 10.f);
-        void createShadowDepthBuffer(int width, int height, bool hdr = false);
+        /**
+         * @brief create a point light camera.
+         * @param pos the position of the point light.
+         * @param target the target of the point light.
+         * @param aspect the aspect ratio of the point light camera.
+         * @param near the near plane of the point light camera.
+         * @param far the far plane of the point light camera.
+         * @param fov the field of view of the point light camera. default is 90.f. Most of the time, we don't need to change this value. 
+         * By setting this to 90 degrees we make sure the viewing field is exactly large enough to fill a single face of the cubemap such that all faces align correctly to each other at the edges.
+         * 
+         * @note the point light camera is a perspective camera.
+         * @note the point light camera is used to render the shadow map of the point light.
+        */
+        void createPointLightCamera(const glm::vec3& pos, const glm::vec3& target, const float& aspect, const float& near, const float& far, const float& fov = 90.f);
+        void createShadowDepthBuffer(int width, int height, bool hdr = false, const TextureType& textureType = TextureType::DEPTH);
         void createFrameBuffer(int width, int height, bool hdr = false);
         /**
         * @brief create a skybox.
@@ -94,13 +108,14 @@ namespace Renderer
         int m_width, m_height;
         unsigned int m_screenQuad;
         RenderState m_renderState;
-        std::shared_ptr<FrameBuffer> m_shadowDepthBuffer{ nullptr };
+        std::shared_ptr<FrameBuffer> m_shadowDepthBuffer{ nullptr }, m_shadowDepthCubeBuffer{ nullptr };
 
         SkyBox::ptr m_skyBox;
 
         Camera3D::ptr m_camera;
         Camera3D::ptr m_activateCamera;
         Camera3D::ptr m_lightCamera;
+        Camera3D::ptr m_pointLightCamera;
 
         ShaderManager::ptr m_shaderManager;
         TextureManager::ptr m_textureManager;

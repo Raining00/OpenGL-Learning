@@ -14,7 +14,8 @@ namespace Renderer
         HEIGHT,
         REFLECT,
         COLOR,
-        DEPTH
+        DEPTH,
+        DEPTH_CUBE
     };
 
     class Texture
@@ -110,6 +111,21 @@ namespace Renderer
     private:
         virtual void setupTexture(const std::string& path, const std::string& pFix);
         virtual void clearTexture();
+    };
+
+    class TextureDepthCube : public Texture
+    {
+    private:
+        	int m_width, m_height;
+    public:
+        TextureDepthCube(int width, int height);
+		~TextureDepthCube();
+
+		virtual void bind(unsigned int unit);
+		virtual void unbind();
+    private:
+        virtual void setupTexture(const std::string& path, const std::string& pFix);
+		virtual void clearTexture();
     };
 
     /**

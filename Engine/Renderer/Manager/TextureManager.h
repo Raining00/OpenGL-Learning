@@ -29,6 +29,8 @@ namespace Renderer
 
         unsigned int loadTextureDepthStencil(const std::string& name, int width, int height);
 
+        unsigned int loadTextureDepthCube(const std::string& name, int width, int height);
+
         unsigned loadTextureColor(const std::string& name, int width, int height, bool hdr = false);
 
         Texture::ptr getTexture(const std::string& name);
