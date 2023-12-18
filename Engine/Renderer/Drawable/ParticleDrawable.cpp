@@ -228,6 +228,8 @@ namespace Renderer
 		shader->setBool("instance", m_instance);
 		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
 		glm::vec3 lightPos = pointLightCamera->getPosition();
+		shader->setFloat("far_plane", pointLightCamera->getFar());
+		shader->setVec3("lightPos", lightPos);
 		std::vector<glm::mat4> shadowTransforms;
 		glm::mat4 shadowProj = pointLightCamera->getProjectionMatrix();
 		shadowTransforms.push_back(shadowProj *

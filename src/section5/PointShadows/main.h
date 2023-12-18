@@ -3,10 +3,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "Drawable/StaticModelDrawable.h"
+#include "Drawable/LightDrawable.h"
+
 class ShadowMapping : public Renderer::WindowApp
 {
 public:
-    ShadowMapping(int width = 1920, int height = 1080, const std::string& title = "GammaCorrect", const std::string& cameraType = "tps")
+    ShadowMapping(int width = 1920, int height = 1080, const std::string& title = "ShadowMapping", const std::string& cameraType = "tps")
         : WindowApp(width, height, title, cameraType)
     {
     }
@@ -23,12 +25,13 @@ public:
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
         unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
         unsigned int blendMap = m_textureManager->loadTexture2D("blendMap", ASSETS_PATH"/texture/blending_transparent_window.png");
+        unsigned int colorMap = m_textureManager->loadTextureColor("LightColor", m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
         float scale = 50.f;
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
         unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0));
         unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
-        m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
+        //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
         glm::vec3 ambient = glm::vec3(0.2f, 0.1f, 0.05f);
         glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f); 
         glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); 
@@ -36,6 +39,14 @@ public:
         m_renderSystem->setSunLight(sunLightDir, ambient, diffuse, specular);
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,    
             -5.0f, +5.0f, 1.0f, 15.f, 5.f);
+
+        glm::vec3 PointAmbient = glm::vec3(0.2f, 0.1f, 0.05f); // 暖色调，偏黄/橙
+        glm::vec3 PointDiffuse = glm::vec3(0.8f, 0.4f, 0.2f); // 明亮的暖色调
+        glm::vec3 PointSpecular = glm::vec3(1.0f, 0.5f, 0.3f); // 明亮的暖色调高光
+        Renderer::LightDrawable* light = new Renderer::LightDrawable("PointLight0", PointAmbient, PointDiffuse, PointSpecular, 1.0f, 0.09f, 0.032f, glm::vec3(0.0, 2.0, 0.0));
+        light->addMesh(sphereMesh);
+        light->getTransformation()->scale(glm::vec3(0.1f));
+        m_renderSystem->addDrawable(light);
 
         // add drawable
         m_renderSystem->UseDrawableList(true);
@@ -67,7 +78,6 @@ public:
         contianer[2]->setReceiveShadow(false);
         contianer[2]->setProduceShadow(true);
         contianer[2]->getTransformation()->setTranslation(glm::vec3(-2.0f, 1.0, 0.0f));
-        //contianer[2]->getTransformation()->scale(glm::vec3(5.f));
         m_renderSystem->addDrawable(contianer[2]);
 
         Renderer::StaticModelDrawable *model = new Renderer::StaticModelDrawable(blingphoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");

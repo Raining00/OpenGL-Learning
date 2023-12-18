@@ -119,7 +119,7 @@ namespace Renderer
         if (textureType == TextureType::DEPTH)
         {
             if (m_shaderManager->getShader("shadowDepth") == nullptr)
-                m_shaderManager->loadShader("shadowDepth", SHADER_PATH"/shadowDepth.vs", SHADER_PATH"/shadowDepth.fs");
+                m_shaderManager->loadShader("shadowDepth", SHADER_PATH"/shadowDepth/shadowDepth.vs", SHADER_PATH"/shadowDepth/shadowDepth.fs");
             if (m_shaderManager->getShader("FrameBufferDepth") == nullptr)
                 m_shaderManager->loadShader("FramebufferDepth", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBufferDepth.fs");
             if (m_shadowDepthBuffer == nullptr)
@@ -131,8 +131,8 @@ namespace Renderer
         else if (textureType == TextureType::DEPTH_CUBE)
         {
             if (m_shaderManager->getShader("shadowDepthCube") == nullptr)
-                m_shaderManager->loadShader("shadowDepthCube", SHADER_PATH"/shadowDepthCube/shadowDepthCube.vs", SHADER_PATH"/shadowDepthCube/shadowDepthCube.fs", \
-                    SHADER_PATH"/shadowDepthCube/shadowDepthCube.gs");
+                m_shaderManager->loadShader("shadowDepthCube", SHADER_PATH"/shadowDepth/shadowDepthCube.vs", SHADER_PATH"/shadowDepth/shadowDepthCube.fs", \
+                    SHADER_PATH"/shadowDepth/shadowDepthCube.gs");
             if (m_shadowDepthCubeBuffer == nullptr)
             {
                 FrameBuffer* framebuff = new FrameBuffer(width, height, "shadowDepthCube", "", {}, hdr);

@@ -57,9 +57,13 @@ in VS_OUT
 uniform vec3 cameraPos;
 
 uniform Material material;
-uniform DirLight sunLight;
-uniform PointLight pointLight;
+
+#define NR_POINT_LIGHTS 4
+uniform int pointLightNum;
+uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
+uniform DirLight sunLight;
+
 
 uniform bool receiveShadow;
 uniform sampler2D shadowMap; // 5
@@ -168,6 +172,11 @@ void main()
 
     // direction light
     vec3 result = CalcDirLight(sunLight, norm, viewDir);
+
+    for(int i = 0; i < pointLightNum; i++)
+    {
+        result += CalcPointLight(pointLights[i], norm, fs_in.FragPos, viewDir);
+    }
 
     // gamma correction
     float gamma = 2.2;

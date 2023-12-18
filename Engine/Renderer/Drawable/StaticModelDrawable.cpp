@@ -63,6 +63,12 @@ namespace Renderer
             shader->setInt("shadowMap", 5);
             depthMap->bind(5);
         }
+        Texture::ptr shadowDepthCubeMap = TextureManager::getSingleton()->getTexture("shadowDepthCube");
+        if (shadowDepthCubeMap != nullptr)
+        {
+            shader->setInt("shadowDepthCube", 6);
+            shadowDepthCubeMap->bind(6);
+        }
         if (lightCamera != nullptr)
             shader->setMat4("lightSpaceMatrix", lightCamera->getProjectionMatrix() * lightCamera->getViewMatrix());
         else
@@ -141,6 +147,8 @@ namespace Renderer
         shader->setBool("instance", m_instance);
         shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
         glm::vec3 lightPos = pointLightCamera->getPosition();
+        shader->setFloat("far_plane", pointLightCamera->getFar());
+        shader->setVec3("lightPos", lightPos);
         std::vector<glm::mat4> shadowTransforms;
         glm::mat4 shadowProj = pointLightCamera->getProjectionMatrix();
         shadowTransforms.push_back(shadowProj *
