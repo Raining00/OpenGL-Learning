@@ -21,7 +21,7 @@ namespace Renderer
 			m_amibent = ambient;
 			m_diffuse = diffuse;
 			m_specular = specular;
-
+			updateLightSetting();
 		}
 
 		void setLightAttenuation(const float& constant, const float& linear, const float& quadratic)
@@ -29,11 +29,13 @@ namespace Renderer
 			m_constant = constant;
 			m_linear = linear;
 			m_quadratic = quadratic;
+			updateLightSetting();
 		}
 
 		void setLightPosition(const glm::vec3& position)
 		{
 			getTransformation()->setTranslation(position);
+			updateLightSetting();
 		}
 
 		void setLightColor(const glm::vec3& color)
@@ -44,6 +46,10 @@ namespace Renderer
 		virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
 		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override {}
 		virtual void renderDepthCube(Shader::ptr shader) override {}
+
+	private:
+		virtual void renderImp() override;
+
 	private:
 		void updateLightSetting();
 

@@ -1,6 +1,7 @@
 #include "Drawable/LightDrawable.h"
 #include "Manager/LightManager.h"
 #include "Manager/ShaderManager.h"
+#include "Manager/MeshManager.h"
 #include "include/Config.h"
 
 Renderer::LightDrawable::LightDrawable(const std::string& name) :m_lightName(name)
@@ -52,7 +53,25 @@ void Renderer::LightDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCa
     ShaderManager::getSingleton()->unbindShader();
 }
 
+void Renderer::LightDrawable::renderImp()
+{
+    MeshManager::ptr meshManager = MeshManager::getSingleton();
+    TextureManager::ptr textureManager = TextureManager::getSingleton();
+    for (int x = 0; x < m_meshIndex.size(); x++)
+    {
+        for (int i = 0; i < m_texIndex.size(); i++)
+            textureManager->bindTexture(m_texIndex[x], i);
+        meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
+    }
+    if (m_texIndex.size() > 0)
+        textureManager->unbindTexture(m_texIndex[0]);
+}
+
 void Renderer::LightDrawable::updateLightSetting()
 {
-	LightManager::getInstance()->getLight(m_lightIndex)->setLightColor(m_amibent, m_diffuse, m_specular);
+    PointLight* pointLight = reinterpret_cast<PointLight*>(LightManager::getInstance()->getLight(m_lightIndex).get());
+    pointLight->setLightAttenuation(m_constant, m_linear, m_quadratic);
+    pointLight->setLightColor(m_amibent, m_diffuse, m_specular);
+    pointLight->setLightPosition(getTransformation()->translation());
 }
+

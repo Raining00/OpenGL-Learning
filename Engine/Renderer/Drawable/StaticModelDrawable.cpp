@@ -172,17 +172,22 @@ namespace Renderer
 
     void StaticModelDrawable::bind(int x)
     {
+        bool useNormalMap = false;
         TextureManager::ptr textureManager = TextureManager::getSingleton();
         if (m_textureMapList[x].find("diffuse") != m_textureMapList[x].end())
             textureManager->bindTexture(m_textureMapList[x]["diffuse"], 0);
         if (m_textureMapList[x].find("specular") != m_textureMapList[x].end())
             textureManager->bindTexture(m_textureMapList[x]["specular"], 1);
         if (m_textureMapList[x].find("normal") != m_textureMapList[x].end())
+        {
             textureManager->bindTexture(m_textureMapList[x]["normal"], 2);
+            useNormalMap = true;
+        }
         if (m_textureMapList[x].find("height") != m_textureMapList[x].end())
             textureManager->bindTexture(m_textureMapList[x]["height"], 3);
         if (textureManager->getTexture("skybox") != nullptr)
             textureManager->bindTexture(textureManager->getTextureIndex("skybox"), 4);
+        ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", useNormalMap);
     }
 
     void StaticModelDrawable::unbind(int x)

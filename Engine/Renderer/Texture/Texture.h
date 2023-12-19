@@ -29,7 +29,7 @@ namespace Renderer
         virtual void unbind() = 0;
 
         unsigned int getTextureId() const { return m_id; }
-
+        TextureType getTextureType() const { return m_textureType; }
     protected:
         std::string m_name;
         unsigned int m_id;

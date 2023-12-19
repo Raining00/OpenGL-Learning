@@ -9,21 +9,35 @@
 
 namespace Renderer
 {
-
     void Drawable::renderImp()
     {
         MeshManager::ptr meshManager = MeshManager::getSingleton();
         TextureManager::ptr textureManager = TextureManager::getSingleton();
         for (int x = 0; x < m_meshIndex.size(); x++)
         {
-            for(int i = 0; i < m_texIndex.size(); i++)
-                textureManager->bindTexture(m_texIndex[x], i);
-               
-            meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
+            bool useNormalMap = false;
             for (int i = 0; i < m_texIndex.size(); i++)
-                textureManager->unbindTexture(m_texIndex[x]);
+            {
+                Texture::ptr _texture = textureManager->getTexture(m_texIndex[i]);
+                if (_texture->getTextureType() == TextureType::AMBIENT)
+                    _texture->bind(0);
+                else if (_texture->getTextureType() == TextureType::DIFFUSE)
+                    _texture->bind(1);
+                else if (_texture->getTextureType() == TextureType::SPECULAR)
+                    _texture->bind(2);
+                else if (_texture->getTextureType() == TextureType::NORMAL)
+                {
+                    _texture->bind(3);
+                    useNormalMap = true;
+                }
+				else if (_texture->getTextureType() == TextureType::HEIGHT)
+					_texture->bind(4);
+            }
+            ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", useNormalMap);
+            meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
         }
-       
+        if(m_texIndex.size() > 0)
+            textureManager->unbindTexture(m_texIndex[0]);
     }
 
     void Drawable::setInstance(const bool& instance, const int& instanceNum, const int& instanceVBO, const GLuint& shaderAttribute)
@@ -60,6 +74,14 @@ namespace Renderer
         }
     }
 
+    Drawable::~Drawable()
+    {
+        if (m_instance)
+        {
+            glDeleteBuffers(1, &m_instanceVBO);
+        }
+    }
+
     void SkyBox::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)
     {
         if (!m_visible)
@@ -73,12 +95,18 @@ namespace Renderer
         ShaderManager::getSingleton()->unbindShader();
     }
 
-    Drawable::~Drawable()
+    void SkyBox::renderImp()
     {
-        if (m_instance)
+        MeshManager::ptr meshManager = MeshManager::getSingleton();
+        TextureManager::ptr textureManager = TextureManager::getSingleton();
+        for (int x = 0; x < m_meshIndex.size(); x++)
         {
-			glDeleteBuffers(1, &m_instanceVBO);
-		}
+            for (int i = 0; i < m_texIndex.size(); i++)
+                textureManager->bindTexture(m_texIndex[x], i);
+            meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
+        }
+        if (m_texIndex.size() > 0)
+            textureManager->unbindTexture(m_texIndex[0]);
     }
 
     void SimpleDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, std::shared_ptr<Shader> shader)
@@ -99,8 +127,11 @@ namespace Renderer
         shader->use();
         LightManager::getInstance()->setLight(shader, camera);
         // texture
-        shader->setInt("material.diffuse", 0);
-        shader->setInt("material.specular", 0);
+        shader->setInt("material.ambient", 0);
+        shader->setInt("material.diffuse", 1);
+        shader->setInt("material.specular", 2);
+        shader->setInt("material.normal", 3);
+		shader->setInt("material.height", 4);
         // depth map.
         Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
         if (depthMap != nullptr)

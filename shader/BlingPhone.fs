@@ -7,6 +7,7 @@ struct Material {
     sampler2D height;
     samplerCube reflection;
     float shininess;
+    bool useNormalMap;
 }; 
 
 struct DirLight {
@@ -142,6 +143,11 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     
     vec3 lightDir = normalize(light.direction);
     // diffuse shading
+    if(material.useNormalMap)
+    {
+		normal = texture(material.normal, fs_in.TexCoords).rgb;
+        normal = normalize(normal * 2.0 - 1.0);   
+    }
     float diff = max(dot(lightDir, normal), 0.0);
     // specular shading
     vec3 halfwayDir = normalize(light.direction + viewDir);
@@ -158,6 +164,11 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - fragPos);
+    if(material.useNormalMap)
+    {
+        normal = texture(material.normal, fs_in.TexCoords).rgb;
+        normal = normalize(normal * 2.0 - 1.0);   
+    }
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
@@ -181,6 +192,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - fs_in.FragPos);
+    if(material.useNormalMap)
+    {
+		normal = texture(material.normal, fs_in.TexCoords).rgb;
+		normal = normalize(normal * 2.0 - 1.0);
+    }
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
