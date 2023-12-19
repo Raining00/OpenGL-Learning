@@ -348,7 +348,28 @@ namespace Renderer
             glClear(GL_DEPTH_BUFFER_BIT);
             glEnable(GL_CULL_FACE);
             glEnable(GL_DEPTH_TEST);
-            m_drawableList->renderDepthCube(m_shaderManager->getShader("shadowDepthCube"));
+            Shader::ptr shader = m_shaderManager->getShader("shadowDepthCube");
+            shader->use();
+            shader->setFloat("far_plane", 25.0);
+            glm::vec3 lightPos = LightManager::getInstance()->getLight("PointLight0")->getPosition();
+            shader->setVec3("lightPos", lightPos);
+            std::vector<glm::mat4> shadowTransforms;
+            glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 25.0f);
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+            shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+            for (unsigned int i = 0; i < 6; ++i)
+                shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+            m_drawableList->renderDepthCube(shader);
             m_shadowDepthCubeBuffer->unBind(m_width, m_height);
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);

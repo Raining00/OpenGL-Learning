@@ -28,11 +28,11 @@ public:
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
         unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
-        m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
-        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
-        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,    
-            -5.0f, +5.0f, 1.0f, 15.f, 5.f);
-        m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
+        //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
+        //m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
+        //m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,    
+        //    -5.0f, +5.0f, 1.0f, 15.f, 5.f);
+        //m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
         m_renderSystem->createShadowDepthBuffer(1024, 1024, false, Renderer::TextureType::DEPTH_CUBE);
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
@@ -88,7 +88,7 @@ public:
 
     virtual void Render() override
     {
-        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
+        //m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
     }
 

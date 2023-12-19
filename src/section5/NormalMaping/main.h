@@ -34,14 +34,9 @@ public:
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
         unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
-        //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
-        //m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
-        //m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,
-        //    -5.0f, +5.0f, 1.0f, 15.f, 5.f);
-        //m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
+
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
-        //m_renderSystem->setCullFace(false, GL_BACK);
 
         glm::vec3 PointAmbient = glm::vec3(0.2f, 0.1f, 0.05f);
         glm::vec3 PointDiffuse = glm::vec3(0.8f, 0.4f, 0.2f);
@@ -61,7 +56,6 @@ public:
         contianer[0]->addMesh(floor);
         contianer[0]->addTexture(floorDiffuse);
         contianer[0]->addTexture(floorSpecular);
-        contianer[0]->addTexture(floorNormal);
         contianer[0]->setReceiveShadow(true);
         contianer[0]->setProduceShadow(false);
         contianer[0]->getTransformation()->setScale(glm::vec3(scale));
@@ -101,7 +95,6 @@ public:
     virtual void Render() override
     {
         light->setLightPosition(lightPosition);
-        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
     }
 
@@ -113,7 +106,7 @@ public:
         ImGui::ColorEdit3("backgroundColor", (float*)&m_BackColor);
         ImGui::Text("SunLight");
         ImGui::SliderFloat3("sunLightDir", (float*)&sunLightDir, -1.0f, 1.0f);
-        ImGui::SliderFloat3("LightPosition", (float*)&lightPosition, -1.0f, 1.0f);
+        ImGui::SliderFloat3("LightPosition", (float*)&lightPosition, -5.0, 5.0);
         ImGui::ColorEdit3("sunLightColorAmbient", (float*)&sunLightColorAmbient);
         ImGui::ColorEdit3("sunLightColorDiffse", (float*)&sunLightColorDiffse);
         ImGui::ColorEdit3("sunLightColorSpecular", (float*)&sunLightColorSpecular);
