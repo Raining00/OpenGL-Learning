@@ -11,7 +11,6 @@
 
 namespace Renderer
 {
-
 	enum class TextureType;
 
 	const GLenum ColorAttachments[] =
@@ -31,6 +30,7 @@ namespace Renderer
 	public:
 		typedef std::shared_ptr<FrameBuffer> ptr;
 		FrameBuffer(int width, int height, const std::string& depthName, const std::string& stencilName, const std::vector<std::string>& colorNames, bool hdr = false);
+		FrameBuffer(int width, int height, TextureType type, bool hdr);
 		FrameBuffer(int width, int height, bool hdr = false);
 		virtual ~FrameBuffer() { clearFramebuffer(); }
 
@@ -42,6 +42,7 @@ namespace Renderer
 		unsigned int getColorTextureIndex(int idx) const { return m_colorTexIndex[idx]; }
 		unsigned int getColorTextureBuffer() const { return m_textureColorbuffer; }
 		void saveTextureToFile(const std::string& filename, TextureType type);
+		void saveDepthCubeTexture(const std::string& filename);
 
 	private:
 		void setupDepthFramebuffer(const std::string& depthName);

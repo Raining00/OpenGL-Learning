@@ -64,9 +64,12 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 uniform DirLight sunLight;
 
-
 uniform bool receiveShadow;
 uniform sampler2D shadowMap; // 5
+uniform samplerCube shadowDepthCube; // 6
+
+float near = 0.1; 
+uniform float far_plane;
 
 float ShadowCalculation(vec4 FragPosLightSpace)
 {
@@ -93,8 +96,42 @@ float ShadowCalculation(vec4 FragPosLightSpace)
     return shadow;
 }
 
-float near = 0.1; 
-float far  = 100.0; 
+float PointShadowCalculation(vec3 fragPos, vec3 lightPos)
+{
+    // get vector between fragment position and light position
+    vec3 fragToLight = fragPos - lightPos;
+    // ise the fragment to light vector to sample from the depth map    
+    float closestDepth = texture(shadowDepthCube, fragToLight).r;
+    // it is currently in linear range between [0,1], let's re-transform it back to original depth value
+    closestDepth *= far_plane;
+    // now get current linear depth as the length between the fragment and light position
+    float currentDepth = length(fragToLight);
+    // test for shadows
+    float shadow = 0.0;
+    float bias = 0.05; 
+    float samples = 4.0;
+    float offset = 0.1;
+    for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+    {
+        for(float y = -offset; y < offset; y += offset / (samples * 0.5))
+        {
+            for(float z = -offset; z < offset; z += offset / (samples * 0.5))
+            {
+                float closestDepth = texture(shadowDepthCube, fragToLight + vec3(x, y, z)).r; 
+                closestDepth *= far_plane;   // Undo mapping [0;1]
+                if(currentDepth - bias > closestDepth)
+                    shadow += 1.0;
+            }
+        }
+    }
+    shadow /= (samples * samples * samples);
+    // if no PCF, use simple comparison to sample from the depth map
+    // float shadow = currentDepth  > closestDepth ? 1.0 : 0.0;        
+    // display closestDepth as debug (to visualize depth cubemap)
+    // FragColor = vec4(vec3(closestDepth / far_plane), 1.0);    
+        
+    return shadow;
+}
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
@@ -132,7 +169,10 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
-    return (ambient + diffuse + specular);
+    float shadow = 0.0f;
+    if(receiveShadow && pointLightNum > 0)
+		shadow = PointShadowCalculation(fragPos, light.position);
+    return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)
@@ -162,7 +202,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)
 float LinearizeDepth(float depth) 
 {
     float z = depth * 2.0 - 1.0; // back to NDC 
-    return (2.0 * near * far) / (far + near - z * (far - near));    
+    return (2.0 * near * far_plane) / (far_plane + near - z * (far_plane - near));    
 }
 
 void main()

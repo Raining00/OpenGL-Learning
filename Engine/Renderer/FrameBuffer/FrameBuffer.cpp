@@ -19,7 +19,7 @@ namespace Renderer
 			setupColorFramebuffer(colorNames[x], x);
 		if (!depthName.empty())
 		{	
-			if(depthName.find("depthCube") != std::string::npos)
+			if(depthName.find("Cube") != std::string::npos)
 				setupDepthCubeFrameBuffer(depthName);
 			else
 				setupDepthFramebuffer(depthName);
@@ -46,6 +46,22 @@ namespace Renderer
 			glDrawBuffer(GL_NONE);
 			glReadBuffer(GL_NONE);
 		}
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			PRINT_ERROR("Framebuffer not complete!");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	FrameBuffer::FrameBuffer(int width, int height, TextureType type = TextureType::DEPTH_CUBE, bool hdr = false)
+		:m_width(width), m_height(height), m_hdr(hdr)
+	{
+		if(type != TextureType::DEPTH_CUBE)
+			throw std::runtime_error("FrameBuffer::FrameBuffer(int width, int height, TextureType type, bool hdr): type must be TextureType::DEPTH_CUBE");
+		glGenFramebuffers(1, &m_id);
+		// create depth cubemap texture
+		setupDepthCubeFrameBuffer("shadowDepthCube");
+		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			PRINT_ERROR("Framebuffer not complete!");
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -94,6 +110,16 @@ namespace Renderer
 			GL_TEXTURE_2D, textureMgr->getTexture(m_depthTexIndex)->getTextureId(), 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
+
+	void FrameBuffer::setupDepthCubeFrameBuffer(const std::string& depthCubeName)
+	{
+		TextureManager::ptr textureMgr = TextureManager::getSingleton();
+		m_depthCubeTexIndex = textureMgr->loadTextureDepthCube(depthCubeName, m_width, m_height);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, textureMgr->getTexture(m_depthCubeTexIndex)->getTextureId(), 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
 	
 	void FrameBuffer::setupStencilFramebuffer(const std::string& name)
 	{
@@ -116,16 +142,6 @@ namespace Renderer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void FrameBuffer::setupDepthCubeFrameBuffer(const std::string& depthCubeName)
-	{
-		TextureManager::ptr textureMgr = TextureManager::getSingleton();
-		m_depthCubeTexIndex = textureMgr->loadTextureDepthCube(depthCubeName, m_width, m_height);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-						textureMgr->getTexture(m_depthCubeTexIndex)->getTextureId(), 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
 	void FrameBuffer::clearFramebuffer()
 	{
 		glDeleteFramebuffers(1, &m_id);
@@ -139,7 +155,7 @@ namespace Renderer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, 
 			TextureManager::getInstance()->getTexture(m_depthTexIndex)->getTextureId(), 0);
 
-		std::vector<float> pixels(m_width * m_height * (type == TextureType::COLOR ? 4 : 1)); // RGBA��ͨ�����
+		std::vector<float> pixels(m_width * m_height * (type == TextureType::COLOR ? 4 : 1));
 		GLenum format = (type == TextureType::COLOR) ? GL_RGBA : GL_DEPTH_COMPONENT;
 		GLenum dataType = GL_FLOAT;
 		glReadPixels(0, 0, m_width, m_height, format, dataType, pixels.data());
@@ -162,5 +178,26 @@ namespace Renderer
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void FrameBuffer::saveDepthCubeTexture(const std::string& filename)
+	{
+		Texture::ptr depthMap= TextureManager::getInstance()->getTexture(m_depthCubeTexIndex);
+		if(depthMap == nullptr)
+			throw std::runtime_error("FrameBuffer::saveDepthCubeTexture(const std::string& filename): depthMap is nullptr");
+		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap->getTextureId(), 0);
+		std::vector<float> pixels(m_width * m_height);
+		for (int i = 0; i < 6; i++)
+		{
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, depthMap->getTextureId(), 0);
+			glReadPixels(0, 0, m_width, m_height, GL_DEPTH_COMPONENT, GL_FLOAT, pixels.data());
+			std::vector<unsigned char> depthPixels(m_width * m_height);
+			for (size_t i = 0; i < depthPixels.size(); ++i) {
+				depthPixels[i] = static_cast<unsigned char>(25 * pixels[i]);
+			}
+			std::string filename_i = filename + std::to_string(i) + ".png";
+			stbi_write_png(filename_i.c_str(), m_width, m_height, 1, depthPixels.data(), m_width);
+		}
 	}
 }

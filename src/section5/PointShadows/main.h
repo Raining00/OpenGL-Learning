@@ -24,28 +24,28 @@ public:
         // texture
         unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
         unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
-        unsigned int blendMap = m_textureManager->loadTexture2D("blendMap", ASSETS_PATH"/texture/blending_transparent_window.png");
-        unsigned int colorMap = m_textureManager->loadTextureColor("LightColor", m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
         float scale = 50.f;
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
-        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0));
         unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
         //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
-        glm::vec3 ambient = glm::vec3(0.2f, 0.1f, 0.05f);
-        glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f); 
-        glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); 
-
-        m_renderSystem->setSunLight(sunLightDir, ambient, diffuse, specular);
+        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -5.f, +5.0f,    
             -5.0f, +5.0f, 1.0f, 15.f, 5.f);
+        m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
+        m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), false, Renderer::TextureType::DEPTH_CUBE);
+        m_renderSystem->createPointLightCamera(glm::vec3(0.0f, 2.0, 0.0), glm::vec3(0.0, 0.0, 0.0), m_renderDevice->getWindowWidth() / m_renderDevice->getWindowHeight(), 0.1f, 100.0f, 90.0f);
+        m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
+        //m_renderSystem->setCullFace(false, GL_BACK);
 
-        glm::vec3 PointAmbient = glm::vec3(0.2f, 0.1f, 0.05f); // 暖色调，偏黄/橙
-        glm::vec3 PointDiffuse = glm::vec3(0.8f, 0.4f, 0.2f); // 明亮的暖色调
-        glm::vec3 PointSpecular = glm::vec3(1.0f, 0.5f, 0.3f); // 明亮的暖色调高光
-        Renderer::LightDrawable* light = new Renderer::LightDrawable("PointLight0", PointAmbient, PointDiffuse, PointSpecular, 1.0f, 0.09f, 0.032f, glm::vec3(0.0, 2.0, 0.0));
+        glm::vec3 PointAmbient = glm::vec3(0.2f, 0.1f, 0.05f);
+        glm::vec3 PointDiffuse = glm::vec3(0.8f, 0.4f, 0.2f);
+        glm::vec3 PointSpecular = glm::vec3(1.0f, 0.5f, 0.3f); 
+        Renderer::LightDrawable* light = new Renderer::LightDrawable("PointLight0", PointAmbient, PointDiffuse, PointSpecular, 1.0f, 0.09f, 0.032f, glm::vec3(0.0, 2.0, 1.0));
         light->addMesh(sphereMesh);
         light->getTransformation()->scale(glm::vec3(0.1f));
+        light->setLightColor(glm::vec3(1.0f, 0.5f, 0.3f));
         m_renderSystem->addDrawable(light);
 
         // add drawable
@@ -85,17 +85,10 @@ public:
         model->setProduceShadow(true);
         model->getTransformation()->setTranslation(glm::vec3(2.0f, 0.0, 0.0f));
         m_renderSystem->addDrawable(model);
-
-
-        //m_renderSystem->setCullFace(false, GL_BACK);
-        m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
-        m_renderSystem->createShadowDepthBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight());
     }
 
     virtual void Render() override
     {
-        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->render(true);
     }
 
@@ -110,7 +103,8 @@ public:
         ImGui::ColorEdit3("sunLightColorAmbient", (float*)&sunLightColorAmbient);
         ImGui::ColorEdit3("sunLightColorDiffse", (float*)&sunLightColorDiffse);
         ImGui::ColorEdit3("sunLightColorSpecular", (float*)&sunLightColorSpecular);
-        ImGui::Checkbox("ShowShadowMap", &m_renderSystem->getShowShadowMap());
+        if(ImGui::Button("save depth cube texture"))
+			m_renderSystem->saveDepthCubeFrameBuffer("O:/depthCube");
         ImGui::End();
     }
 

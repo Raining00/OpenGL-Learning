@@ -106,7 +106,7 @@ public:
 
 private:
     glm::vec3 sunLightDir{ glm::vec3(0.072f, 0.42f, 1.0f) };
-    glm::vec3 sunLightColorAmbient{ glm::vec3(0.02) };
-    glm::vec3 sunLightColorDiffse{ glm::vec3(0.4) };
-    glm::vec3 sunLightColorSpecular{ glm::vec3(1.0) };
+    glm::vec3 sunLightColorAmbient{ glm::vec3(0.2f, 0.1f, 0.05f) };
+    glm::vec3 sunLightColorDiffse{ glm::vec3(0.8f, 0.4f, 0.2f) };
+    glm::vec3 sunLightColorSpecular{ glm::vec3(1.0f, 0.5f, 0.3f) };
 };

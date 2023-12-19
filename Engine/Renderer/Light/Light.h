@@ -31,11 +31,13 @@ namespace Renderer
         virtual glm::vec3 getAmbient() const { return m_ambient; }
         virtual glm::vec3 getDiffuse() const { return m_diffuse; }
         virtual glm::vec3 getSpecular() const { return m_specular; }
+        virtual glm::vec3 getPosition() const { return m_position; }
 
     protected:
         glm::vec3 m_ambient;
         glm::vec3 m_diffuse;
         glm::vec3 m_specular;
+        glm::vec3 m_position;
     };
     /**
      * @brief Directional light class
@@ -153,7 +155,6 @@ namespace Renderer
         float *getQuadraticPtr() { return &m_quadratic; }
 
     private:
-        glm::vec3 m_position;
         float m_constant{1.0f};
         float m_linear{0.09f};     // 0.09
         float m_quadratic{0.032f}; // 0.032
@@ -269,7 +270,6 @@ namespace Renderer
         float *getOuterCutOffPtr() { return &m_outerCutOff; }
 
     private:
-        glm::vec3 m_position{0.0f, 0.0f, 0.0f};
         glm::vec3 m_direction{0.0f, 0.0f, -1.0f};
         float m_constant{1.0f};                             // 1.0
         float m_linear{0.09f};                              // 0.09

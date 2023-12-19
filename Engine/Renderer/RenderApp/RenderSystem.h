@@ -74,6 +74,7 @@ namespace Renderer
         Camera3D::ptr createTPSCamera(glm::vec3 pos, glm::vec3 target);
         Camera3D::ptr createFPSCamera(glm::vec3 pos, glm::vec3 target);
         void saveDepthFrameBuffer(const std::string& path);
+        void saveDepthCubeFrameBuffer(const std::string& path);
         void addDrawable(Drawable::ptr drawable) { m_drawableList->addDrawable(drawable); }
         void addDrawable(Drawable* drawable) { m_drawableList->addDrawable(drawable); }
 

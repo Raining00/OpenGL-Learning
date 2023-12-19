@@ -64,6 +64,16 @@ namespace Renderer
         m_shadowDepthBuffer->saveTextureToFile(path, TextureType::DEPTH);
     }
 
+    void RenderSystem::saveDepthCubeFrameBuffer(const std::string& path)
+    {
+        if (m_shadowDepthCubeBuffer == nullptr)
+        {
+            PRINT_WARNING("You have to create the shadow depth cube buffer first before saving it");
+            return;
+        }
+        m_shadowDepthCubeBuffer->saveDepthCubeTexture(path);
+    }
+
     Camera3D::ptr RenderSystem::createTPSCamera(glm::vec3 pos, glm::vec3 target)
     {
         TPSCamera *_cam = new TPSCamera(target, 0.0f, 30.0f, 3.0f);
@@ -91,7 +101,6 @@ namespace Renderer
         m_lightCamera->setOrtho(left, right, bottom, top, near, far);
         FPSCamera *_cam = static_cast<FPSCamera *>(m_lightCamera.get());
         _cam->lookAt(glm::normalize( - sunLight->getDirection()), Camera3D::LocalUp);
-        //_cam->lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         //m_lightCamera = m_camera;
     }
 
@@ -102,14 +111,15 @@ namespace Renderer
 			FPSCamera *_cam = new FPSCamera(pos);
 			m_pointLightCamera = std::shared_ptr<Camera3D>(_cam);
 		}
-        if (m_textureManager->getTexture("shadowCubeMap") == nullptr)
+        if (m_textureManager->getTexture("shadowDepthCube") == nullptr)
         {
             PRINT_WARNING("You have to create the shadow cube map first before creating the point light camera!\n" << "Use 1024 x 1024 as default texture size");
             createShadowDepthBuffer(1024, 1024, false, TextureType::DEPTH_CUBE);
         }
-        m_pointLightCamera->setPerspective(fov, aspect, near, far);
+        m_pointLightCamera->setPerspective(fov, 1.0f, 1.0, 25.0);
         FPSCamera* _cam = static_cast<FPSCamera *>(m_pointLightCamera.get());
 		_cam->lookAt(glm::normalize(target - pos), Camera3D::LocalUp);
+        m_pointLightCamera = m_camera;
     }
 
     void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr, const TextureType& textureType)
@@ -135,7 +145,7 @@ namespace Renderer
                     SHADER_PATH"/shadowDepth/shadowDepthCube.gs");
             if (m_shadowDepthCubeBuffer == nullptr)
             {
-                FrameBuffer* framebuff = new FrameBuffer(width, height, "shadowDepthCube", "", {}, hdr);
+                FrameBuffer* framebuff = new FrameBuffer(1024, 1024, TextureType::DEPTH_CUBE, false);
                 m_shadowDepthCubeBuffer = std::shared_ptr<FrameBuffer>(framebuff);
             }
         }
@@ -354,13 +364,12 @@ namespace Renderer
         {
             m_shadowDepthCubeBuffer->bind();
             glClear(GL_DEPTH_BUFFER_BIT);
-            //glEnable(GL_CULL_FACE);
-            //glCullFace(GL_FRONT);
-            //glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
+            glEnable(GL_DEPTH_TEST);
             m_drawableList->renderDepthCube(m_shaderManager->getShader("shadowDepthCube"), m_pointLightCamera);
             m_shadowDepthCubeBuffer->unBind(m_width, m_height);
-            //glDisable(GL_CULL_FACE);
-            //glDisable(GL_DEPTH_TEST);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_CULL_FACE);
         }
     }
 }
