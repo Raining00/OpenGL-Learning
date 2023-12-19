@@ -35,9 +35,9 @@ namespace Renderer
 		GLuint getParticleVBO() { return m_particleVBO; }
 		void setBaseColor(const glm::vec3 &color) { m_baseColor = color; }
 
-		virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr);
-		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera);
-		virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera);
+		virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
+		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
+		virtual void renderDepthCube(Shader::ptr shader) override;
 
 	private:
 		void generateGaussianMap(int resolution);

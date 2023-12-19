@@ -104,24 +104,6 @@ namespace Renderer
         //m_lightCamera = m_camera;
     }
 
-    void RenderSystem::createPointLightCamera(const glm::vec3& pos, const glm::vec3& target, const float& aspect, const float& near, const float& far, const float& fov)
-    {
-        if (m_pointLightCamera == nullptr)
-        {
-			FPSCamera *_cam = new FPSCamera(pos);
-			m_pointLightCamera = std::shared_ptr<Camera3D>(_cam);
-		}
-        if (m_textureManager->getTexture("shadowDepthCube") == nullptr)
-        {
-            PRINT_WARNING("You have to create the shadow cube map first before creating the point light camera!\n" << "Use 1024 x 1024 as default texture size");
-            createShadowDepthBuffer(1024, 1024, false, TextureType::DEPTH_CUBE);
-        }
-        m_pointLightCamera->setPerspective(fov, 1.0f, 1.0, 25.0);
-        FPSCamera* _cam = static_cast<FPSCamera *>(m_pointLightCamera.get());
-		_cam->lookAt(glm::normalize(target - pos), Camera3D::LocalUp);
-        m_pointLightCamera = m_camera;
-    }
-
     void RenderSystem::createShadowDepthBuffer(int width, int height, bool hdr, const TextureType& textureType)
     {
         if(textureType != TextureType::DEPTH && textureType != TextureType::DEPTH_CUBE)
@@ -346,7 +328,7 @@ namespace Renderer
 
     void RenderSystem::renderShadowDepth()
     {
-        if ((m_lightCamera == nullptr && m_pointLightCamera == nullptr) || (m_shadowDepthBuffer == nullptr && m_shadowDepthCubeBuffer == nullptr))
+        if (m_lightCamera == nullptr && m_shadowDepthBuffer == nullptr && m_shadowDepthCubeBuffer == nullptr)
             return;
         if (m_shadowDepthBuffer != nullptr)
         {
@@ -366,7 +348,7 @@ namespace Renderer
             glClear(GL_DEPTH_BUFFER_BIT);
             glEnable(GL_CULL_FACE);
             glEnable(GL_DEPTH_TEST);
-            m_drawableList->renderDepthCube(m_shaderManager->getShader("shadowDepthCube"), m_pointLightCamera);
+            m_drawableList->renderDepthCube(m_shaderManager->getShader("shadowDepthCube"));
             m_shadowDepthCubeBuffer->unBind(m_width, m_height);
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);

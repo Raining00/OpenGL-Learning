@@ -59,7 +59,6 @@ namespace Renderer
          * @note the point light camera is a perspective camera.
          * @note the point light camera is used to render the shadow map of the point light.
         */
-        void createPointLightCamera(const glm::vec3& pos, const glm::vec3& target, const float& aspect, const float& near, const float& far, const float& fov = 90.f);
         void createShadowDepthBuffer(int width, int height, bool hdr = false, const TextureType& textureType = TextureType::DEPTH);
         void createFrameBuffer(int width, int height, bool hdr = false);
         /**

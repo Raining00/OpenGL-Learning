@@ -20,7 +20,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) override;
+        virtual void renderDepthCube(Shader::ptr shader) override;
 
         /**
         * @brief show normal: default false

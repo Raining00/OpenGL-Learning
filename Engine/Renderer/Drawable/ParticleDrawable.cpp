@@ -220,18 +220,18 @@ namespace Renderer
 		m_textureManager->unbindTexture(m_particleTexture);
 	}
 
-	void ParticlePointSpriteDrawable::renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera)
+	void ParticlePointSpriteDrawable::renderDepthCube(Shader::ptr shader)
 	{
 		if (!m_visible || !m_produceShadow)
 			return;
 		shader->use();
 		shader->setBool("instance", m_instance);
 		shader->setMat4("modelMatrix", m_transformation.getWorldMatrix());
-		glm::vec3 lightPos = pointLightCamera->getPosition();
-		shader->setFloat("far_plane", pointLightCamera->getFar());
+		shader->setFloat("far_plane", 25.0);
+		glm::vec3 lightPos = LightManager::getInstance()->getLight("PointLight0")->getPosition();
 		shader->setVec3("lightPos", lightPos);
 		std::vector<glm::mat4> shadowTransforms;
-		glm::mat4 shadowProj = pointLightCamera->getProjectionMatrix();
+		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 25.0f);
 		shadowTransforms.push_back(shadowProj *
 			glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
 		shadowTransforms.push_back(shadowProj *

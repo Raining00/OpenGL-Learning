@@ -29,7 +29,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) = 0;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) = 0;
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) = 0;
+        virtual void renderDepthCube(Shader::ptr shader) = 0;
 
         virtual void getAABB(glm::vec3& min, glm::vec3& max) { min = glm::vec3(0.0f); max = glm::vec3(0.0f);}
 
@@ -112,11 +112,11 @@ namespace Renderer
             }
         }
 
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) override
+        virtual void renderDepthCube(Shader::ptr shader) override
         {
             for (auto& drawable : m_drawableList)
             {
-				drawable->renderDepthCube(shader, pointLightCamera);
+				drawable->renderDepthCube(shader);
 			}
         }
 
@@ -139,7 +139,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override {}
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) override {}
+        virtual void renderDepthCube(Shader::ptr shader) override {}
     };
 
     class SimpleDrawable : public Drawable
@@ -153,7 +153,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) override;
+        virtual void renderDepthCube(Shader::ptr shader) override;
     };
 
     class FramebufferDrawable : public Drawable
@@ -164,7 +164,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
 		virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) override {}
+        virtual void renderDepthCube(Shader::ptr shader) override {}
 
 		void setRenderTarget(unsigned int renderTarget) { m_renderTarget = renderTarget; }
 		void setDepthTarget(unsigned int depthTarget) { m_depthTarget = depthTarget; }
@@ -188,7 +188,7 @@ namespace Renderer
 
         virtual void render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader = nullptr) override;
         virtual void renderDepth(Shader::ptr shader, Camera3D::ptr lightCamera) override;
-        virtual void renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera) override;
+        virtual void renderDepthCube(Shader::ptr shader) override;
     };
 
 } // namespace Renderer

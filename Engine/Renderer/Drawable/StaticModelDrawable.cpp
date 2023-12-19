@@ -140,7 +140,7 @@ namespace Renderer
         ShaderManager::getSingleton()->unbindShader();
     }
 
-    void StaticModelDrawable::renderDepthCube(Shader::ptr shader, Camera3D::ptr pointLightCamera)
+    void StaticModelDrawable::renderDepthCube(Shader::ptr shader)
     {
         if (!m_visible || !m_produceShadow)
             return;
