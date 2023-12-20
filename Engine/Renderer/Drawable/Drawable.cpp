@@ -19,19 +19,19 @@ namespace Renderer
             for (int i = 0; i < m_texIndex.size(); i++)
             {
                 Texture::ptr _texture = textureManager->getTexture(m_texIndex[i]);
-                if (_texture->getTextureType() == TextureType::AMBIENT)
+                if (_texture->getTextureType() == TextureType::DIFFUSE)
                     _texture->bind(0);
-                else if (_texture->getTextureType() == TextureType::DIFFUSE)
-                    _texture->bind(1);
                 else if (_texture->getTextureType() == TextureType::SPECULAR)
-                    _texture->bind(2);
+                    _texture->bind(1);
                 else if (_texture->getTextureType() == TextureType::NORMAL)
                 {
-                    _texture->bind(3);
+                    _texture->bind(2);
                     useNormalMap = true;
                 }
 				else if (_texture->getTextureType() == TextureType::HEIGHT)
-					_texture->bind(4);
+					_texture->bind(3);
+                else if(_texture->getTextureType() == TextureType::REFLECT)
+                    _texture->bind(4);
             }
             ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", useNormalMap);
             meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
@@ -127,11 +127,11 @@ namespace Renderer
         shader->use();
         LightManager::getInstance()->setLight(shader, camera);
         // texture
-        shader->setInt("material.ambient", 0);
-        shader->setInt("material.diffuse", 1);
-        shader->setInt("material.specular", 2);
-        shader->setInt("material.normal", 3);
-		shader->setInt("material.height", 4);
+        shader->setInt("material.diffuse", 0);
+        shader->setInt("material.specular", 1);
+        shader->setInt("material.normal", 2);
+		shader->setInt("material.height", 3);
+		shader->setInt("material.reflect", 4);
         // depth map.
         Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
         if (depthMap != nullptr)
@@ -219,12 +219,15 @@ namespace Renderer
         shader->use();
         LightManager::getInstance()->setLight(shader, camera);
         shader->setInt("material.diffuse", 0);
-        shader->setInt("material.specular", 0);
+        shader->setInt("material.specular", 1);
+        shader->setInt("material.normal", 2);
+        shader->setInt("material.height", 3);
+        shader->setInt("material.reflect", 4);
         // depth map.
         Texture::ptr depthMap = TextureManager::getSingleton()->getTexture("shadowDepth");
         if (depthMap != nullptr)
         {
-            shader->setInt("depthMap", 1);
+            shader->setInt("shadowMap", 5);
             depthMap->bind(1);
         }
         Texture::ptr shadowDepthCubeMap = TextureManager::getSingleton()->getTexture("shadowDepthCube");

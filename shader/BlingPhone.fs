@@ -1,11 +1,11 @@
 #version 330 core
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
-    sampler2D normal;
-    sampler2D height;
-    samplerCube reflection;
+    sampler2D diffuse; // 0
+    sampler2D specular;// 1
+    sampler2D normal;  // 2
+    sampler2D height;  // 3
+    samplerCube reflection; // 4
     float shininess;
     bool useNormalMap;
 }; 

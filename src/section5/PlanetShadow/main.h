@@ -22,8 +22,8 @@ public:
         unsigned int SunShader = m_shaderManager->loadShader("SunPlanet", SHADER_PATH"/Planet/Sun.vs", SHADER_PATH"/Planet/Sun.fs");
 
         // texture
-        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
-        unsigned int sunTexture = m_textureManager->loadTexture2D("sunTexture", ASSETS_PATH"/texture/sun.jpg");
+        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
+        unsigned int sunTexture = m_textureManager->loadTexture2D("sunTexture", ASSETS_PATH"/texture/sun.jpg", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
 
         float scale = 50.f;
         unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(10.0, 50, 50));
