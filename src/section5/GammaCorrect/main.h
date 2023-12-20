@@ -22,18 +22,14 @@ public:
         unsigned int blingphoneShader = m_shaderManager->loadShader("blingphoneShader", SHADER_PATH"/GammaCorrect/GammaCorrect.vs", SHADER_PATH"/GammaCorrect/GammaCorrect.fs");
 
         // texture
-        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
-        unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg");
-        unsigned int blendMap = m_textureManager->loadTexture2D("blendMap", ASSETS_PATH"/texture/blending_transparent_window.png");
+        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png",Renderer::TextureType::DIFFUSE);
+        unsigned int specularMap = m_textureManager->loadTexture2D("specular", ASSETS_PATH"/texture/floor.png",Renderer::TextureType::SPECULAR);
         float scale = 50.f;
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
-        unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0));
-        unsigned int cubeMesh = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
-        unsigned int sphereMesh = m_meshManager->loadMesh(new Renderer::Sphere(1.0, 50, 50));
         //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
-        glm::vec3 ambient = glm::vec3(0.2f, 0.1f, 0.05f); // 暖色调，偏黄/橙
-        glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f); // 明亮的暖色调
-        glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); // 明亮的暖色调高光
+        glm::vec3 ambient = glm::vec3(0.2f, 0.1f, 0.05f); 
+        glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f); 
+        glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); 
 
         m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), ambient, diffuse, specular);
         m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
@@ -51,6 +47,7 @@ public:
         contianer[0] = new Renderer::SimpleDrawable(blingphoneShader);
         contianer[0]->addMesh(floor);
         contianer[0]->addTexture(diffuseMap);
+        contianer[0]->addTexture(specularMap);
         contianer[0]->setReceiveShadow(false);
         contianer[0]->setProduceShadow(false);
         contianer[0]->getTransformation()->setScale(glm::vec3(scale));

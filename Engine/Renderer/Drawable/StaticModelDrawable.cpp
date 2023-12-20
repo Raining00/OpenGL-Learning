@@ -287,7 +287,7 @@ namespace Renderer
                 std::string name(nameStr.C_Str());
                 if (name != "")
                 {
-                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::DIFFUSE);
+                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, TextureType::DIFFUSE);
                     tmp.insert(std::make_pair("diffuse", texIndex));
                 }
             }
@@ -297,7 +297,7 @@ namespace Renderer
                 std::string name = std::string(nameStr.C_Str());
                 if (name != "")
                 {
-                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::SPECULAR);
+                    texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name,TextureType::SPECULAR);
                     tmp.insert(std::make_pair("specular", texIndex));
                 }
             }
@@ -308,7 +308,7 @@ namespace Renderer
 				std::string name = std::string(nameStr.C_Str());
                 if (name != "")
                 {
-					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::HEIGHT);
+					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, TextureType::HEIGHT);
 					tmp.insert(std::make_pair("normal", texIndex));
 				}
 			}
@@ -319,7 +319,7 @@ namespace Renderer
 				std::string name = std::string(nameStr.C_Str());
                 if (name != "")
                 {
-					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name, glm::vec4(1.0f), TextureType::AMBIENT);
+					texIndex = textureManager->loadTexture2D(name, m_directory + "/" + name,TextureType::AMBIENT);
 					tmp.insert(std::make_pair("height", texIndex));
 				}
             }

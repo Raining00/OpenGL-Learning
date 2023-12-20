@@ -15,7 +15,7 @@ namespace Renderer
         return _instance;
     }
 
-    unsigned int TextureManager::loadTexture2D(const std::string &name, const std::string &path, glm::vec4 bColor, const TextureType& textureType)
+    unsigned int TextureManager::loadTexture2D(const std::string &name, const std::string &path, const TextureType& textureType, glm::vec4 bColor)
     {
         if (m_textureMap.find(name) != m_textureMap.end())
             return m_textureMap[name];

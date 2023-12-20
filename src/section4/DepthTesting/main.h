@@ -22,7 +22,7 @@ public:
             SHADER_PATH"/StencilTest/stencil.vs", SHADER_PATH"/StencilTest/stencil.fs");
 
         // texture
-        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png");
+        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png", Renderer::TextureType::DIFFUSE);
         unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg");
         float scale = 50.f;
         unsigned int planeMesh = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));

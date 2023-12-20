@@ -22,13 +22,13 @@ public:
         unsigned int blingphoneShader = m_shaderManager->loadShader("blingphoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
 
         // texture
-        unsigned int floorDiffuse = m_textureManager->loadTexture2D("floorDiffuse", ASSETS_PATH"/texture/floor/floor.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
-        unsigned int floorSpecular = m_textureManager->loadTexture2D("floorSpecular", ASSETS_PATH"/texture/floor/floor.png", glm::vec4(1.0f), Renderer::TextureType::SPECULAR);
-        unsigned int floorNormal = m_textureManager->loadTexture2D("floorNormal", ASSETS_PATH"/texture/floor/normal.png", glm::vec4(1.0f), Renderer::TextureType::NORMAL);
+        unsigned int floorDiffuse = m_textureManager->loadTexture2D("floorDiffuse", ASSETS_PATH"/texture/floor/floor.png", Renderer::TextureType::DIFFUSE);
+        unsigned int floorSpecular = m_textureManager->loadTexture2D("floorSpecular", ASSETS_PATH"/texture/floor/floor.png", Renderer::TextureType::SPECULAR);
+        unsigned int floorNormal = m_textureManager->loadTexture2D("floorNormal", ASSETS_PATH"/texture/floor/normal.png", Renderer::TextureType::NORMAL);
 
-        unsigned int brickwallDiffuse = m_textureManager->loadTexture2D("brickwallDiffuse", ASSETS_PATH"/texture/brickwall/brickwall.jpg", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
-        unsigned int brickwallSpecular = m_textureManager->loadTexture2D("brickwallSpecular", ASSETS_PATH"/texture/brickwall/brickwall.jpg", glm::vec4(1.0f), Renderer::TextureType::SPECULAR);
-        unsigned int brickwallNormal = m_textureManager->loadTexture2D("brickwallNormal", ASSETS_PATH"/texture/brickwall/brickwall_normal.jpg", glm::vec4(1.0f), Renderer::TextureType::NORMAL);
+        unsigned int brickwallDiffuse = m_textureManager->loadTexture2D("brickwallDiffuse", ASSETS_PATH"/texture/brickwall/brickwall.jpg", Renderer::TextureType::DIFFUSE);
+        unsigned int brickwallSpecular = m_textureManager->loadTexture2D("brickwallSpecular", ASSETS_PATH"/texture/brickwall/brickwall.jpg", Renderer::TextureType::SPECULAR);
+        unsigned int brickwallNormal = m_textureManager->loadTexture2D("brickwallNormal", ASSETS_PATH"/texture/brickwall/brickwall_normal.jpg", Renderer::TextureType::NORMAL);
 
         float scale = 50.f;
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
