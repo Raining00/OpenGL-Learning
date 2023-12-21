@@ -52,6 +52,7 @@ in VS_OUT
     vec3 Normal;
     vec2 TexCoords;
     vec4 FragPosLightSpace;
+    mat3 TBN;
 }fs_in;
 
 
@@ -145,8 +146,12 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     // diffuse shading
     if(material.useNormalMap)
     {
+        lightDir = fs_in.TBN * lightDir;
 		normal = texture(material.normal, fs_in.TexCoords).rgb;
         normal = normalize(normal * 2.0 - 1.0);   
+    }
+    else
+    {
     }
     float diff = max(dot(lightDir, normal), 0.0);
     // specular shading
@@ -166,6 +171,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec3 lightDir = normalize(light.position - fragPos);
     if(material.useNormalMap)
     {
+        lightDir = fs_in.TBN * lightDir;
         normal = texture(material.normal, fs_in.TexCoords).rgb;
         normal = normalize(normal * 2.0 - 1.0);   
     }
@@ -185,7 +191,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     specular *= attenuation;
     float shadow = 0.0f;
     if(receiveShadow && pointLightNum > 0)
-		shadow = PointShadowCalculation(fragPos, light.position);
+    {
+        shadow = PointShadowCalculation(fragPos, light.position);
+    }
     return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
@@ -227,7 +235,11 @@ float LinearizeDepth(float depth)
 void main()
 {
     vec3 norm = normalize(fs_in.Normal);
-    vec3 viewDir = normalize(cameraPos - fs_in.FragPos);
+    vec3 viewDir;
+    if(material.useNormalMap)
+        viewDir = normalize(fs_in.TBN * (cameraPos - fs_in.FragPos));
+    else
+        viewDir = normalize(cameraPos - fs_in.FragPos);
 
     // direction light
     vec3 result = CalcDirLight(sunLight, norm, viewDir);

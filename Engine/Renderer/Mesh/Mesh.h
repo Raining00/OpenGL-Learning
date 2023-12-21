@@ -14,6 +14,7 @@ namespace Renderer
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoords;
+        glm::vec3 tangent;
         glm::vec3 color;
 
         Vertex() = default;
@@ -55,7 +56,7 @@ namespace Renderer
         void draw(bool instance, int amount = 0) const;
 
     protected:
-        void setupMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+        void setupMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
         void clearMesh();
     private:
         unsigned int m_vao, m_vbo, m_ebo;

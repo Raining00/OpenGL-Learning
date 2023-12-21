@@ -33,8 +33,39 @@ void Mesh::draw(bool instance, int amount) const
     glBindVertexArray(0);
 }
 
-void Mesh::setupMesh(const std::vector<Vertex>& vert, const std::vector<unsigned int>& ind)
+void Mesh::setupMesh(std::vector<Vertex>& vert, std::vector<unsigned int>& ind)
 {
+    // calculate tangent, the bitangent is the cross product of the normal and the tangent and we can calculate it in the shader, I will not do it here
+    // calculate tangent for each triangle and then average it.
+    for (int i = 0; i < ind.size(); i += 3)
+    {
+        Vertex& v0 = vert[ind[i]];
+        Vertex& v1 = vert[ind[i + 1]];
+        Vertex& v2 = vert[ind[i + 2]];
+
+        glm::vec3 edge1 = v1.position - v0.position;
+        glm::vec3 edge2 = v2.position - v0.position;
+        glm::vec2 deltaUV1 = v1.texCoords - v0.texCoords;
+        glm::vec2 deltaUV2 = v2.texCoords - v0.texCoords;
+
+        float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+        glm::vec3 tangent;
+        tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+        tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+        tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+        tangent = glm::normalize(tangent);
+
+        v0.tangent += tangent;
+        v1.tangent += tangent;
+        v2.tangent += tangent;
+    }
+
+    for (Vertex& vertex : vert)
+    {
+        vertex.tangent = glm::normalize(vertex.tangent);
+    }
+
     m_vertices = vert;
     m_indices = ind;
 
@@ -65,6 +96,10 @@ void Mesh::setupMesh(const std::vector<Vertex>& vert, const std::vector<unsigned
     // Vertex Color
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
+    // Vertex Tangent
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
 
     glBindVertexArray(0);
 }

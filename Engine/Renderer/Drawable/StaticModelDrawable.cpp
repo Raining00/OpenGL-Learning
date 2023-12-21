@@ -184,6 +184,7 @@ namespace Renderer
             textureManager->unbindTexture(m_textureMapList[x]["height"]);
         if (textureManager->getTexture("skybox") != nullptr)
             textureManager->unbindTexture(textureManager->getTextureIndex("skybox"));
+        ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", false);
     }
 
 
