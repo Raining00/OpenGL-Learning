@@ -19,9 +19,7 @@ public:
     {
         //shaders
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
-        unsigned int blingphoneShader0 = m_shaderManager->loadShader("blingphoneShader0", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
-        unsigned int blingphoneShader1 = m_shaderManager->loadShader("blingphoneShader1", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
-        unsigned int blingphoneShader2 = m_shaderManager->loadShader("blingphoneShader2", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
+        unsigned int blingphoneShader = m_shaderManager->loadShader("blingphoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
 
         // texture
         unsigned int floorDiffuse = m_textureManager->loadTexture2D("floorDiffuse", ASSETS_PATH"/texture/floor/floor.png", Renderer::TextureType::DIFFUSE);
@@ -55,7 +53,7 @@ public:
         m_renderSystem->UseDrawableList(true);
         Renderer::SimpleDrawable* contianer[3];
         // floor plan
-        contianer[0] = new Renderer::SimpleDrawable(blingphoneShader0);
+        contianer[0] = new Renderer::SimpleDrawable(blingphoneShader);
         contianer[0]->addMesh(floor);
         contianer[0]->addTexture(floorDiffuse);
         contianer[0]->addTexture(floorSpecular);
@@ -68,7 +66,7 @@ public:
         m_renderSystem->addDrawable(contianer[0]);
 
         // cube
-        contianer[1] = new Renderer::SimpleDrawable(blingphoneShader1);
+        contianer[1] = new Renderer::SimpleDrawable(blingphoneShader);
         contianer[1]->addMesh(cubeMesh);
         contianer[1]->addTexture(brickwallDiffuse);
         contianer[1]->addTexture(brickwallSpecular);
@@ -79,7 +77,7 @@ public:
         m_renderSystem->addDrawable(contianer[1]);
 
         // sphere
-        contianer[2] = new Renderer::SimpleDrawable(blingphoneShader2);
+        contianer[2] = new Renderer::SimpleDrawable(blingphoneShader);
         contianer[2]->addMesh(sphereMesh);
         contianer[2]->addTexture(brickwallDiffuse);
         contianer[2]->addTexture(brickwallSpecular);
@@ -89,7 +87,7 @@ public:
         contianer[2]->getTransformation()->setTranslation(glm::vec3(-2.0f, 1.0, 0.0f));
         m_renderSystem->addDrawable(contianer[2]);
 
-        Renderer::StaticModelDrawable* model = new Renderer::StaticModelDrawable(blingphoneShader2, ASSETS_PATH "/model/furina/obj/furina_white.obj");
+        Renderer::StaticModelDrawable* model = new Renderer::StaticModelDrawable(blingphoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
         model->setReceiveShadow(false);
         model->setProduceShadow(true);
         model->getTransformation()->setTranslation(glm::vec3(2.0f, 0.0, 0.0f));

@@ -22,8 +22,8 @@ public:
         unsigned int SimpleShow = m_shaderManager->loadShader("SimpleShow", SHADER_PATH"/SimpleShow/SimpleShow.vs", SHADER_PATH"/SimpleShow/SimpleShow.fs");
 
         // texture
-        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
-        unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
+        unsigned int diffuseMap = m_textureManager->loadTexture2D("diffuseMap", ASSETS_PATH"/texture/floor.png",  Renderer::TextureType::DIFFUSE);
+        unsigned int specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH"/texture/109447235_p0.jpg", Renderer::TextureType::DIFFUSE);
         unsigned int blendMap = m_textureManager->loadTexture2D("blendMap", ASSETS_PATH"/texture/blending_transparent_window.png");
         float scale = 6.f;
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));

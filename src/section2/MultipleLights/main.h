@@ -98,9 +98,9 @@ public:
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
         // load ambient/diffuse texture
-        diffuseMap = m_textureManager->loadTexture2D("ambientMap", ASSETS_PATH "/texture/109447235_p0.jpg", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
+        diffuseMap = m_textureManager->loadTexture2D("ambientMap", ASSETS_PATH "/texture/109447235_p0.jpg", Renderer::TextureType::DIFFUSE);
         // load specular texture
-        specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH "/texture/93447255_p0.png", glm::vec4(1.0f), Renderer::TextureType::DIFFUSE);
+        specularMap = m_textureManager->loadTexture2D("specularMap", ASSETS_PATH "/texture/93447255_p0.png", Renderer::TextureType::DIFFUSE);
         m_renderSystem->setCullFace(false, GL_BACK);
         spotLightPtr = reinterpret_cast<Renderer::SpotLight *>(m_lightManager->getLight(spotLight).get());
     }
