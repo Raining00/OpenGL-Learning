@@ -10,6 +10,9 @@ struct Material {
     bool useNormalMap;
 }; 
 
+uniform sampler2D shadowMap; // 5
+uniform samplerCube shadowDepthCube; // 6
+
 struct DirLight {
     vec3 direction;
 
@@ -67,8 +70,6 @@ uniform SpotLight spotLight;
 uniform DirLight sunLight;
 
 uniform bool receiveShadow;
-uniform sampler2D shadowMap; // 5
-uniform samplerCube shadowDepthCube; // 6
 
 float near = 0.1; 
 uniform float far_plane;
@@ -150,9 +151,6 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 		normal = texture(material.normal, fs_in.TexCoords).rgb;
         normal = normalize(normal * 2.0 - 1.0);   
     }
-    else
-    {
-    }
     float diff = max(dot(lightDir, normal), 0.0);
     // specular shading
     vec3 halfwayDir = normalize(light.direction + viewDir);
@@ -178,11 +176,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     // attenuation
     float distance    = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    // float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = 1.0 / (distance);
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, fs_in.TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, fs_in.TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, fs_in.TexCoords));
@@ -194,7 +193,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     {
         shadow = PointShadowCalculation(fragPos, light.position);
     }
-    return (ambient + (1.0 - shadow) * (diffuse + specular));
+    return (ambient + (1-shadow) * (diffuse + specular));
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)

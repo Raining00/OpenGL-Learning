@@ -50,8 +50,9 @@ in VS_OUT
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
+    vec4 FragPosLightSpace;
+    mat3 TBN;
 }fs_in;
-
 
 uniform vec3 cameraPos;
 
@@ -68,7 +69,6 @@ uniform bool UseBlingPhone;
 uniform bool GammaCorrectOn;
 uniform float gamma;
 uniform float halfScreenWidth;
-
 uniform bool compareDifferent;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)

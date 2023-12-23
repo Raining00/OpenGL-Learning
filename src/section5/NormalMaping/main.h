@@ -41,7 +41,7 @@ public:
 
         glm::vec3 PointAmbient = glm::vec3(0.2f, 0.1f, 0.05f);
         glm::vec3 PointDiffuse = glm::vec3(0.8f, 0.4f, 0.2f);
-        glm::vec3 PointSpecular = glm::vec3(1.0f, 0.5f, 0.3f);
+        glm::vec3 PointSpecular = glm::vec3(200.f, 200.f, 200.f);
         light = new Renderer::LightDrawable("PointLight0", PointAmbient, PointDiffuse, PointSpecular, 1.0f, 0.09f, 0.032f, lightPosition);
         m_renderSystem->createShadowDepthBuffer(1024, 1024, false, Renderer::TextureType::DEPTH_CUBE);
         light->addMesh(sphereMesh);
@@ -57,7 +57,6 @@ public:
         contianer[0]->addMesh(floor);
         contianer[0]->addTexture(floorDiffuse);
         contianer[0]->addTexture(floorSpecular);
-        contianer[0]->addTexture(floorNormal);
         contianer[0]->setReceiveShadow(true);
         contianer[0]->setProduceShadow(false);
         contianer[0]->getTransformation()->setScale(glm::vec3(scale));

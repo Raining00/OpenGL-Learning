@@ -71,6 +71,13 @@ namespace Renderer
 
     void WindowApp::postRender()
     {
+        {
+            ImGui::Begin("HDR");
+            ImGui::Text("HDR");
+            ImGui::Checkbox("HDR On", (bool *)&m_renderSystem->getHDR());
+            ImGui::DragFloat("Exposure", (float*)&m_renderSystem->getExposure(), 0.01, 0.f, 20.f);
+            ImGui::End();
+        }
         m_renderDevice->endFrame();
     }
 

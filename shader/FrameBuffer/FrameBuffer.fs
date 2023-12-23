@@ -7,6 +7,9 @@ uniform sampler2D screenTexture;
 
 const float offset = 1.0 / 300.0;  
 
+uniform float exposure;
+uniform bool hdr;
+
 void main()
 {
     // vec2 offsets[9] = vec2[](
@@ -50,10 +53,20 @@ void main()
 
     // FragColor = vec4(col, 1.0);
 
-    FragColor = texture(screenTexture, TexCoords);
-    float average = 0.2126 * FragColor.r + 0.7152 * FragColor.g + 0.0722 * FragColor.b;
-    FragColor = vec4(average, average, average, 1.0);
+    // FragColor = texture(screenTexture, TexCoords);
+    // float average = 0.2126 * FragColor.r + 0.7152 * FragColor.g + 0.0722 * FragColor.b;
+    // FragColor = vec4(average, average, average, 1.0);
 
-    vec3 col = texture(screenTexture, TexCoords).rgb;
-    FragColor = vec4(col, 1.0);
+    // hdr
+    vec3 hdrColor = texture(screenTexture, TexCoords).rgb;
+    if (hdr)
+    {
+        const float gamma = 2.2;
+        vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+        // gamma correct
+        mapped = pow(mapped, vec3(1.0 / gamma));
+        FragColor = vec4(mapped, 1.0);
+    }
+    else
+        FragColor = vec4(hdrColor, 1.0);
 } 

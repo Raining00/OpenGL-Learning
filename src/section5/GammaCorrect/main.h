@@ -31,9 +31,9 @@ public:
         glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f); 
         glm::vec3 specular = glm::vec3(1.0f, 0.5f, 0.3f); 
 
-        m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), ambient, diffuse, specular);
-        m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
-            -600.0f, +600.0f, 1.0f, 500.0f);
+        //m_renderSystem->setSunLight(glm::vec3(1.0f, 0.5f, -0.5f), ambient, diffuse, specular);
+        //m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
+        //    -600.0f, +600.0f, 1.0f, 500.0f);
 
         m_lightManager->CreatePointLight("PointLight0", glm::vec3(0.0f, 0.3f, 0.f), ambient, diffuse, specular, 1.0f, 0.7, 1.8);
         m_lightManager->CreatePointLight("PointLight1", glm::vec3(7.f, 0.3f, 0.f), ambient, diffuse, specular, 1.0f, 0.7, 1.8);

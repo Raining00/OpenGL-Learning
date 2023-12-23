@@ -141,6 +141,7 @@ namespace Renderer
         m_shaderManager->loadShader("Framebuffer", SHADER_PATH "/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBuffer.fs");
         // create quad
         m_screenQuad = m_meshManager->loadMesh(new ScreenQuad());
+        m_hdr = hdr;
     }
 
     void RenderSystem::setClearMask(const GLbitfield &mask)
@@ -314,6 +315,8 @@ namespace Renderer
         }
         framebufferShader->use();
         framebufferShader->setInt("screenTexture", 0);
+        framebufferShader->setBool("hdr", m_hdr);
+        framebufferShader->setFloat("exposure", m_exposure);
         m_textureManager->bindTexture(colorTex, 0);
         m_meshManager->drawMesh(m_screenQuad, false);
     }

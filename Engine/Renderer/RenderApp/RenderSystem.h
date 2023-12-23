@@ -84,6 +84,8 @@ namespace Renderer
         LightManager::ptr getLightManager() { return m_lightManager; }
         MeshManager::ptr getMeshManager() { return m_meshManager; }
         bool& getShowShadowMap() { return m_showShadowMap; }
+        bool& getHDR() { return m_hdr; }
+        float& getExposure() { return m_exposure; }
 
         // settters
         void setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
@@ -104,7 +106,8 @@ namespace Renderer
         void renderShadowDepth();
 
     private:
-        bool m_glowBlurEnable, m_showShadowMap{ false };
+        bool m_glowBlurEnable, m_showShadowMap{ false }, m_hdr{ false };
+        float m_exposure{ 1.0f };
         int m_width, m_height;
         unsigned int m_screenQuad;
         RenderState m_renderState;

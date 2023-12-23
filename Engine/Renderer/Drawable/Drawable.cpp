@@ -35,10 +35,8 @@ namespace Renderer
             }
             ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", useNormalMap);
             meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);
-            ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", false);
+            textureManager->unbindTexture(m_texIndex[x]);
         }
-        if(m_texIndex.size() > 0)
-            textureManager->unbindTexture(m_texIndex[0]);
     }
 
     void Drawable::setInstance(const bool& instance, const int& instanceNum, const int& instanceVBO, const GLuint& shaderAttribute)
