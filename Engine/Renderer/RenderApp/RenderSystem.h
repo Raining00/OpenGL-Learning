@@ -5,6 +5,7 @@
 #include "Manager/LightManager.h"
 #include "Manager/MeshManager.h"
 #include "Drawable/Drawable.h"
+#include "Postprocess/GaussianBlur.h"
 #include "Camera/Camera3D.h"
 
 namespace Renderer
@@ -131,7 +132,8 @@ namespace Renderer
         DrawableList::ptr m_drawableList;
         bool m_useDrawableList{ false };
 
-        FrameBuffer::ptr m_frameBuffer{ nullptr }, m_gaussBlur[2];
+        FrameBuffer::ptr m_frameBuffer{ nullptr };
+        GaussianBlur::ptr m_gaussianBlur{ nullptr };
     };
 
 }

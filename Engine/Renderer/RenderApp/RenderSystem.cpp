@@ -144,9 +144,7 @@ namespace Renderer
         m_hdr = hdr;
         if (m_BloomOn && m_hdr)
         {
-            for (int i = 0; i < 2; i++)
-                m_gaussBlur[i] = std::make_shared<FrameBuffer>(m_width, m_width, "", "", std::vector<std::string>{std::string("Gauss") + std::to_string(i)}, true);
-            m_shaderManager->loadShader("GaussBlur", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/GaussBlur.fs");
+            m_gaussianBlur = std::make_shared<GaussianBlur>(width, height);
         }
     }
 
@@ -318,36 +316,9 @@ namespace Renderer
         Shader::ptr framebufferShader;
         if (m_hdr && m_BloomOn)
         {
-            // Make sure we are not operating on nullptr.
-            if (m_gaussBlur[0] == nullptr && m_gaussBlur[1] == nullptr)
-            {
-                for (int i = 0; i < 2; i++)
-                    m_gaussBlur[i] = std::make_shared<FrameBuffer>(m_width, m_width, "", "", std::vector<std::string>{std::string("Gauss") + std::to_string(i)}, true);
-            }
-            framebufferShader = m_shaderManager->getShader("GaussBlur");
-            if (framebufferShader == nullptr)
-            {
-                m_shaderManager->loadShader("GaussBlur", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/GaussBlur.fs");
-                framebufferShader = m_shaderManager->getShader("GaussBlur");
-            }
-            // get brightness texture
-            GLuint brightTex = m_frameBuffer->getColorTextureIndex(1);
-            // bind brightness texture to gauss shader.
-            framebufferShader->use();
-            GLboolean horizontal = true, first_iteration = true;
-            GLuint amount = 10;
-            // we blur it 10 times(5 is on the horizon and 5 is on the vertic).
-            for (GLuint i = 0; i < amount; i++)
-            {
-                m_gaussBlur[horizontal]->bind();
-                framebufferShader->setBool("horizontal", horizontal);
-                m_textureManager->bindTexture(first_iteration ? brightTex : m_gaussBlur[!horizontal]->getColorTextureIndex(0));
-                m_meshManager->drawMesh(m_screenQuad, false);
-                horizontal = !horizontal;
-                if (first_iteration)
-                    first_iteration = false;
-                m_gaussBlur[horizontal]->unBind(m_width, m_height);
-            }
+            if (m_gaussianBlur == nullptr)
+                m_gaussianBlur = std::make_shared<GaussianBlur>(m_width, m_height);
+            m_gaussianBlur->renderGaussianBlurEffect(m_frameBuffer->getColorTextureIndex(1));
         }
         // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -365,7 +336,7 @@ namespace Renderer
         if (m_hdr && m_BloomOn)
         {
             framebufferShader->setInt("bloomTexture", 1);
-            m_textureManager->bindTexture(m_gaussBlur[0]->getColorTextureIndex(0), 1);
+            m_textureManager->bindTexture(m_gaussianBlur->getSceneTexIndex(), 1);
         }
         framebufferShader->setInt("screenTexture", 0);
         framebufferShader->setBool("hdr", m_hdr);
