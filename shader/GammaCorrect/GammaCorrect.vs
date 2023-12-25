@@ -3,14 +3,14 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
-in VS_OUT
+out VS_OUT
 {
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
     vec4 FragPosLightSpace;
     mat3 TBN;
-}fs_in;
+}vs_out;
 
 uniform bool instance;
 
