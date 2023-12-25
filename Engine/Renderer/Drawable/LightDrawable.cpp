@@ -11,12 +11,12 @@ Renderer::LightDrawable::LightDrawable(const std::string& name) :m_lightName(nam
 
 }
 
-Renderer::LightDrawable::LightDrawable(const std::string& name, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const float& constant, const float& linear, const float& quadratic, const glm::vec3& position)
-	:m_lightName(name), m_amibent(ambient), m_diffuse(diffuse), m_specular(specular), m_constant(constant), m_linear(linear), m_quadratic(quadratic)
+Renderer::LightDrawable::LightDrawable(const std::string& name, const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const float& constant, const float& linear, const float& quadratic)
+    :m_lightName(name), m_amibent(ambient), m_diffuse(diffuse), m_specular(specular), m_constant(constant), m_linear(linear), m_quadratic(quadratic)
 {
     getTransformation()->setTranslation(position);
-	m_lightIndex = LightManager::getInstance()->CreatePointLight(m_lightName, position, m_amibent, m_diffuse, m_specular, m_constant, m_linear, m_quadratic);
-	m_shaderIndex = ShaderManager::getInstance()->loadShader("LightShader", SHADER_PATH"/LightDrawable/SimpleLightDrawable.vs", SHADER_PATH"/LightDrawable/SimpleLightDrawable.fs");
+    m_lightIndex = LightManager::getInstance()->CreatePointLight(m_lightName, position, m_amibent, m_diffuse, m_specular, m_constant, m_linear, m_quadratic);
+    m_shaderIndex = ShaderManager::getInstance()->loadShader("LightShader", SHADER_PATH"/LightDrawable/SimpleLightDrawable.vs", SHADER_PATH"/LightDrawable/SimpleLightDrawable.fs");
 }
 
 void Renderer::LightDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)

@@ -42,21 +42,18 @@ public:
         //    -600.0f, +600.0f, 1.0f, 500.0f);
 
         Renderer::LightDrawable* lightDrawable[3];
-        lightDrawable[0] = new Renderer::LightDrawable("PointLight0", ambient, diffuse * 5.f, specular * 5.f, 1.0f, 0.7, 1.8, glm::vec3(0.0f, 0.5f, 0.f));
+        lightDrawable[0] = new Renderer::LightDrawable("PointLight0", glm::vec3(0.0f, 0.5f, 0.f), ambient, diffuse * 5.f, specular * 5.f);
         lightDrawable[0]->addMesh(sphere);
-        lightDrawable[0]->setLightColor(diffuse * 5.f);
+        lightDrawable[0]->setDisplayColor(diffuse * 5.f);
         m_renderSystem->addDrawable(lightDrawable[0]);
-        lightDrawable[1] = new Renderer::LightDrawable("PointLight1", glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.4f, 0.0f, 0.0f) * 20.f, glm::vec3(0.6f, 0.0f, 0.0f) * 10.f, 1.0f, 0.7, 1.8, glm::vec3(7.f, 0.5f, 0.f));
+        lightDrawable[1] = new Renderer::LightDrawable("PointLight1", glm::vec3(7.f, 0.5f, 0.f), glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.4f, 0.0f, 0.0f) * 20.f, glm::vec3(0.6f, 0.0f, 0.0f) * 10.f);
         lightDrawable[1]->addMesh(sphere);
-        lightDrawable[1]->setLightColor(glm::vec3(0.4f, 0.0f, 0.0f) * 20.f);
+        lightDrawable[1]->setDisplayColor(glm::vec3(200.f, 0.0f, 0.0f));
         m_renderSystem->addDrawable(lightDrawable[1]);
-        lightDrawable[2] = new Renderer::LightDrawable("PointLight2", glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f) * 20.f, glm::vec3(0.0f, 0.0f, 0.8f) * 10.f, 1.0f, 0.7, 1.8, glm::vec3(-7.f, 0.5f, 0.f));
+        lightDrawable[2] = new Renderer::LightDrawable("PointLight2", glm::vec3(-7.f, 0.5f, 0.f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f) * 20.f, glm::vec3(0.0f, 0.0f, 0.8f) * 10.f);
         lightDrawable[2]->addMesh(sphere);
-        lightDrawable[2]->setLightColor(glm::vec3(0.0f, 0.0f, 0.5f) * 20.f);
+        lightDrawable[2]->setDisplayColor(glm::vec3(0.0f, 0.f, 200.f));
         m_renderSystem->addDrawable(lightDrawable[2]);
-        //m_lightManager->CreatePointLight("PointLight0", glm::vec3(0.0f, 0.5f, 0.f), ambient, diffuse * 5.f, specular * 5.f, 1.0f, 0.7, 1.8);
-        //m_lightManager->CreatePointLight("PointLight1", glm::vec3(7.f, 0.5f, 0.f), glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.4f, 0.0f, 0.0f) * 20.f, glm::vec3(0.6f, 0.0f, 0.0f) * 10.f, 1.0f, 0.7, 1.8);
-        //m_lightManager->CreatePointLight("PointLight2", glm::vec3(-7.f, 0.5f, 0.f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f) * 20.f, glm::vec3(0.0f, 0.0f, 0.8f) * 10.f, 1.0f, 0.7, 1.8);
 
         m_renderSystem->createShadowDepthBuffer(1024, 1024, true, Renderer::TextureType::DEPTH_CUBE);
 

@@ -13,7 +13,7 @@ namespace Renderer
 	{
 	public:
 		LightDrawable(const std::string& name);
-		LightDrawable(const std::string& name, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const float& constant, const float& linear, const float& quadratic, const glm::vec3& position = glm::vec3(0.0f));
+		LightDrawable(const std::string& name, const glm::vec3& position = glm::vec3(0.0f), const glm::vec3& ambient = glm::vec3(0.2f), const glm::vec3& diffuse = glm::vec3(0.5f), const glm::vec3& specular = glm::vec3(0.8f), const float& constant = 1.0f, const float& linear = 0.7f, const float& quadratic = 1.8f);
 		~LightDrawable() = default;
 
 		void setLightColor(const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular)
@@ -38,7 +38,7 @@ namespace Renderer
 			updateLightSetting();
 		}
 
-		void setLightColor(const glm::vec3& color)
+		void setDisplayColor(const glm::vec3& color)
 		{
 			m_lightColor = color;
 		}
