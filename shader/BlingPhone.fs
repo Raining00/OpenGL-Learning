@@ -1,5 +1,8 @@
 #version 330 core
 
+layout(location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
+
 struct Material {
     sampler2D diffuse; // 0
     sampler2D specular;// 1
@@ -48,7 +51,6 @@ struct SpotLight {
     vec3 specular;
 };
 
-out vec4 FragColor;
 in VS_OUT
 {
     vec3 FragPos;
@@ -163,6 +165,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
         shadow = ShadowCalculation(fs_in.FragPosLightSpace);
     return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
+bool firstTime = true;
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
@@ -191,7 +194,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float shadow = 0.0f;
     if(receiveShadow && pointLightNum > 0)
     {
-        shadow = PointShadowCalculation(fragPos, light.position);
+        if(firstTime)
+        {
+            shadow = PointShadowCalculation(fragPos, light.position);
+            firstTime = false;
+        }
     }
     return (ambient + (1-shadow) * (diffuse + specular));
 }
@@ -252,7 +259,9 @@ void main()
     float gamma = 2.2;
     result = pow(result, vec3(1.0/gamma));
     FragColor = vec4(result, 1.0);
-
+    float brightness = dot(FragColor.rgb,  vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        BrightColor = vec4(FragColor.rgb, 1.0);
     // depth dest
     // float depth = LinearizeDepth(gl_FragCoord.z) / far;
     // FragColor = vec4(vec3(depth), 1.0);

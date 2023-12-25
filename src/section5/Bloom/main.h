@@ -3,17 +3,17 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "Drawable/StaticModelDrawable.h"
-
-class HDR : public Renderer::WindowApp
+#include "Drawable/LightDrawable.h"
+class Bloom : public Renderer::WindowApp
 {
 public:
-    HDR(int width = 1920, int height = 1080, const std::string& title = "HDR", const std::string& cameraType = "tps")
+    Bloom(int width = 1920, int height = 1080, const std::string& title = "Bloom", const std::string& cameraType = "tps")
         : WindowApp(width, height, title, cameraType)
     {
         m_halfScreenWidth = m_renderDevice->getWindowWidth() / 2;
     }
 
-    ~HDR() = default;
+    ~Bloom() = default;
 
     virtual void Init() override
     {
@@ -31,6 +31,7 @@ public:
         float scale = 50.f;
         unsigned int floor = m_meshManager->loadMesh(new Renderer::Plane(1.0, 1.0, scale));
         unsigned int cube = m_meshManager->loadMesh(new Renderer::Cube(1.0, 1.0, 1.0));
+        unsigned int sphere = m_meshManager->loadMesh(new Renderer::Sphere(0.2, 20, 20));
         //m_renderSystem->createSkyBox(ASSETS_PATH  "/texture/skybox/", ".jpg");
         glm::vec3 ambient = glm::vec3(0.2f, 0.1f, 0.05f);
         glm::vec3 diffuse = glm::vec3(0.8f, 0.4f, 0.2f);
@@ -40,9 +41,22 @@ public:
         //m_renderSystem->createSunLightCamera(glm::vec3(0.0f), -600.0f, +600.0f,
         //    -600.0f, +600.0f, 1.0f, 500.0f);
 
-        m_lightManager->CreatePointLight("PointLight0", glm::vec3(0.0f, 0.5f, 0.f), ambient, diffuse * 5.f, specular * 5.f, 1.0f, 0.7, 1.8);
-        m_lightManager->CreatePointLight("PointLight1", glm::vec3(7.f, 0.5f, 0.f), glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.4f, 0.0f, 0.0f) * 20.f, glm::vec3(0.6f, 0.0f, 0.0f) * 10.f, 1.0f, 0.7, 1.8);
-        m_lightManager->CreatePointLight("PointLight2", glm::vec3(-7.f, 0.5f, 0.f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f) * 20.f, glm::vec3(0.0f, 0.0f, 0.8f) * 10.f, 1.0f, 0.7, 1.8);
+        Renderer::LightDrawable* lightDrawable[3];
+        lightDrawable[0] = new Renderer::LightDrawable("PointLight0", ambient, diffuse * 5.f, specular * 5.f, 1.0f, 0.7, 1.8, glm::vec3(0.0f, 0.5f, 0.f));
+        lightDrawable[0]->addMesh(sphere);
+        lightDrawable[0]->setLightColor(diffuse * 5.f);
+        m_renderSystem->addDrawable(lightDrawable[0]);
+        lightDrawable[1] = new Renderer::LightDrawable("PointLight1", glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.4f, 0.0f, 0.0f) * 20.f, glm::vec3(0.6f, 0.0f, 0.0f) * 10.f, 1.0f, 0.7, 1.8, glm::vec3(7.f, 0.5f, 0.f));
+        lightDrawable[1]->addMesh(sphere);
+        lightDrawable[1]->setLightColor(glm::vec3(0.4f, 0.0f, 0.0f) * 20.f);
+        m_renderSystem->addDrawable(lightDrawable[1]);
+        lightDrawable[2] = new Renderer::LightDrawable("PointLight2", glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f) * 20.f, glm::vec3(0.0f, 0.0f, 0.8f) * 10.f, 1.0f, 0.7, 1.8, glm::vec3(-7.f, 0.5f, 0.f));
+        lightDrawable[2]->addMesh(sphere);
+        lightDrawable[2]->setLightColor(glm::vec3(0.0f, 0.0f, 0.5f) * 20.f);
+        m_renderSystem->addDrawable(lightDrawable[2]);
+        //m_lightManager->CreatePointLight("PointLight0", glm::vec3(0.0f, 0.5f, 0.f), ambient, diffuse * 5.f, specular * 5.f, 1.0f, 0.7, 1.8);
+        //m_lightManager->CreatePointLight("PointLight1", glm::vec3(7.f, 0.5f, 0.f), glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.4f, 0.0f, 0.0f) * 20.f, glm::vec3(0.6f, 0.0f, 0.0f) * 10.f, 1.0f, 0.7, 1.8);
+        //m_lightManager->CreatePointLight("PointLight2", glm::vec3(-7.f, 0.5f, 0.f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f) * 20.f, glm::vec3(0.0f, 0.0f, 0.8f) * 10.f, 1.0f, 0.7, 1.8);
 
         m_renderSystem->createShadowDepthBuffer(1024, 1024, true, Renderer::TextureType::DEPTH_CUBE);
 
@@ -83,7 +97,8 @@ public:
         m_renderSystem->addDrawable(contianer[2]);
 
         //m_renderSystem->setCullFace(false, GL_BACK);
-        m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        m_renderSystem->setBloomOn(true);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), true);
     }
 
@@ -96,8 +111,8 @@ public:
     {
         // imgui
         {
-            ImGui::Begin("HDR Example");
-            ImGui::Text("HDR Example");
+            ImGui::Begin("Bloom Example");
+            ImGui::Text("Bloom Example");
             ImGui::End();
         }
     }

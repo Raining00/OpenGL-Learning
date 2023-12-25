@@ -84,8 +84,9 @@ namespace Renderer
         LightManager::ptr getLightManager() { return m_lightManager; }
         MeshManager::ptr getMeshManager() { return m_meshManager; }
         bool& getShowShadowMap() { return m_showShadowMap; }
-        bool& getHDR() { return m_hdr; }
-        float& getExposure() { return m_exposure; }
+        bool* getHDRPtr() { return &m_hdr; }
+        bool* getBloomPtr() { return &m_BloomOn; }
+        float* getExposurePtr() { return &m_exposure; }
 
         // settters
         void setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
@@ -97,6 +98,7 @@ namespace Renderer
         void setBlend(const bool& enable, const GLenum& src, const GLenum& dst);
         void UseDrawableList(const bool& use = false) { m_useDrawableList = use; }
         void useLightCamera(const bool& use = false) { m_activateCamera = use ? m_lightCamera : m_camera; }
+        void setBloomOn(const bool& on) { m_BloomOn = on; }
 
         void render(const bool& withFramebuffer = false);
         void renderWithFramebuffer();
@@ -104,9 +106,10 @@ namespace Renderer
 
     private:
         void renderShadowDepth();
+        void renderFrameBuffer();
 
     private:
-        bool m_glowBlurEnable, m_showShadowMap{ false }, m_hdr{ false };
+        bool m_glowBlurEnable, m_showShadowMap{ false }, m_hdr{ false }, m_BloomOn{ false };
         float m_exposure{ 1.0f };
         int m_width, m_height;
         unsigned int m_screenQuad;
@@ -128,7 +131,7 @@ namespace Renderer
         DrawableList::ptr m_drawableList;
         bool m_useDrawableList{ false };
 
-        FrameBuffer::ptr m_frameBuffer{ nullptr };
+        FrameBuffer::ptr m_frameBuffer{ nullptr }, m_gaussBlur[2];
     };
 
 }

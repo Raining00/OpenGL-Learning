@@ -51,7 +51,7 @@ public:
         Renderer::StaticModelDrawable* model[2];
         model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
         model[0]->getTransformation()->scale(glm::vec3(2));
-        model[1]->getTransformation()->setTranslation(glm::vec3(5.0f, 0.0f, 0.5f));
+        model[0]->getTransformation()->setTranslation(glm::vec3(5.0f, 0.0f, 0.5f));
         model[0]->showNormal(true, 0.05);
         m_renderSystem->addDrawable(model[0]);
 

@@ -135,13 +135,19 @@ namespace Renderer
 
     void RenderSystem::createFrameBuffer(int width, int height, bool hdr)
     {
-        m_frameBuffer = std::make_shared<FrameBuffer>(width, height, "", "", std::vector<std::string>{"Color"}, hdr);
+        m_frameBuffer = std::make_shared<FrameBuffer>(width, height, "", "", std::vector<std::string>{"FragColor", "BrightColor"}, hdr);
 
         // Framebuffer shader
         m_shaderManager->loadShader("Framebuffer", SHADER_PATH "/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/FrameBuffer.fs");
         // create quad
         m_screenQuad = m_meshManager->loadMesh(new ScreenQuad());
         m_hdr = hdr;
+        if (m_BloomOn && m_hdr)
+        {
+            for (int i = 0; i < 2; i++)
+                m_gaussBlur[i] = std::make_shared<FrameBuffer>(m_width, m_width, "", "", std::vector<std::string>{std::string("Gauss") + std::to_string(i)}, true);
+            m_shaderManager->loadShader("GaussBlur", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/GaussBlur.fs");
+        }
     }
 
     void RenderSystem::setClearMask(const GLbitfield &mask)
@@ -294,31 +300,7 @@ namespace Renderer
             m_drawableList->render(m_activateCamera, m_lightCamera);
         }
 
-        // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // we should disable depth test here, otherwise the quad will be discarded.
-        glDisable(GL_DEPTH_TEST);
-        glClearColor(m_renderState.m_clearColor.r, m_renderState.m_clearColor.g, m_renderState.m_clearColor.b, m_renderState.m_clearColor.a);
-        glClear(GL_COLOR_BUFFER_BIT);
-        // draw the framebuffer texture on a quad. 
-        Shader::ptr framebufferShader;
-        GLuint colorTex = 0;
-        if (m_showShadowMap)
-        {
-            framebufferShader = m_shaderManager->getShader("FramebufferDepth");
-            colorTex = m_shadowDepthBuffer->getDepthTextureIndex();
-        }
-        else
-        {
-            framebufferShader = m_shaderManager->getShader("Framebuffer");
-            colorTex = m_frameBuffer->getColorTextureIndex(0);
-        }
-        framebufferShader->use();
-        framebufferShader->setInt("screenTexture", 0);
-        framebufferShader->setBool("hdr", m_hdr);
-        framebufferShader->setFloat("exposure", m_exposure);
-        m_textureManager->bindTexture(colorTex, 0);
-        m_meshManager->drawMesh(m_screenQuad, false);
+        renderFrameBuffer();
     }
 
     void RenderSystem::render(const bool& withFramebuffer)
@@ -327,6 +309,69 @@ namespace Renderer
 			renderWithFramebuffer();
 		else
 			renderWithoutFramebuffer();
+    }
+
+    void Renderer::RenderSystem::renderFrameBuffer()
+    {
+        // draw the framebuffer texture on a quad. 
+        glDisable(GL_DEPTH_TEST);
+        Shader::ptr framebufferShader;
+        if (m_hdr && m_BloomOn)
+        {
+            // Make sure we are not operating on nullptr.
+            if (m_gaussBlur[0] == nullptr && m_gaussBlur[1] == nullptr)
+            {
+                for (int i = 0; i < 2; i++)
+                    m_gaussBlur[i] = std::make_shared<FrameBuffer>(m_width, m_width, "", "", std::vector<std::string>{std::string("Gauss") + std::to_string(i)}, true);
+            }
+            framebufferShader = m_shaderManager->getShader("GaussBlur");
+            if (framebufferShader == nullptr)
+            {
+                m_shaderManager->loadShader("GaussBlur", SHADER_PATH"/FrameBuffer/FrameBuffer.vs", SHADER_PATH"/FrameBuffer/GaussBlur.fs");
+                framebufferShader = m_shaderManager->getShader("GaussBlur");
+            }
+            // get brightness texture
+            GLuint brightTex = m_frameBuffer->getColorTextureIndex(1);
+            // bind brightness texture to gauss shader.
+            framebufferShader->use();
+            GLboolean horizontal = true, first_iteration = true;
+            GLuint amount = 10;
+            // we blur it 10 times(5 is on the horizon and 5 is on the vertic).
+            for (GLuint i = 0; i < amount; i++)
+            {
+                m_gaussBlur[horizontal]->bind();
+                framebufferShader->setBool("horizontal", horizontal);
+                m_textureManager->bindTexture(first_iteration ? brightTex : m_gaussBlur[!horizontal]->getColorTextureIndex(0));
+                m_meshManager->drawMesh(m_screenQuad, false);
+                horizontal = !horizontal;
+                if (first_iteration)
+                    first_iteration = false;
+                m_gaussBlur[horizontal]->unBind(m_width, m_height);
+            }
+        }
+        // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        if (m_showShadowMap)
+        {
+            framebufferShader = m_shaderManager->getShader("FramebufferDepth");
+            m_textureManager->bindTexture(m_shadowDepthBuffer->getDepthTextureIndex(), 0);
+        }
+        else
+        {
+            framebufferShader = m_shaderManager->getShader("Framebuffer");
+            m_textureManager->bindTexture(m_frameBuffer->getColorTextureIndex(0), 0);
+        }
+        framebufferShader->use();
+        if (m_hdr && m_BloomOn)
+        {
+            framebufferShader->setInt("bloomTexture", 1);
+            m_textureManager->bindTexture(m_gaussBlur[0]->getColorTextureIndex(0), 1);
+        }
+        framebufferShader->setInt("screenTexture", 0);
+        framebufferShader->setBool("hdr", m_hdr);
+        framebufferShader->setBool("bloom", true);
+        framebufferShader->setFloat("exposure", m_exposure);
+        m_meshManager->drawMesh(m_screenQuad, false);
     }
 
     void RenderSystem::renderShadowDepth()
