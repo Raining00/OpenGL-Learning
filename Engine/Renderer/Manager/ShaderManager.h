@@ -26,6 +26,8 @@ public:
 
     std::shared_ptr<Shader> getShader(GLuint shaderID);
 
+    GLuint getShdaerIndex(const std::string& shaderName);
+
     bool bindShader(GLuint shaderID);
 
     bool bindShader(const std::string &shaderName);

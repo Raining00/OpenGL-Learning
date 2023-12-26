@@ -24,7 +24,6 @@ public:
     {
         //shaders
         unsigned int blingphoneShader = m_shaderManager->loadShader("blingphoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
-        m_renderSystem->setCullFace(false, GL_BACK);
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         m_renderSystem->setBloomOn(true);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), true);
@@ -61,13 +60,14 @@ public:
                 }
             }
         }
+
         numParticles = positions.size();
         simpleParticles->setParticlePosition(positions);
         simpleParticles->setParticleVelocity(velocities);
         Renderer::ParticlePointSpriteDrawable* particleDrawable = new Renderer::ParticlePointSpriteDrawable(4);
         particleDrawable->setParticleRadius(radius);
         particleDrawable->setParticleVBO(simpleParticles->getPositionVBO(), positions.size());
-        particleDrawable->setBaseColor(glm::vec3(0.1f, 0.2f, 0.8f) * 5.f);
+        particleDrawable->setBaseColor(glm::vec3(1.0f, 0.6f, 0.3f) * 5.f);
         m_renderSystem->addDrawable(particleDrawable);
     }
 

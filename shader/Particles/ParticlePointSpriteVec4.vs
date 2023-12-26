@@ -37,5 +37,6 @@ void main()
     vs_out.FragPos = FragPos;
     vs_out.eyeSpacePos = (view * vec4(FragPos, 1.0)).xyz;
     gl_PointSize = -pointScale * pointSize / vs_out.eyeSpacePos.z;
+    // gl_PointSize = max(1.0, -pointScale * pointSize / (1.0 - vs_out.eyeSpacePos.z));
     gl_Position = project * view * vec4(FragPos, 1.0);
 }

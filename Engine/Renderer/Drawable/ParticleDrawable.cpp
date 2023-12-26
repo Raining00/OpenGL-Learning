@@ -8,8 +8,8 @@
 
 namespace Renderer
 {
-	ParticlePointSpriteDrawable::ParticlePointSpriteDrawable(const unsigned int& posChannel):
-		m_posChannel(posChannel)
+	ParticlePointSpriteDrawable::ParticlePointSpriteDrawable(const unsigned int& posChannel, const bool& Glow):
+		m_posChannel(posChannel), m_glow(Glow)
 	{
 		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
 		glGenVertexArrays(1, &m_particleVAO);
@@ -26,6 +26,9 @@ namespace Renderer
 		else
 			throw std::runtime_error("ParticlePointSpriteDrawable::ParticlePointSpriteDrawable: posChannel must be 3 or 4.");
 		m_shaderIndex = m_shaderManager->loadShader("ParticlePointSprite", vertexPath.c_str(), SHADER_PATH "/Particles/ParticlePointSprite.fs");
+		m_shaderManager->loadShader("ParticlePix", vertexPath.c_str(), SHADER_PATH"/Particles/ParticlePix.fs");
+		if(Glow)
+			m_shaderIndex = m_shaderManager->getShdaerIndex("ParticlePix");
 		generateGaussianMap(32);
 	}
 
@@ -64,7 +67,7 @@ namespace Renderer
 		else
 			throw std::runtime_error("ParticlePointSpriteDrawable::ParticlePointSpriteDrawable: posChannel must be 3 or 4.");
 		m_shaderIndex = m_shaderManager->loadShader("ParticlePointSprite", vertexPath.c_str(), SHADER_PATH "/Particles/ParticlePointSprite.fs");
-		generateGaussianMap(32);
+
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(const std::vector<glm::vec3>& positions)
@@ -121,6 +124,14 @@ namespace Renderer
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+	void ParticlePointSpriteDrawable::setGlow(const bool& glow)
+	{
+		if (glow)
+			m_shaderIndex = m_shaderManager->getShdaerIndex("ParticlePointSprite");
+		else
+			m_shaderIndex = m_shaderManager->getShdaerIndex("ParticlePix");
+	}
+
 	void ParticlePointSpriteDrawable::setParticleVBO(GLuint vbo, int numParticles)
 	{
 		if (m_vboCreateBySelf && m_particleVBO != 0)
@@ -148,7 +159,8 @@ namespace Renderer
 		float fovy = camera->getFovy();
 		int width = RenderDevice::getInstance()->getWindowWidth();
 		float pointScale = 1.0f * width / aspect * (1.0f / tanf(glm::radians(fovy) * 0.5f));
-
+		if (m_glow)
+			pointScale /= 10.f;
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 		glDisable(GL_CULL_FACE);
@@ -164,7 +176,7 @@ namespace Renderer
 		shader = m_shaderManager->getShader(m_shaderIndex);
 		shader->use();
 		LightManager::getInstance()->setLight(shader, camera);
-		shader->setInt("particleTexture", 0);
+		shader->setInt("image", 0);
 		shader->setFloat("pointScale", pointScale);
 		shader->setVec3("baseColor", m_baseColor);
 		shader->setFloat("pointSize", m_particleRadius);

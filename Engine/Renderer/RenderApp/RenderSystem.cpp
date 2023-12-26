@@ -142,7 +142,7 @@ namespace Renderer
         // create quad
         m_screenQuad = m_meshManager->loadMesh(new ScreenQuad());
         m_hdr = hdr;
-        if (m_BloomOn && m_hdr)
+        if (m_BloomOn)
         {
             m_gaussianBlur = std::make_shared<GaussianBlur>(width, height);
         }
@@ -314,11 +314,10 @@ namespace Renderer
         // draw the framebuffer texture on a quad. 
         glDisable(GL_DEPTH_TEST);
         Shader::ptr framebufferShader;
-        if (m_hdr && m_BloomOn)
+        if (m_BloomOn)
         {
             if (m_gaussianBlur == nullptr)
                 m_gaussianBlur = std::make_shared<GaussianBlur>(m_width, m_height);
-            m_gaussianBlur->setBlurTimes(20);
             m_gaussianBlur->renderGaussianBlurEffect(m_frameBuffer->getColorTextureIndex(1));
         }
         // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
@@ -334,7 +333,7 @@ namespace Renderer
             m_textureManager->bindTexture(m_frameBuffer->getColorTextureIndex(0), 0);
         }
         framebufferShader->use();
-        if (m_hdr && m_BloomOn)
+        if (m_BloomOn)
         {
             framebufferShader->setInt("bloomTexture", 1);
             m_textureManager->bindTexture(m_gaussianBlur->getSceneTexIndex(), 1);

@@ -51,6 +51,12 @@ std::shared_ptr<Shader> ShaderManager::getShader(GLuint shaderID)
     return m_shaders[shaderID];
 }
 
+GLuint ShaderManager::getShdaerIndex(const std::string& shaderName)
+{
+    if (m_shaderMap.find(shaderName) == m_shaderMap.end())
+        return 0;
+    return m_shaderMap[shaderName];
+}
 
 bool ShaderManager::bindShader(GLuint shaderID)
 {
