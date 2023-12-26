@@ -19,7 +19,6 @@ namespace Renderer
 		glBindVertexArray(m_particleVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferData(GL_ARRAY_BUFFER, m_numParticles * m_posChannel * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
@@ -53,66 +52,54 @@ namespace Renderer
 	{
 		if(m_posChannel != 3)
 			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 3.");
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(glm::vec3), positions.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(const std::vector<glm::vec4>& positions)
 	{
 		if (m_posChannel != 4)
 			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 4.");
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(glm::vec4), positions.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(CArray<Vec3f>& positions)
 	{
 		if (m_posChannel != 3)
 			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 3.");
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec3f), positions.begin());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(CArray<Vec4f>& positions)
 	{
 		if (m_posChannel != 4)
 			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 4.");
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec4f), positions.begin());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(std::vector<Vec3f>& positions)
 	{
 		if (m_posChannel != 3)
 			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 3.");
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec3f), positions.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(std::vector<Vec4f>& positions)
 	{
 		if (m_posChannel != 4)
 			throw std::runtime_error("ParticlePointSpriteDrawable::setParticlePositions: posChannel must be 4.");
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
 		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, positions.size() * sizeof(Vec4f), positions.data());
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::setParticleVBO(GLuint vbo)
@@ -121,8 +108,6 @@ namespace Renderer
 			glDeleteBuffers(1, &m_particleVBO);
 		m_particleVBO = vbo;
 		m_vboCreateBySelf = false;
-		checkCudaErrors(cudaGraphicsUnregisterResource(m_cudaVBOResource));
-		checkCudaErrors(cudaGraphicsGLRegisterBuffer(&m_cudaVBOResource, m_particleVBO, cudaGraphicsMapFlagsWriteDiscard));
 	}
 
 	void ParticlePointSpriteDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)

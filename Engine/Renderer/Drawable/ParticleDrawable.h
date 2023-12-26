@@ -7,8 +7,6 @@
 #include "Engine/cuda/core/Array.h"
 #include "Engine/cuda/core/Vector/Vector.h"
 
-#include <cuda_gl_interop.h>
-
 namespace Renderer
 {
 	class ParticlePointSpriteDrawable : public Drawable
@@ -52,6 +50,5 @@ namespace Renderer
 		bool m_vboCreateBySelf;
 		unsigned int m_numParticles;
 		unsigned int m_posChannel; // 3 or 4 (vec3 or vec4)
-		cudaGraphicsResource *m_cudaVBOResource;
 	};
 }

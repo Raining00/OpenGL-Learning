@@ -127,11 +127,15 @@ endif()
 # set_property(TARGET Renderer PROPERTY FOLDER "extern/Renderer")
 add_subdirectory(Engine/Renderer)
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/Renderer/)
-set_property(TARGET Renderer PROPERTY FOLDER "extern/Renderer")
+set_property(TARGET Renderer PROPERTY FOLDER "Engine/Renderer")
+
+add_subdirectory(Engine/cuda)
+list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda/)
+set_property(TARGET EngineCUDA PROPERTY FOLDER "Engine/CUDA")
 
 # cuda data structure
 list(APPEND TARGET_INCLUDE_DIRECTORIES Engine/cuda)
-list(APPEND TARGET_LIBRARIES Renderer glfw imgui glm::glm ${OPENGL_LIBRARIES})
+list(APPEND TARGET_LIBRARIES Renderer EngineCUDA glfw imgui glm::glm ${OPENGL_LIBRARIES})
 
 # Create a library target (such as named "external_libs"), which includes all third-party and based defined librarie
 add_library(dependencies INTERFACE)

@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(EngineCUDA LANGUAGES CXX CUDA)
+if(MSVC)
+find_package(CUDA REQUIRED)
+endif()
+
+set(TARGET EngineCUDA)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB_RECURSE ENGINE_CUDA_HEARD_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+file(GLOB_RECURSE ENGINE_CUDA_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.cu" "${CMAKE_CURRENT_SOURCE_DIR}/*.cuh")
+set(ENGINE_CUDA_FILES ${ENGINE_CUDA_HEADER_FILES} ${ENGINE_CUDA_SOURCE_FILES})
+
+add_library(${TARGET} STATIC ${ENGINE_CUDA_SOURCE_FILES})
+target_link_libraries(${TARGET} PUBLIC ${TARGET_LIBRARIES} ${OPENGL_LIBRARIES} glm::glm Renderer)
+target_include_directories(${TARGET} PUBLIC ${CMAKE_SOURCE_DIR}/extern ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
+                    --generate-code arch=compute_86,code=[sm_86,compute_86] -std=c++17>)
+target_include_directories(${TARGET} PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+find_library(CUDART_LIBRARY cudart PATHS ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES})
+target_link_libraries(${TARGET} PRIVATE ${CUDART_LIBRARY})
+
+foreach(CUDA_FILES ${ENGINE_CUDA_FILES})
+    get_filename_component(ENGINE_CUDA_PATH "${CUDA_FILES}" PATH)
+    file(RELATIVE_PATH ENGINE_CUDA_PATH_REL "${CMAKE_CURRENT_SOURCE_DIR}/" "${ENGINE_CUDA_PATH}")
+    string(REPLACE "/" "\\" GROUP_PATH "${ENGINE_CUDA_PATH_REL}")
+    source_group("\\${GROUP_PATH}" FILES "${CUDA_FILES}")
+endforeach()
