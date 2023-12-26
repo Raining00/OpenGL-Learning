@@ -18,7 +18,7 @@ namespace Renderer
 		~ParticlePointSpriteDrawable();
 
 		void setParticleRadius(const float& radius) { m_particleRadius = radius; }
-		void Initialize(const unsigned int& particleNum, const float& particleRadius = 1);
+		void Initialize(const unsigned int& particleNum, const float& particleRadius = 1, const unsigned int& posChannel = 4);
 		void setParticlePositions(const std::vector<glm::vec3>& positions);
 		void setParticlePositions(const std::vector<glm::vec4>& positions);
 

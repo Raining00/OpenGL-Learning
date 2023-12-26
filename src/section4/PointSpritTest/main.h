@@ -52,9 +52,10 @@ public:
 			}
 		}
         PRINT_CYAN_BLINK("Particle Count: " << _ParticlePos.size());
-        Renderer::ParticlePointSpriteDrawable* particle = new Renderer::ParticlePointSpriteDrawable(_ParticlePos.size(), 0.01f, 3);
+        Renderer::ParticlePointSpriteDrawable* particle = new Renderer::ParticlePointSpriteDrawable(3);
+        particle->Initialize(_ParticlePos.size(), 0.005, 3);
         particle->setParticlePositions(_ParticlePos);
-        //particle->setBaseColor(glm::vec3(0.0f, 0.0f, 0.5f));
+        particle->setBaseColor(glm::vec3(0.0f, 0.0f, 0.5f));
         particle->setProduceShadow(true);
         m_renderSystem->addDrawable(particle);
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(Renderer LANGUAGES CXX CUDA)
-
+find_package(CUDA REQUIRED)
 set(TARGET Renderer)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -18,8 +18,7 @@ target_include_directories(${TARGET} PUBLIC ${CMAKE_SOURCE_DIR}/extern ${CMAKE_S
 target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
                     --generate-code arch=compute_86,code=[sm_86,compute_86] -std=c++17>)
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
-find_library(CUDART_LIBRARY cudart PATHS ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES})
-target_link_libraries(${TARGET} PRIVATE ${CUDART_LIBRARY})
+target_link_libraries(${TARGET} PRIVATE ${CMAKE_CUDA_LIBRARIES})
 
 foreach(RENDER_FILE ${ENGINE_RENDERER_FILES})
     get_filename_component(RENDER_PATH "${RENDER_FILE}" PATH)

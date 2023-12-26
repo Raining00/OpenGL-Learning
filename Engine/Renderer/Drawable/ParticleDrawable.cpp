@@ -39,8 +39,11 @@ namespace Renderer
 		glDeleteVertexArrays(1, &m_particleVAO);
 	}
 
-	void ParticlePointSpriteDrawable::Initialize(const unsigned int& particleNum, const float& particleRadius)
+	void ParticlePointSpriteDrawable::Initialize(const unsigned int& particleNum, const float& particleRadius, const unsigned int& posChannel)
 	{
+		m_numParticles = particleNum;
+		m_posChannel = posChannel;
+		m_particleRadius = particleRadius;
 		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
 		glGenBuffers(1, &m_particleVBO);
 		m_vboCreateBySelf = true;

@@ -67,7 +67,7 @@ public:
         Renderer::ParticlePointSpriteDrawable* particleDrawable = new Renderer::ParticlePointSpriteDrawable(4);
         particleDrawable->setParticleRadius(radius);
         particleDrawable->setParticleVBO(simpleParticles->getPositionVBO(), positions.size());
-        particleDrawable->setBaseColor(glm::vec3(1.0f, 0.6f, 0.3f) * 5.f);
+        particleDrawable->setBaseColor(glm::vec3(1.0f, 0.6f, 0.3f));
         m_renderSystem->addDrawable(particleDrawable);
     }
 
