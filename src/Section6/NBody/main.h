@@ -4,7 +4,11 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "Drawable/StaticModelDrawable.h"
 #include "Drawable/ParticleDrawable.h"
-
+#include "ParticleSystem/ParticleSystem.h"
+inline float frand()
+{
+    return rand() / (float)RAND_MAX;
+}
 class NBody : public Renderer::WindowApp
 {
 public:
@@ -24,10 +28,47 @@ public:
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         m_renderSystem->setBloomOn(true);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), true);
-        
+        m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->UseDrawableList(true);
-        Renderer::ParticlePointSpriteDrawable* particleDrawable = new Renderer::ParticlePointSpriteDrawable(100, 0.01, 4);
 
+        float radius = 0.3f;
+        Physics::ParticleSystem::ptr simpleParticles = std::make_shared<Physics::ParticleSystem>();
+        unsigned int numParticles = 0;
+        float spacing = radius * 2.0f;
+        std::vector<glm::vec4> positions;
+        std::vector<glm::vec4> velocities;
+        float jitter = radius * 0.01f;
+        srand(1973);
+
+        // bottom fluid.
+        glm::vec3 bottomFluidSize = glm::vec3(30.0f, 30.0f, 30.0f);
+        glm::ivec3 bottomFluidDim = glm::ivec3(bottomFluidSize.x / spacing,
+            bottomFluidSize.y / spacing, bottomFluidSize.z / spacing);
+        for (int z = 0; z < bottomFluidDim.z; ++z)
+        {
+            for (int y = 0; y < bottomFluidDim.y; ++y)
+            {
+                for (int x = 0; x < bottomFluidDim.x; ++x)
+                {
+                    glm::vec4 tmp_pos, tmp_vel(0.0f, 0.0f, 0.0f, 0.0f);
+                    tmp_pos.x = spacing * x + radius - 0.5f * 80.0f + (frand() * 2.0f - 1.0f) * jitter;
+                    tmp_pos.y = spacing * y + radius - 0.5f * 40.0f + (frand() * 2.0f - 1.0f) * jitter;
+                    tmp_pos.z = spacing * z + radius - 0.5f * 40.0f + (frand() * 2.0f - 1.0f) * jitter;
+                    tmp_pos.w = 1.0;
+                    positions.push_back(tmp_pos);
+
+                    velocities.push_back(tmp_vel);
+                }
+            }
+        }
+        numParticles = positions.size();
+        simpleParticles->setParticlePosition(positions);
+        simpleParticles->setParticleVelocity(velocities);
+        Renderer::ParticlePointSpriteDrawable* particleDrawable = new Renderer::ParticlePointSpriteDrawable(4);
+        particleDrawable->setParticleRadius(radius);
+        particleDrawable->setParticleVBO(simpleParticles->getPositionVBO(), positions.size());
+        particleDrawable->setBaseColor(glm::vec3(0.1f, 0.2f, 0.8f) * 5.f);
+        m_renderSystem->addDrawable(particleDrawable);
     }
 
     virtual void Render() override

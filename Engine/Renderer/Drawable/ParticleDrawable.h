@@ -12,12 +12,13 @@ namespace Renderer
 	class ParticlePointSpriteDrawable : public Drawable
 	{
 	public:
-		ParticlePointSpriteDrawable(const unsigned int& particleNum, const float& particleRadius = 1, const unsigned int& posChannel = 4);
+		ParticlePointSpriteDrawable() = default;
+		ParticlePointSpriteDrawable(const unsigned int& posChannel = 4);
 
 		~ParticlePointSpriteDrawable();
 
-		void setParticleRadius(const float& radius);
-
+		void setParticleRadius(const float& radius) { m_particleRadius = radius; }
+		void Initialize(const unsigned int& particleNum, const float& particleRadius = 1);
 		void setParticlePositions(const std::vector<glm::vec3>& positions);
 		void setParticlePositions(const std::vector<glm::vec4>& positions);
 
@@ -27,7 +28,7 @@ namespace Renderer
 		void setParticlePositions(std::vector<Vec3f> &positions);
 		void setParticlePositions(std::vector<Vec4f> &positions);
 
-		void setParticleVBO(GLuint vbo);
+		void setParticleVBO(GLuint vbo, int numParticles);
 
 		glm::vec3 &getBaseColor() { return m_baseColor; }
 		GLuint getParticleVBO() { return m_particleVBO; }

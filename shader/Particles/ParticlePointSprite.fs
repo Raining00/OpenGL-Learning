@@ -160,5 +160,5 @@ void main()
 		brightColor = vec4(fragColor.rgb * brightness, 1.0f);
     vec4 pixelEyePos = vec4(fs_in.eyeSpacePos + vec3(normal.x, normal.y, -normal.z) * pointSize, 1.0f);
 	vec4 pixelClipPos = fs_in.projectMatrix * pixelEyePos;
-	gl_FragDepth = pixelClipPos.z / pixelClipPos.w;
+	// gl_FragDepth = pixelClipPos.z / pixelClipPos.w;
 }

@@ -88,6 +88,7 @@ namespace Renderer
         bool* getHDRPtr() { return &m_hdr; }
         bool* getBloomPtr() { return &m_BloomOn; }
         float* getExposurePtr() { return &m_exposure; }
+        bool* getshowBrightNessPtr() { return &m_showBrightNess; }
 
         // settters
         void setSunLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
@@ -110,7 +111,7 @@ namespace Renderer
         void renderFrameBuffer();
 
     private:
-        bool m_glowBlurEnable, m_showShadowMap{ false }, m_hdr{ false }, m_BloomOn{ false };
+        bool m_glowBlurEnable, m_showShadowMap{ false }, m_hdr{ false }, m_BloomOn{ false }, m_showBrightNess{ false };
         float m_exposure{ 1.0f };
         int m_width, m_height;
         unsigned int m_screenQuad;

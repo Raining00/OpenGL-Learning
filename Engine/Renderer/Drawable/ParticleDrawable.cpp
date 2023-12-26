@@ -8,24 +8,12 @@
 
 namespace Renderer
 {
-	ParticlePointSpriteDrawable::ParticlePointSpriteDrawable(const unsigned int& particleNum, const float& particleRadius, const unsigned int& posChannel):
-		m_posChannel(posChannel),m_numParticles(particleNum), m_particleRadius(particleRadius)
+	ParticlePointSpriteDrawable::ParticlePointSpriteDrawable(const unsigned int& posChannel):
+		m_posChannel(posChannel)
 	{
 		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
 		glGenVertexArrays(1, &m_particleVAO);
-		glGenBuffers(1, &m_particleVBO);
-		m_vboCreateBySelf = true;
-
-		glBindVertexArray(m_particleVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
-		glBufferData(GL_ARRAY_BUFFER, m_numParticles * m_posChannel * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
-		glVertexAttribDivisor(0, 1);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		m_vboCreateBySelf = false;
 
 		// load shader and texture
 		m_shaderManager = ShaderManager::getInstance();
@@ -46,6 +34,37 @@ namespace Renderer
 		if (m_vboCreateBySelf && m_particleVBO != 0)
 			glDeleteBuffers(1, &m_particleVBO);
 		glDeleteVertexArrays(1, &m_particleVAO);
+	}
+
+	void ParticlePointSpriteDrawable::Initialize(const unsigned int& particleNum, const float& particleRadius)
+	{
+		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
+		glGenBuffers(1, &m_particleVBO);
+		m_vboCreateBySelf = true;
+
+		glBindVertexArray(m_particleVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glBufferData(GL_ARRAY_BUFFER, m_numParticles * m_posChannel * sizeof(float), nullptr, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
+		glVertexAttribDivisor(0, 1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		// load shader and texture
+		m_shaderManager = ShaderManager::getInstance();
+		m_textureManager = TextureManager::getInstance();
+		std::string vertexPath;
+		if (m_posChannel == 3)
+			vertexPath = SHADER_PATH "/Particles/ParticlePointSpriteVec3.vs";
+		else if (m_posChannel == 4)
+			vertexPath = SHADER_PATH "/Particles/ParticlePointSpriteVec4.vs";
+		else
+			throw std::runtime_error("ParticlePointSpriteDrawable::ParticlePointSpriteDrawable: posChannel must be 3 or 4.");
+		m_shaderIndex = m_shaderManager->loadShader("ParticlePointSprite", vertexPath.c_str(), SHADER_PATH "/Particles/ParticlePointSprite.fs");
+		generateGaussianMap(32);
 	}
 
 	void ParticlePointSpriteDrawable::setParticlePositions(const std::vector<glm::vec3>& positions)
@@ -102,12 +121,22 @@ namespace Renderer
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void ParticlePointSpriteDrawable::setParticleVBO(GLuint vbo)
+	void ParticlePointSpriteDrawable::setParticleVBO(GLuint vbo, int numParticles)
 	{
 		if (m_vboCreateBySelf && m_particleVBO != 0)
+		{
 			glDeleteBuffers(1, &m_particleVBO);
+		}
 		m_particleVBO = vbo;
 		m_vboCreateBySelf = false;
+		m_numParticles = numParticles;
+		m_posChannel = 4;
+		glBindVertexArray(m_particleVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_particleVBO);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
+		glVertexAttribDivisor(0, 1);
+		glBindVertexArray(0);
 	}
 
 	void ParticlePointSpriteDrawable::render(Camera3D::ptr camera, Camera3D::ptr lightCamera, Shader::ptr shader)

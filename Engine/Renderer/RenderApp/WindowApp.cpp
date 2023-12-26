@@ -76,6 +76,7 @@ namespace Renderer
             ImGui::Text("HDR");
             ImGui::Checkbox("HDR On", (bool *)m_renderSystem->getHDRPtr());
             ImGui::Checkbox("Bloom On", (bool *)m_renderSystem->getBloomPtr());
+            ImGui::Checkbox("Show Brightness", (bool *)m_renderSystem->getshowBrightNessPtr());
             ImGui::DragFloat("Exposure", (float*)m_renderSystem->getExposurePtr(), 0.01, 0.f, 20.f);
             ImGui::End();
         }

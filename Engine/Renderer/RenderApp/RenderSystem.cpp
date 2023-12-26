@@ -318,6 +318,7 @@ namespace Renderer
         {
             if (m_gaussianBlur == nullptr)
                 m_gaussianBlur = std::make_shared<GaussianBlur>(m_width, m_height);
+            m_gaussianBlur->setBlurTimes(20);
             m_gaussianBlur->renderGaussianBlurEffect(m_frameBuffer->getColorTextureIndex(1));
         }
         // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
@@ -338,9 +339,11 @@ namespace Renderer
             framebufferShader->setInt("bloomTexture", 1);
             m_textureManager->bindTexture(m_gaussianBlur->getSceneTexIndex(), 1);
         }
+        if (m_showBrightNess)
+            m_textureManager->bindTexture(m_gaussianBlur->getSceneTexIndex(), 0);
         framebufferShader->setInt("screenTexture", 0);
         framebufferShader->setBool("hdr", m_hdr);
-        framebufferShader->setBool("bloom", true);
+        framebufferShader->setBool("bloom", m_BloomOn);
         framebufferShader->setFloat("exposure", m_exposure);
         m_meshManager->drawMesh(m_screenQuad, false);
     }
