@@ -27,10 +27,16 @@ private:
     std::shared_ptr<BodySystemCUDA<T>> m_nbodyCUDA;
 };
 
-template <TypenameT>
+template <typename T>
 NBodySystem<T>::NBodySystem()
 {
     cudaDeviceProp props;
     int devID;
     checkCudaErrors(cudaGetDeviceProperties(&props, devID));
+
+}
+
+template<typename T>
+inline void NBodySystem<T>::init(int numBodies)
+{
 }
