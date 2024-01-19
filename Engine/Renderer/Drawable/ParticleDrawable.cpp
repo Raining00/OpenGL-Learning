@@ -163,7 +163,7 @@ namespace Renderer
 		int width = RenderDevice::getInstance()->getWindowWidth();
 		float pointScale = 1.0f * width / aspect * (1.0f / tanf(glm::radians(fovy) * 0.5f));
 		if (m_glow)
-			pointScale /= 10.f;
+			pointScale /= 8.f;
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 		glDisable(GL_CULL_FACE);
