@@ -28,6 +28,8 @@ namespace Renderer
 		void setParticlePositions(std::vector<Vec3f> &positions);
 		void setParticlePositions(std::vector<Vec4f> &positions);
 		void setGlow(const bool& glow);
+		void setColor(float* color, int numParticles);
+		void setColor(std::vector<glm::vec3> &color);
 
 		void setParticleVBO(GLuint vbo, int numParticles);
 
@@ -49,6 +51,7 @@ namespace Renderer
 		GLuint m_particleTexture;
 		GLuint m_particleVAO;
 		GLuint m_particleVBO;
+		GLuint m_ColorVBO;
 		bool m_vboCreateBySelf, m_glow{ false };
 		unsigned int m_numParticles;
 		unsigned int m_posChannel; // 3 or 4 (vec3 or vec4)

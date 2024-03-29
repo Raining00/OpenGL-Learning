@@ -41,11 +41,11 @@ public:
         glm::vec3 PointAmbient = glm::vec3(0.2f, 0.1f, 0.05f);
         glm::vec3 PointDiffuse = glm::vec3(0.8f, 0.4f, 0.2f);
         glm::vec3 PointSpecular = glm::vec3(0.8, 0.3, 0.6);
-        light = new Renderer::LightDrawable("PointLight0", PointAmbient, PointDiffuse, PointSpecular, 1.0f, 0.09f, 0.032f, lightPosition);
+        light = new Renderer::LightDrawable("PointLight0", lightPosition, PointAmbient, PointDiffuse, PointSpecular, 1.0f, 0.09f, 0.032f);
         m_renderSystem->createShadowDepthBuffer(1024, 1024, false, Renderer::TextureType::DEPTH_CUBE);
         light->addMesh(sphereMesh);
         light->getTransformation()->scale(glm::vec3(0.1f));
-        light->setLightColor(glm::vec3(1.0f, 0.5f, 0.3f));
+        light->setLightColor(PointAmbient, PointDiffuse, PointSpecular);
         m_renderSystem->addDrawable(light);
 
         // add drawable

@@ -32,6 +32,8 @@ namespace Renderer
 					_texture->bind(3);
                 else if(_texture->getTextureType() == TextureType::REFLECT)
                     _texture->bind(4);
+                else 
+                    _texture->bind(0);
             }
             ShaderManager::getInstance()->getShader(m_shaderIndex)->setBool("material.useNormalMap", useNormalMap);
             meshManager->drawMesh(m_meshIndex[x], m_instance, m_instanceNum);

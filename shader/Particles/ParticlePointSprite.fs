@@ -42,6 +42,7 @@ in VS_OUT
     vec2 TexCoords;
     vec3 eyeSpacePos;
     vec4 FragPosLightSpace;
+    vec4 Color;
     mat4 projectMatrix;
 }fs_in;
 

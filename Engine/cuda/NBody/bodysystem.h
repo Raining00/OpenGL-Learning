@@ -132,6 +132,7 @@ void randomizeBodies(NBodyConfig config, T* pos, T* vel, float* color,
     {
     default:
     case NBODY_CONFIG_RANDOM:
+    {
         float scale = clusterScale * std::max<float>(1.0f, numBodies / (1024.0f));
         float vscale = velocityScale * scale;
 
@@ -169,11 +170,12 @@ void randomizeBodies(NBodyConfig config, T* pos, T* vel, float* color,
 
             i++;
         }
+    }
         break;
     case NBODY_CONFIG_SHELL:
     {
         float scale = clusterScale;
-        float vsscale = scale * velocityScale;
+        float vscale = scale * velocityScale;
         float inner = 2.5f * scale;
         float outer = 4.0f * scale;
 

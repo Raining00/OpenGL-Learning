@@ -46,6 +46,7 @@ namespace Renderer
 		m_particleRadius = particleRadius;
 		m_baseColor = glm::vec3(1.0f, 0.6f, 0.3f);
 		glGenBuffers(1, &m_particleVBO);
+		glGenBuffers(1, &m_ColorVBO);
 		m_vboCreateBySelf = true;
 
 		glBindVertexArray(m_particleVAO);
@@ -55,6 +56,20 @@ namespace Renderer
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, m_posChannel, GL_FLOAT, GL_FALSE, m_posChannel * sizeof(float), (void*)0);
 		glVertexAttribDivisor(0, 1);
+
+		// color attribute
+		float* colors = new float[m_numParticles * 4];
+		for (int i = 0; i < m_numParticles * 4; i += 4) {
+			colors[i] = 1.0f;     // R
+			colors[i + 1] = 1.0f; // G
+			colors[i + 2] = 1.0f; // B
+			colors[i + 3] = 1.0f; // A
+		}
+		glBindBuffer(GL_VERTEX_ARRAY, m_ColorVBO);
+		glBufferData(GL_ARRAY_BUFFER, m_numParticles * 4 * sizeof(float), colors, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glVertexAttribDivisor(3, 1);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
@@ -135,6 +150,32 @@ namespace Renderer
 			m_shaderIndex = m_shaderManager->getShdaerIndex("ParticlePix");
 	}
 
+	void ParticlePointSpriteDrawable::setColor(float* color, int numParticles)
+	{
+		// check array size
+		if (numParticles != m_numParticles)
+		{
+			std::cout << "ParticlePointSpriteDrawable::setColor: numParticles != m_numParticles." << std::endl;
+			return;
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, m_ColorVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, numParticles * 4 * sizeof(float), color);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	void ParticlePointSpriteDrawable::setColor(std::vector<glm::vec3>& color)
+	{
+		// check array size
+		if (color.size() != m_numParticles)
+		{
+			std::cout << "ParticlePointSpriteDrawable::setColor: color.size() != m_numParticles." << std::endl;
+			return;
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, m_ColorVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, color.size() * 4 * sizeof(float), color.data());
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
 	void ParticlePointSpriteDrawable::setParticleVBO(GLuint vbo, int numParticles)
 	{
 		if (m_vboCreateBySelf && m_particleVBO != 0)
@@ -162,8 +203,6 @@ namespace Renderer
 		float fovy = camera->getFovy();
 		int width = RenderDevice::getInstance()->getWindowWidth();
 		float pointScale = 1.0f * width / aspect * (1.0f / tanf(glm::radians(fovy) * 0.5f));
-		if (m_glow)
-			pointScale /= 8.f;
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 		glDisable(GL_CULL_FACE);
@@ -183,6 +222,7 @@ namespace Renderer
 		shader->setFloat("pointScale", pointScale);
 		shader->setVec3("baseColor", m_baseColor);
 		shader->setFloat("pointSize", m_particleRadius);
+		shader->setBool("glow", m_glow);
 		Texture::ptr depthMap = m_textureManager->getTexture("shadowDepth");
 		if (depthMap != nullptr)
 		{

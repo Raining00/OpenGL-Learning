@@ -20,7 +20,7 @@ namespace Renderer
             PRINT_INFO("Use TPS Camera");
             // TPS camera
             m_camera = m_renderSystem->createTPSCamera(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0));
-            m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 1000.f);
+            m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 2000.f);
             Renderer::TPSCamera *tpsCamera = reinterpret_cast<Renderer::TPSCamera *>(m_camera.get());
             tpsCamera->setPitch(15.0f);
             tpsCamera->setDistance(3.0f);
@@ -33,7 +33,7 @@ namespace Renderer
             PRINT_INFO("Use FPS Camera");
             // FPS camera
             m_camera = m_renderSystem->createFPSCamera(glm::vec3(0.0, 1.0, 3.0), glm::vec3(0.0, 0.0, 0.0));
-            m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 1000.f);
+            m_camera->setPerspective(45.0f, static_cast<float>(m_renderDevice->getWindowWidth()) / m_renderDevice->getWindowHeight(), 0.1f, 2000.f);
             //m_camera->setOrtho(-10, 10.f, -10.f, 10.f, 1.0f, 100.f);
             Renderer::FPSCamera *fpsCamera = reinterpret_cast<Renderer::FPSCamera *>(m_camera.get());
             fpsCamera->setMouseSensitivity(0.3f);

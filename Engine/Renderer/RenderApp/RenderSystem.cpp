@@ -322,6 +322,8 @@ namespace Renderer
         }
         // now we bind the default framebuffer, and draw the framebuffer texture on a quad.
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         if (m_showShadowMap)
         {
             framebufferShader = m_shaderManager->getShader("FramebufferDepth");

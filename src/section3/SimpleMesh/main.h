@@ -64,6 +64,8 @@ public:
         m_renderSystem->addDrawable(contianer[2]);
 
         Renderer::StaticModelDrawable* model[2];
+        //model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/soap1.obj");
+        //m_renderSystem->addDrawable(model[0]);
         model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
         model[0]->getTransformation()->setScale(glm::vec3(1.0f));
         model[0]->getTransformation()->setTranslation(glm::vec3(0.5f, -0.5f, 0.0f));

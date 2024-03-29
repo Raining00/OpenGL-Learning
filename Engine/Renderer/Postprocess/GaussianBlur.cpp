@@ -25,6 +25,13 @@ namespace Renderer
         gaussianBlurShdaer->use();
         GLboolean horizontal = true, first_iteration = true;
         GLuint amount = 10;
+        for (int i = 0; i < 2; i++)
+        {
+            m_pingPongBuffer[i]->bind();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            m_pingPongBuffer[i]->unBind(m_width, m_height);
+        }
+            
         // we blur it 10 times(5 is on the horizon and 5 is on the vertic).
         for (GLuint i = 0; i < amount; i++)
         {

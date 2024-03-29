@@ -23,7 +23,7 @@ namespace Physics
         void setParticleVelocity(float* hostVelocity, unsigned int particleNum);
 
         unsigned int getPositionVBO() const { return m_PosVBO; }
-    private:
+    protected:
         float* m_devPosition; // float4: (x, y, z, mass);
         float* m_devVelocity; // float4: (vs, vy, vz, 0.0)
         bool m_isInit{ false };

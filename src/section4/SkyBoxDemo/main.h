@@ -16,7 +16,7 @@ public:
 
     virtual void Init() override
     {
-        //shaders
+        //shadersw
         unsigned int phoneShader = m_shaderManager->loadShader("phoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/phoneLight.fs");
         unsigned int staticModelShader = m_shaderManager->loadShader("staticModelShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/staticModel.fs");
         unsigned int blendingShader = m_shaderManager->loadShader("blendingShader", SHADER_PATH"/Blending/Blend.vs", SHADER_PATH"/Blending/Blend.fs");
@@ -48,7 +48,7 @@ public:
         contianer[0]->getTransformation()->setScale(glm::vec3(scale));
         contianer[0]->getTransformation()->setTranslation(glm::vec3(0.0f, 0.0, 0.0f));
         contianer[0]->getTransformation()->setRotation(glm::vec3(0.f, 0.0f, 0.0f));
-        m_renderSystem->addDrawable(contianer[0]);
+        //m_renderSystem->addDrawable(contianer[0]);
 
         contianer[1] = new Renderer::SimpleDrawable(skyBoxRelfectShader);
         contianer[1]->addMesh(cubeMesh);
@@ -72,19 +72,21 @@ public:
         contianer[3]->addTexture(m_textureManager->getTextureIndex("skybox"));
         contianer[3]->setReceiveShadow(false);
         contianer[3]->setProduceShadow(false);
+        //contianer[3]->getTransformation()->setScale(glm::vec3(3.0, 3.0, 3.0));
         contianer[3]->getTransformation()->setTranslation(glm::vec3(3.0f, 1.0f, 1.0f));
         m_renderSystem->addDrawable(contianer[3]);
 
         Renderer::StaticModelDrawable* model[3];
         model[0] = new Renderer::StaticModelDrawable(phoneShader, ASSETS_PATH "/model/furina/obj/furina_white.obj");
-        m_renderSystem->addDrawable(model[0]);
+        //m_renderSystem->addDrawable(model[0]);
 
         model[1] = new Renderer::StaticModelDrawable(staticModelShader, ASSETS_PATH "/model/nanosuit_reflection/nanosuit.obj");
-        model[1]->getTransformation()->scale(glm::vec3(0.1));
+        //model[1] = new Renderer::StaticModelDrawable(staticModelShader, ASSETS_PATH "/model/nanosuit/nanosuit.obj");
+        //model[1]->getTransformation()->scale(glm::vec3(0.1));
         model[1]->getTransformation()->setTranslation(glm::vec3(1.0f, 0.0f, 0.5f));
-        m_renderSystem->addDrawable(model[1]);
+        //m_renderSystem->addDrawable(model[1]);
 
-        m_renderSystem->addDrawable(contianer[2]);
+        //m_renderSystem->addDrawable(contianer[2]);
 
         //m_renderSystem->setCullFace(false, GL_BACK);
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

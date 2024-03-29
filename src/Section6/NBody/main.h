@@ -5,6 +5,7 @@
 #include "Drawable/StaticModelDrawable.h"
 #include "Drawable/ParticleDrawable.h"
 #include "ParticleSystem/ParticleSystem.h"
+#include "NBody/Nbody.h"
 inline float frand()
 {
     return rand() / (float)RAND_MAX;
@@ -24,9 +25,9 @@ public:
     {
         //shaders
         unsigned int blingphoneShader = m_shaderManager->loadShader("blingphoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
-        m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE);
         m_renderSystem->setBloomOn(true);
-        m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), true);
+        m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), false);
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->UseDrawableList(true);
 
@@ -60,14 +61,19 @@ public:
                 }
             }
         }
+        NBodySystem<float> nbodySystem;
 
         numParticles = positions.size();
-        simpleParticles->setParticlePosition(positions);
-        simpleParticles->setParticleVelocity(velocities);
+        //simpleParticles->setParticlePosition(positions);
+        //simpleParticles->setParticleVelocity(velocities);
+        simpleParticles->setParticlePosition(nbodySystem.getHostPositions(), nbodySystem.getNumBodies());
+        simpleParticles->setParticleVelocity(nbodySystem.getHostVelocities(), nbodySystem.getNumBodies());
+
         Renderer::ParticlePointSpriteDrawable* particleDrawable = new Renderer::ParticlePointSpriteDrawable(4, true);
-        particleDrawable->setParticleRadius(radius);
-        particleDrawable->setParticleVBO(simpleParticles->getPositionVBO(), positions.size());
-        particleDrawable->setBaseColor(glm::vec3(1.0f, 0.6f, 0.3f) * 5.f);
+        particleDrawable->setParticleRadius(radius * 1.3f);
+        particleDrawable->setParticleVBO(simpleParticles->getPositionVBO(), nbodySystem.getNumBodies());
+        particleDrawable->setBaseColor(glm::vec3(1.0f, 0.6f, 0.3f));
+        particleDrawable->setColor(nbodySystem.getHostColors(), nbodySystem.getNumBodies());
         m_renderSystem->addDrawable(particleDrawable);
     }
 

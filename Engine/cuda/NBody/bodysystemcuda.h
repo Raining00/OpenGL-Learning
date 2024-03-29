@@ -16,9 +16,7 @@ template <typename T>
 class BodySystemCUDA :public BodySystem<T>
 {
 public:
-	BodySystemCUDA(unsigned int numBodies, unsigned int numDevices,
-		unsigned int blockSize, bool usePBO, bool useSysMem = false,
-		bool useP2P = true, int deviceId = 0);
+	BodySystemCUDA(unsigned int numBodies, unsigned int blockSize, bool useSysMem = false, int deviceId = 0);
 	virtual ~BodySystemCUDA();
 
 	virtual void update(T delraTime);

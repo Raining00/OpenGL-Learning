@@ -72,5 +72,9 @@ void main()
         FragColor = vec4(mapped, 1.0);
     }
     else
+    {
+        if(bloom)
+            hdrColor += texture(bloomTexture, TexCoords).rgb;
         FragColor = vec4(hdrColor, 1.0);
+    }
 } 

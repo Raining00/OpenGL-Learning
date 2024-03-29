@@ -2,6 +2,7 @@
 layout (location = 0) in vec4 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in vec4 aColor;
 
 out VS_OUT
 {
@@ -10,6 +11,7 @@ out VS_OUT
     vec2 TexCoords;
     vec3 eyeSpacePos;
     vec4 FragPosLightSpace;
+    vec4 Color;
     mat4 projectMatrix;
 }vs_out;
 
@@ -25,6 +27,7 @@ uniform mat4 lightSpaceMatrix;
 uniform bool instance;
 uniform float pointScale;
 uniform float pointSize;
+uniform bool glow;
 
 void main()
 {
@@ -36,7 +39,10 @@ void main()
     vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     vs_out.FragPos = FragPos;
     vs_out.eyeSpacePos = (view * vec4(FragPos, 1.0)).xyz;
-    gl_PointSize = -pointScale * pointSize / vs_out.eyeSpacePos.z;
+    vs_out.Color = aColor;
+    vec3 pos_eye = vec3 (modelMatrix * vec4(position, 1.0f));
     // gl_PointSize = max(1.0, -pointScale * pointSize / (1.0 - vs_out.eyeSpacePos.z));
+    if(glow)
+        gl_PointSize = max(1.0, (500 * pointSize) / (1.0 - vs_out.eyeSpacePos.z));
     gl_Position = project * view * vec4(FragPos, 1.0);
 }
