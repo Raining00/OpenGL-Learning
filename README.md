@@ -21,7 +21,8 @@ Each section in *src* folder corresponds to a certain chapter in the book.
 <a><img src="images/shaderMapping.png" height="213px"></a>
 <a><img src="images/Brightness.png" height="213px"></a>
 
-![planet](images/planet.gif)
+
+<a><img src="images/planet.gif" height="300px"></a>
 
 ## How to build
 
