@@ -22,7 +22,7 @@ Each section in *src* folder corresponds to a certain chapter in the book.
 <a><img src="images/Brightness.png" height="150px"></a>
 
 
-<a><img src="images/planet.gif" width="720px"></a>
+<a><img src="images/planet.gif" width="800px"></a>
 
 ## How to build
 
