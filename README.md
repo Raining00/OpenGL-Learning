@@ -23,18 +23,18 @@ Each section in *src* folder corresponds to a certain chapter in the book.
   <img src="images/Brightness.png" alt="Image 6" style="width: 100%;"/>
 </div>
 
-<a><img src="images/colorfulTriangle.png" height="192px"</a>
-<a><img src="images/basicLighting.png" height="192px"</a>
-<a><img src="images/blending.png" height="192px"</a>
-<a><img src="images/meshes.png" height="192px"</a>
-<a><img src="images/skybox.png" height="192px"</a>
-<a><img src="images/pointSprit.png" height="192px"</a>
-<a><img src="images/depthTest.png" height="192px"</a>
-<a><img src="images/geometricShader.png" height="192px"</a>
-<a><img src="images/HDR_gamma.png" height="192px"</a>
-<a><img src="images/Bloom.png" height="192px"</a>
-<a><img src="images/shaderMapping.png" height="192px"</a>
-<a><img src="images/Brightness.png" height="192px"</a>
+<a href="www.baidu.com"><img src="images/colorfulTriangle.png" height="192px"></a>
+<a><img src="images/basicLighting.png" height="192px"></a>
+<a><img src="images/blending.png" height="192px"></a>
+<a><img src="images/meshes.png" height="192px"></a>
+<a><img src="images/skybox.png" height="192px"></a>
+<a><img src="images/pointSprit.png" height="192px"></a>
+<a><img src="images/depthTest.png" height="192px"></a>
+<a><img src="images/geometricShader.png" height="192px"></a>
+<a><img src="images/HDR_gamma.png" height="192px"></a>
+<a><img src="images/Bloom.png" height="192px"></a>
+<a><img src="images/shaderMapping.png" height="192px"></a>
+<a><img src="images/Brightness.png" height="192px"></a>
 
 ![planet](images/planet.gif)
 
