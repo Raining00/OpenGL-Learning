@@ -8,18 +8,18 @@ Each section in *src* folder corresponds to a certain chapter in the book.
 
 ## Examples
 
-<a><img src="images/colorfulTriangle.png" height="193px"></a>
-<a><img src="images/basicLighting.png" height="193px"></a>
-<a><img src="images/blending.png" height="193px"></a>
-<a><img src="images/meshes.png" height="193px"></a>
-<a><img src="images/skybox.png" height="193px"></a>
-<a><img src="images/pointSprit.png" height="193px"></a>
-<a><img src="images/depthTest.png" height="193px"></a>
-<a><img src="images/geometricShader.png" height="193px"></a>
-<a><img src="images/HDR_gamma.png" height="193px"></a>
-<a><img src="images/Bloom.png" height="193px"></a>
-<a><img src="images/shaderMapping.png" height="193px"></a>
-<a><img src="images/Brightness.png" height="193px"></a>
+<a><img src="images/colorfulTriangle.png" height="150px"></a>
+<a><img src="images/basicLighting.png" height="150px"></a>
+<a><img src="images/blending.png" height="150px"></a>
+<a><img src="images/meshes.png" height="150px"></a>
+<a><img src="images/skybox.png" height="150px"></a>
+<a><img src="images/pointSprit.png" height="150px"></a>
+<a><img src="images/depthTest.png" height="150px"></a>
+<a><img src="images/geometricShader.png" height="150px"></a>
+<a><img src="images/HDR_gamma.png" height="150px"></a>
+<a><img src="images/Bloom.png" height="150px"></a>
+<a><img src="images/shaderMapping.png" height="150px"></a>
+<a><img src="images/Brightness.png" height="150px"></a>
 
 
 <a><img src="images/planet.gif" width="1080px"></a>
