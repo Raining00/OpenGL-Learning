@@ -1,6 +1,31 @@
-### Learning CUDA and OpenGL
+### **Learning OpenGL**
 
-### How to config
+## Description
+
+This is my code for ["Learn OpenGL](https://learnopengl.com/)".
+
+Each section in *src* folder corresponds to a certain chapter in the book.
+
+## Examples
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
+  <img src="images/colorfulTriangle.png" alt="Image 1" style="width: 100%;"/>
+  <img src="images/basicLighting.png" alt="Image 2" style="width: 100%;"/>
+  <img src="images/blending.png" alt="Image 3" style="width: 100%;"/>
+  <img src="images/meshes.png" alt="Image 4" style="width: 100%;"/>
+  <img src="images/skybox.png" alt="Image 5" style="width: 100%;"/>
+  <img src="images/pointSprit.png" alt="Image 6" style="width: 100%;"/>
+  <img src="images/depthTest.png" alt="Image 6" style="width: 100%;"/>
+  <img src="images/geometricShader.png" alt="Image 6" style="width: 100%;"/>
+   <img src="images/shaderMapping.png" alt="Image 6" style="width: 100%;"/>
+  <img src="images/HDR_gamma.png" alt="Image 6" style="width: 100%;"/>
+  <img src="images/Bloom.png" alt="Image 6" style="width: 100%;"/>
+  <img src="images/Brightness.png" alt="Image 6" style="width: 100%;"/>
+</div>
+
+![planet](images\planet.gif)
+
+## How to build
 
 #### Linux(Ubuntu)
 

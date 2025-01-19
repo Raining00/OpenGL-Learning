@@ -26,12 +26,12 @@ public:
         //shaders
         unsigned int blingphoneShader = m_shaderManager->loadShader("blingphoneShader", SHADER_PATH"/phoneLight.vs", SHADER_PATH"/BlingPhone.fs");
         m_renderSystem->setBlend(true, GL_SRC_ALPHA, GL_ONE);
-        m_renderSystem->setBloomOn(true);
+        m_renderSystem->setBloomOn(false);
         m_renderSystem->createFrameBuffer(m_renderDevice->getWindowWidth(), m_renderDevice->getWindowHeight(), false);
         m_renderSystem->setSunLight(sunLightDir, sunLightColorAmbient, sunLightColorDiffse, sunLightColorSpecular);
         m_renderSystem->UseDrawableList(true);
 
-        float radius = 0.3f;
+        float radius = 0.5f;
         Physics::ParticleSystem::ptr simpleParticles = std::make_shared<Physics::ParticleSystem>();
         unsigned int numParticles = 0;
         float spacing = radius * 2.0f;
@@ -70,7 +70,7 @@ public:
         simpleParticles->setParticleVelocity(nbodySystem.getHostVelocities(), nbodySystem.getNumBodies());
 
         Renderer::ParticlePointSpriteDrawable* particleDrawable = new Renderer::ParticlePointSpriteDrawable(4, true);
-        particleDrawable->setParticleRadius(radius * 1.3f);
+        particleDrawable->setParticleRadius(radius * 2.0);
         particleDrawable->setParticleVBO(simpleParticles->getPositionVBO(), nbodySystem.getNumBodies());
         particleDrawable->setBaseColor(glm::vec3(1.0f, 0.6f, 0.3f));
         particleDrawable->setColor(nbodySystem.getHostColors(), nbodySystem.getNumBodies());

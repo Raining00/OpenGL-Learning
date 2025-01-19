@@ -14,7 +14,7 @@ public:
     }
 
     ~HDR() = default;
-
+     
     virtual void Init() override
     {
         //shaders

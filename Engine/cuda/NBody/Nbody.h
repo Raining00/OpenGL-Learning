@@ -105,7 +105,7 @@ void NBodySystem<T>::_init()
     m_hVel = new T[m_numBodies * 4];
     m_hColor = new float[m_numBodies * 4];
 
-    randomizeBodies(NBODY_CONFIG_SHELL, m_hPos, m_hVel, m_hColor, m_activeParams.m_clusterScale, m_activeParams.m_velocityScale, m_numBodies, true);
+    randomizeBodies(NBODY_CONFIG_RANDOM, m_hPos, m_hVel, m_hColor, m_activeParams.m_clusterScale, m_activeParams.m_velocityScale, m_numBodies, true);
 }
 
 template <typename T>
