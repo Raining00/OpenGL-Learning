@@ -8,33 +8,18 @@ Each section in *src* folder corresponds to a certain chapter in the book.
 
 ## Examples
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-  <img src="images/colorfulTriangle.png" alt="Image 1" style="width: 100%;"/>
-  <img src="images/basicLighting.png" alt="Image 2" style="width: 100%;"/>
-  <img src="images/blending.png" alt="Image 3" style="width: 100%;"/>
-  <img src="images/meshes.png" alt="Image 4" style="width: 100%;"/>
-  <img src="images/skybox.png" alt="Image 5" style="width: 100%;"/>
-  <img src="images/pointSprit.png" alt="Image 6" style="width: 100%;"/>
-  <img src="images/depthTest.png" alt="Image 6" style="width: 100%;"/>
-  <img src="images/geometricShader.png" alt="Image 6" style="width: 100%;"/>
-   <img src="images/shaderMapping.png" alt="Image 6" style="width: 100%;"/>
-  <img src="images/HDR_gamma.png" alt="Image 6" style="width: 100%;"/>
-  <img src="images/Bloom.png" alt="Image 6" style="width: 100%;"/>
-  <img src="images/Brightness.png" alt="Image 6" style="width: 100%;"/>
-</div>
-
-<a href="www.baidu.com"><img src="images/colorfulTriangle.png" height="192px"></a>
-<a><img src="images/basicLighting.png" height="192px"></a>
-<a><img src="images/blending.png" height="192px"></a>
-<a><img src="images/meshes.png" height="192px"></a>
-<a><img src="images/skybox.png" height="192px"></a>
-<a><img src="images/pointSprit.png" height="192px"></a>
-<a><img src="images/depthTest.png" height="192px"></a>
-<a><img src="images/geometricShader.png" height="192px"></a>
-<a><img src="images/HDR_gamma.png" height="192px"></a>
-<a><img src="images/Bloom.png" height="192px"></a>
-<a><img src="images/shaderMapping.png" height="192px"></a>
-<a><img src="images/Brightness.png" height="192px"></a>
+<a><img src="images/colorfulTriangle.png" height="213px"></a>
+<a><img src="images/basicLighting.png" height="213px"></a>
+<a><img src="images/blending.png" height="213px"></a>
+<a><img src="images/meshes.png" height="213px"></a>
+<a><img src="images/skybox.png" height="213px"></a>
+<a><img src="images/pointSprit.png" height="213px"></a>
+<a><img src="images/depthTest.png" height="213px"></a>
+<a><img src="images/geometricShader.png" height="213px"></a>
+<a><img src="images/HDR_gamma.png" height="213px"></a>
+<a><img src="images/Bloom.png" height="213px"></a>
+<a><img src="images/shaderMapping.png" height="213px"></a>
+<a><img src="images/Brightness.png" height="213px"></a>
 
 ![planet](images/planet.gif)
 
